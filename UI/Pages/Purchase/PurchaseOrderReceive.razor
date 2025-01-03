@@ -1,0 +1,118 @@
+﻿@page "/PurchaseOrderReceive"
+
+<MudContainer Class="shadow-lg form-radius">
+
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="11">
+
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4">Purchase Order Receive</MudText>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Vander Name"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="PO No"></MudTextField>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Delivery From"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDatePicker Variant="Variant.Outlined" Label="PO Date"></MudDatePicker>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Delivery To"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDatePicker Variant="Variant.Outlined" Label="Receiving Date"></MudDatePicker>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="2">
+                    <MudButton Variant="Variant.Filled" Size="Size.Large"
+                               Color="Color.Primary">Cash</MudButton>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudButton Variant="Variant.Filled" Size="Size.Large"
+                               Color="Color.Primary">Full Payment</MudButton>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudTable Items="@elements" Hover="true">
+                        <HeaderContent>
+                            <MudTh>Item Name</MudTh>
+                            <MudTh>Quantity</MudTh>
+                            <MudTh>Rate</MudTh>
+                            <MudTh>Unit</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.Name</MudTd>
+                                <MudButton Variant="Variant.Filled" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add"
+                                           Color="Color.Primary">Receiving Qty</MudButton>
+                            </RowTemplate>
+                        </MudTable>
+                        @code {
+        private class Element
+        {
+            public string Name { get; set; }
+        }
+        private List<Element> elements = new List<Element> { };
+                    }
+                </MudItem>
+            </MudGrid>
+
+            <br />
+            <br />
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="9">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Remarks" Lines="8"></MudTextField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Gross Amount"
+                                     HideSpinButtons="true"></MudNumericField>
+                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Tax Rate"
+                                     HideSpinButtons="true"></MudNumericField>
+                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Tax Amount"
+                                     HideSpinButtons="true"></MudNumericField>
+                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Net Amount"
+                                     HideSpinButtons="true"></MudNumericField>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="3">
+                    <MudButton Variant="Variant.Filled" Size="Size.Large"
+                               Color="Color.Primary">Receive</MudButton>
+                </MudItem>
+            </MudGrid>
+
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>

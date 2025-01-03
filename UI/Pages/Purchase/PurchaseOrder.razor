@@ -1,0 +1,53 @@
+﻿@page "/PurchaseOrder"
+
+<MudContainer Class="shadow-lg form-radius">
+
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="11">
+
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4">Purchase Order</MudText>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="8">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Search"></MudTextField>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary">New Create</MudButton>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudTable Items="@elements" Hover="true">
+                        <HeaderContent>
+                            <MudTh>Item Name</MudTh>
+                            <MudTh>Qty</MudTh>
+                            <MudTh>Rate</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.Name</MudTd>
+                                <MudTd>
+                                    <MudButton Variant="Variant.Filled" Size="Size.Large"
+                                               Color="Color.Primary">Pay</MudButton>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                        @code {
+        private class Element
+        {
+            public string Name { get; set; }
+        }
+        private List<Element> elements = new List<Element> { };
+                    }
+                </MudItem>
+            </MudGrid>
+
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>

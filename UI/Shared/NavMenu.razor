@@ -1,0 +1,74 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">UI</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="CreatePurchaseOrder">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Create Purchase Order
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="CreateSaleOrder">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Create Sale Order
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="CreateProductionOrder">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Create Production Order
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="ProductionPlan">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Production Plan
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="PurchaseOrder">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Purchase Order
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="SaleOrder">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Sale Order
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="ProductionReceive">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Production Receive
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="PurchaseOrderReceive">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Purchase Order Receive
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="SaleOrderExecution">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Sale Order Execution
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
