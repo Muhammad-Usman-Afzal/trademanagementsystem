@@ -90,16 +90,24 @@
             <br />
 
             <MudGrid Justify="Justify.Center">
-                <MudItem xs="9">
+                <MudItem xs="12">
                     <MudTextField T="string" Variant="Variant.Outlined" Label="Remarks" Lines="8"></MudTextField>
                 </MudItem>
+            </MudGrid>
+            <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
                     <MudNumericField T="int" Variant="Variant.Outlined" Label="Gross Amount"
                                      HideSpinButtons="true"></MudNumericField>
+                </MudItem>
+                <MudItem xs="3">
                     <MudNumericField T="int" Variant="Variant.Outlined" Label="Tax Rate"
                                      HideSpinButtons="true"></MudNumericField>
+                </MudItem>
+                <MudItem xs="3">
                     <MudNumericField T="int" Variant="Variant.Outlined" Label="Tax Amount"
                                      HideSpinButtons="true"></MudNumericField>
+                </MudItem>
+                <MudItem xs="3">
                     <MudNumericField T="int" Variant="Variant.Outlined" Label="Net Amount"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
