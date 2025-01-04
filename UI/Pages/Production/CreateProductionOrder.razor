@@ -11,9 +11,9 @@
                 </MudItem>
             </MudGrid>
 
-            <MudGrid Justify="Justify.Center">
+            <MudGrid Justify="Justify.FlexStart">
                 <MudItem xs="4">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="PO No"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="PO No" Disabled="true"></MudTextField>
                 </MudItem>
                 <MudItem xs="4">
                     <MudDatePicker Label="PO Date"></MudDatePicker>
@@ -23,7 +23,9 @@
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
                     <MudSelect T="string" Label="Contractor Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Contractor Name")">Contractor Name</MudSelectItem>
+                        <MudSelectItem Value="@("Contractor Name")">Contractor1</MudSelectItem>
+                        <MudSelectItem Value="@("Contractor Name")">Contractor2</MudSelectItem>
+                        <MudSelectItem Value="@("Contractor Name")">Contractor3</MudSelectItem>
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="3">
@@ -88,25 +90,10 @@
 
             <br />
 
-            <MudGrid Justify="Justify.Center">
+            <MudGrid>
                 <MudItem xs="2">
                     <MudNumericField T="int" Variant="Variant.Outlined" Label="Rate"
                                      HideSpinButtons="true"></MudNumericField>
-                </MudItem>
-                <MudItem xs="4">
-                    <MudSelect T="string" Label="Payment Method" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Payment Method")">Payment Method</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
-                <MudItem xs="4">
-                    <MudSelect T="string" Label="Transaction Type" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Transaction Type")">Transaction Type</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
-                <MudItem xs="2">
-                    <MudSelect T="string" Label="Status" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Status")">Status</MudSelectItem>
-                    </MudSelect>
                 </MudItem>
             </MudGrid>
 
