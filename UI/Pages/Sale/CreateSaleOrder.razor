@@ -13,13 +13,26 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="6">
-                    <MudSelect T="string" Label="Supplier Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Supplier Name")">Supplier Name</MudSelectItem>
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="SO No."></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDatePicker Variant="Variant.Outlined" Label="SO Date"></MudDatePicker>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudSelect T="string" Label="Customer Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
+                        <MudSelectItem Value="@("Customer 1")">Customer 1</MudSelectItem>
+                        <MudSelectItem Value="@("Customer 2")">Customer 2</MudSelectItem>
+                        <MudSelectItem Value="@("Customer 3")">Customer 3</MudSelectItem>
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="6">
                     <MudSelect T="string" Label="Payment Method" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Payment Method")">Payment Method</MudSelectItem>
+                        <MudSelectItem Value="@("Cash")">Cash</MudSelectItem>
+                        <MudSelectItem Value="@("Cheque")">Cheque</MudSelectItem>
+                        <MudSelectItem Value="@("Bank Transfer")">Bank Transfer</MudSelectItem>
                     </MudSelect>
                 </MudItem>
             </MudGrid>
@@ -37,20 +50,20 @@
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
+                <MudItem xs="2">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Brand"></MudTextField>
+                </MudItem>
                 <MudItem xs="3">
                     <MudTextField T="string" Variant="Variant.Outlined" Label="Item Name"></MudTextField>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Category"></MudTextField>
                 </MudItem>
                 <MudItem xs="2">
                     <MudTextField T="int" Variant="Variant.Outlined" Label="Quantity"></MudTextField>
                 </MudItem>
                 <MudItem xs="2">
                     <MudTextField T="int" Variant="Variant.Outlined" Label="Rate"></MudTextField>
-                </MudItem>
-                <MudItem xs="2">
-                    <MudTextField T="int" Variant="Variant.Outlined" Label="Unit"></MudTextField>
-                </MudItem>
-                <MudItem xs="2">
-                    <MudTextField T="int" Variant="Variant.Outlined" Label="Discount"></MudTextField>
                 </MudItem>
                 <MudItem xs="1">
                     <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" />
@@ -67,17 +80,17 @@
                 <MudItem xs="9">
                     <MudTable Items="@elements" Hover="true">
                         <HeaderContent>
+                            <MudTh>Brand</MudTh>
                             <MudTh>Item Name</MudTh>
+                            <MudTh>Category</MudTh>
                             <MudTh>Quantity</MudTh>
                             <MudTh>Rate</MudTh>
-                            <MudTh>Unit</MudTh>
-                            <MudTh>Discount</MudTh>
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd>@context.Name</MudTd>
-                            </RowTemplate>
-                        </MudTable>
-                        @code {
+                        </RowTemplate>
+                    </MudTable>
+                    @code {
         private class Element
         {
             public string Name { get; set; }
