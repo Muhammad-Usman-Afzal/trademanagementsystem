@@ -1,0 +1,78 @@
+﻿@page "/CustomerInformation"
+
+<MudContainer Class="shadow-lg form-radius">
+
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="11">
+
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4">Customer Information</MudText>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.NameOfCustomer" T="string" Variant="Variant.Outlined" Required="true"
+                                  MaxLength="30" RequiredError="Please fill this field" Label="Name Of Customer"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="Model.Contact" Variant="Variant.Outlined" Required="true" Label="Contact No"
+                                  RequiredError="Please fill this field" Mask="@(new PatternMask("0000-0000000"))" ></MudTextField>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="5">
+                    <MudTextField @bind-Value="Model.Email" T="string" Variant="Variant.Outlined" Required="true"
+                                  MaxLength="50" RequiredError="Please fill this field" Label="Email"></MudTextField>
+                </MudItem>
+                <MudItem xs="5">
+                    <MudTextField @bind-Value="Model.Address" T="string" Variant="Variant.Outlined" Required="true"
+                                  MaxLength="125" RequiredError="Please fill this field" Label="Address"></MudTextField>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudButton Variant="Variant.Filled" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add"
+                               Color="Color.Primary">Add</MudButton>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudTable Items="@customerInfoList" Hover="true">
+                        <HeaderContent>
+                            <MudTh>Name Of Customer</MudTh>
+                            <MudTh>Contact No</MudTh>
+                            <MudTh>Email</MudTh>
+                            <MudTh>Address</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.NameOfCustomer</MudTd>
+                            <MudTd>@context.Contact</MudTd>
+                            <MudTd>@context.Email</MudTd>
+                            <MudTd>@context.Address</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                </MudGrid>
+
+            <br />
+            <br />
+
+            <MudGrid Justify="Justify.FlexEnd">
+                <MudItem xs="2">
+                    <MudButton Variant="Variant.Filled" Size="Size.Large" StartIcon="@Icons.Material.Filled.Save"
+                               OnClick="Save" Color="Color.Primary">Save</MudButton>
+                </MudItem>
+            </MudGrid>
+
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>

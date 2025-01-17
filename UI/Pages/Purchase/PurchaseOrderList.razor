@@ -23,31 +23,21 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12">
-                    <MudTable Items="@elements" Hover="true">
+                    <MudTable Items="purchaseOrderDetailList">
                         <HeaderContent>
                             <MudTh>Item Name</MudTh>
-                            <MudTh>Qty</MudTh>
+                            <MudTh>Quantity</MudTh>
                             <MudTh>Rate</MudTh>
+                            <MudTh>Unit</MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd>@context.Name</MudTd>
-                                <MudTd>
-                                    <MudButton Variant="Variant.Filled" Size="Size.Large"
-                                               Color="Color.Primary">Pay</MudButton>
-                                </MudTd>
+                            <MudTd>@context.ItemName</MudTd>
                             </RowTemplate>
                         </MudTable>
-                        @code {
-        private class Element
-        {
-            public string Name { get; set; }
-        }
-        private List<Element> elements = new List<Element> { };
-                    }
-                </MudItem>
-            </MudGrid>
+                    </MudItem>
+                </MudGrid>
 
-        </MudItem>
-    </MudGrid>
+            </MudItem>
+        </MudGrid>
 
-</MudContainer>
+    </MudContainer>

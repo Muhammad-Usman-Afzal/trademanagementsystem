@@ -1,15 +1,22 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using UI.Data;
-using MudBlazor.Services;
-
 var builder = WebApplication.CreateBuilder(args);
+string APIBaseUrl = builder.Configuration.GetSection("APIBaseUrl").Value;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMudServices();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+
+#region Application Services
+
+builder.Services.AddScoped(typeof(IBaseRepoUI<>), typeof(BaseServiceUI<>));
+
+builder.Services.AddHttpClient<ICustomerInfoRepoUI, CustomerInfoServiceUI>(client =>
+{
+    client.BaseAddress = new Uri(APIBaseUrl);
+});
+
+#endregion
 
 var app = builder.Build();
 
