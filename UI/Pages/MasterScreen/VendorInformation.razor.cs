@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Models;
 
-namespace UI.Pages.Vendor
+namespace UI.Pages.MasterScreen
 {
     public partial class VendorInformation
     {

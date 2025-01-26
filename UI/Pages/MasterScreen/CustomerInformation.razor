@@ -1,0 +1,118 @@
+﻿@page "/CustomerInformation"
+
+<MudGrid Justify="Justify.Center" Class="shadow-lg form-radius">
+	<MudItem xs="10">
+		<MudGrid Justify="Justify.FlexStart">
+			<MudItem xs="12">
+				<MudText Typo="Typo.h4">Party Management</MudText>
+			</MudItem>
+		</MudGrid>
+
+		<MudGrid>
+			<MudItem xs="12">
+				<MudSelect T="string" Label="Party type" AnchorOrigin="Origin.BottomCenter">
+					<MudSelectItem Value="@("Supplier")">Supplier</MudSelectItem>
+					<MudSelectItem Value="@("Vendor")">Vendor</MudSelectItem>
+					<MudSelectItem Value="@("Contractor")">Contractor</MudSelectItem>
+					<MudSelectItem Value="@("Customer")">Customer</MudSelectItem>
+				</MudSelect>
+			</MudItem>
+		</MudGrid>
+
+		<MudGrid Justify="Justify.FlexStart">
+			<MudItem xs="12">
+				<MudText Typo="Typo.h5">Company Details</MudText>
+			</MudItem>
+		</MudGrid>
+
+		<MudGrid Justify="Justify.Center">
+			<MudItem xs="4">
+				<MudTextField @bind-Value="Model.CompanyName" T="string" Variant="Variant.Text" Required="true"
+							  MaxLength="30" RequiredError="Please fill this field" Label="Name Of Customer"></MudTextField>
+			</MudItem>
+			<MudItem xs="4">
+				<MudTextField @bind-Value="Model.CompanyContact" Variant="Variant.Text" Required="true" Label="Contact No"
+							  RequiredError="Please fill this field" Mask="@(new PatternMask("0000-0000000"))"></MudTextField>
+			</MudItem>
+			<MudItem xs="4">
+				<MudTextField @bind-Value="Model.CompanyEmail" T="string" Variant="Variant.Text" Required="true"
+							  MaxLength="50" RequiredError="Please fill this field" Label="Email"></MudTextField>
+			</MudItem>
+		</MudGrid>
+
+		<MudGrid Justify="Justify.Center">
+			<MudItem xs="12">
+				<MudTextField @bind-Value="Model.CompanyAddress" T="string" Variant="Variant.Text" Lines="2" Required="true"
+							  MaxLength="125" RequiredError="Please fill this field" Label="Address"></MudTextField>
+			</MudItem>
+
+		</MudGrid>
+
+		<MudGrid Justify="Justify.FlexStart">
+			<MudItem>
+				<MudCheckBox @bind-Value="Model.IsRegisterd" Label="Is Company is Registered" LabelPosition="LabelPosition.Start"></MudCheckBox>
+			</MudItem>
+		</MudGrid>
+
+		@if (Model.IsRegisterd)
+		{
+			<MudGrid>
+				<MudItem xs="6">
+					<MudTextField @bind-Value="Model.NTN" T="string" Variant="Variant.Text"
+								  MaxLength="9" RequiredError="Please fill this field" Label="NTN No"
+								  Mask="@(new PatternMask("0000000-0"))"></MudTextField>
+				</MudItem>
+				<MudItem xs="6">
+					<MudTextField @bind-Value="Model.STRNo" T="string" Variant="Variant.Text"
+								  MaxLength="17" RequiredError="Please fill this field" Label="STR No"
+								  Mask="@(new PatternMask("00-00-0000-000-00"))"></MudTextField>
+				</MudItem>
+			</MudGrid>
+		}
+
+		<MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
+
+		<MudGrid Justify="Justify.FlexStart">
+			<MudItem xs="12">
+				<MudText Typo="Typo.h5">Contact Person Details</MudText>
+			</MudItem>
+		</MudGrid>
+
+		<MudGrid Justify="Justify.Center">
+			<MudItem xs="4">
+				<MudTextField @bind-Value="Model.FocalPersonName" T="string" Variant="Variant.Text" Required="true"
+							  MaxLength="30" RequiredError="Please fill this field" Label="Name"></MudTextField>
+			</MudItem>
+			<MudItem xs="4">
+				<MudTextField @bind-Value="Model.FocalPersonContact" Variant="Variant.Text" Required="true" Label="Contact No"
+							  RequiredError="Please fill this field" Mask="@(new PatternMask("0000-0000000"))"></MudTextField>
+			</MudItem>
+			<MudItem xs="4">
+				<MudTextField @bind-Value="Model.FocalPersonEmail" T="string" Variant="Variant.Text" Required="true"
+							  MaxLength="50" Label="Email"></MudTextField>
+			</MudItem>
+		</MudGrid>
+
+		<MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
+
+
+		<MudGrid Justify="Justify.FlexEnd">
+
+			<MudItem xs="2">
+				<MudButton Variant="Variant.Filled" Size="Size.Medium" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh"
+						   Color="Color.Info">Refresh</MudButton>
+			</MudItem>
+			<MudItem xs="2">
+				<MudButton Variant="Variant.Filled" Size="Size.Medium" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Clear"
+						   Color="Color.Error">Clear</MudButton>
+			</MudItem>
+			<MudItem xs="2">
+				<MudButton Variant="Variant.Filled" Size="Size.Medium" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
+						   OnClick="Save" Color="Color.Success">Save</MudButton>
+			</MudItem>
+
+		</MudGrid>
+
+	</MudItem>
+
+</MudGrid>
