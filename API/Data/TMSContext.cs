@@ -7,5 +7,6 @@ public class TMSContext : DbContext
     {
     }
 
-    public DbSet<CustomerInfo> CustomerInfo { get; set; } = default!;
+    public DbSet<Party> Party { get; set; } = default!;
+    public DbSet<PurchaseOrder> PurchaseOrder { get; set; } = default!;
 }

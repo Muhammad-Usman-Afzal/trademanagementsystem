@@ -2,7 +2,7 @@
 
 namespace Models.AppModels;
 
-public class SaleOrder
+public class SaleOrder : BaseEntity
 {
     [Column(TypeName = "nvarchar(15)")]
     public string SRNo { get; set; }

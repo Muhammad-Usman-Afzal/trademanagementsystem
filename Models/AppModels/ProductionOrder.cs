@@ -2,7 +2,7 @@
 
 namespace Models.AppModels;
 
-public class ProductionOrder
+public class ProductionOrder : BaseEntity
 {
     [Column(TypeName = "nvarchar(15)")]
     public string PONo { get; set; }

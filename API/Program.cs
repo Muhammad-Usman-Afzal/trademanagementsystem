@@ -12,7 +12,8 @@ builder.Services.AddSwaggerGen();
 #region Application Services
 
 builder.Services.AddScoped(typeof(IBaseRepo<>), typeof(BaseService<>));
-builder.Services.AddScoped<ICustomerInfoRepo, CustomerInfoService>();
+builder.Services.AddScoped<IPartyRepo, PartyService>();
+builder.Services.AddScoped<IPurchaseOrderRepo, PurchaseOrderService>();
 
 #endregion
 

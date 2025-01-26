@@ -2,14 +2,14 @@
 
 namespace Models.AppModels;
 
-public class PurchaseOrderDetail
+public class PurchaseOrderDetail : BaseEntity
 {
     [Column(TypeName = "varchar(30)")]
     public string ItemName { get; set; }
     [Column(TypeName = "nvarchar(15)")]
     public int Qty { get; set; }
     [Column(TypeName = "nvarchar(15)")]
-    public int Rate { get; set; }
+    public double Rate { get; set; }
     [Column(TypeName = "nvarchar(15)")]
-    public int Unit { get; set; }  
+    public int Unit { get; set; }
 }

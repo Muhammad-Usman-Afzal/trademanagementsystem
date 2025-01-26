@@ -17,3 +17,5 @@ global using System.Diagnostics;
 global using System.Security.Cryptography;
 global using System.Text;
 global using UI.Services;
+global using Microsoft.AspNetCore.Components;
+global using MudBlazor;

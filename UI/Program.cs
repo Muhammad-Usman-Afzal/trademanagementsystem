@@ -11,7 +11,11 @@ builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
 
 builder.Services.AddScoped(typeof(IBaseRepoUI<>), typeof(BaseServiceUI<>));
 
-builder.Services.AddHttpClient<ICustomerInfoRepoUI, CustomerInfoServiceUI>(client =>
+builder.Services.AddHttpClient<IPartyRepoUI, PartyServiceUI>(client =>
+{
+    client.BaseAddress = new Uri(APIBaseUrl);
+});
+builder.Services.AddHttpClient<IPurchaseOrderRepoUI, PurchaseOrderServiceUI>(client =>
 {
     client.BaseAddress = new Uri(APIBaseUrl);
 });

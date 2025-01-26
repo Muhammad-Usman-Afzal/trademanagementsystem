@@ -1,10 +1,10 @@
 ﻿namespace UI.Services;
 
-public class CustomerInfoServiceUI : BaseServiceUI<CustomerInfo>, ICustomerInfoRepoUI
+public class PurchaseOrderServiceUI : BaseServiceUI<PurchaseOrder>, IPurchaseOrderRepoUI
 {
     private readonly HttpClient _httpClient;
 
-    public CustomerInfoServiceUI(HttpClient httpClient)
+    public PurchaseOrderServiceUI(HttpClient httpClient)
         : base(httpClient)
     {
         _httpClient = httpClient;

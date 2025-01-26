@@ -28,12 +28,11 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="6">
-                    <MudSelect @bind-Value="vendorInfoList" Label="Vender Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        @foreach (var v in vendorInfoList)
-                        {
-                            <MudSelectItem Value="v">@vendorInfo.NameOfVendor</MudSelectItem>
-                        }
-                    </MudSelect>
+                    <MudAutocomplete Required="true" T="VendorInfo" Label="Choose Vendor" SearchFunc="@SearchVendor" Value="vendorInfo"
+                                     CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e == null ? null : $"{e.NameOfVendor}")"
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ValueChanged="OnVendorChange"
+                                     HelperText="Please enter the Vendor Name" HelperTextOnFocus="true" Strict="false">
+                    </MudAutocomplete>
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField @bind-Value="Model.DeliveryFrom" T="string" Variant="Variant.Outlined"
@@ -47,13 +46,6 @@
                         <MudSelectItem Value="@("Cash")">Cash</MudSelectItem>
                         <MudSelectItem Value="@("Cheque")">Cheque</MudSelectItem>
                         <MudSelectItem Value="@("Bank Transfer")">Bank Transfer</MudSelectItem>
-                    </MudSelect>
-                </MudItem>
-                <MudItem xs="6">
-                    <MudSelect @bind-Value="Model.ShipmentType" T="string" Label="Shipment Type" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Standard Shipping")">Standard Shipping</MudSelectItem>
-                        <MudSelectItem Value="@("Express Shipping")">Express Shipping</MudSelectItem>
-                        <MudSelectItem Value="@("Overnight Shipping")">Overnight Shipping</MudSelectItem>
                     </MudSelect>
                 </MudItem>
             </MudGrid>
@@ -73,7 +65,7 @@
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="2">
-                    <MudNumericField @bind-Value="purchaseOrderDetail.Rate" T="int" Variant="Variant.Outlined" Label="Rate"
+                    <MudNumericField @bind-Value="purchaseOrderDetail.Rate" T="double" Variant="Variant.Outlined" Label="Rate"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="2">
@@ -81,7 +73,7 @@
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" />
+                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddItem" />
                 </MudItem>
             </MudGrid>
 
@@ -93,7 +85,7 @@
              
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12">
-                    <MudTable Items="purchaseOrderDetailList">
+                    <MudTable Items="Model.purchaseOrderDetail">
                         <HeaderContent>
                             <MudTh>Item Name</MudTh>
                             <MudTh>Quantity</MudTh>
@@ -102,6 +94,9 @@
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd>@context.ItemName</MudTd>
+                            <MudTd>@context.Qty</MudTd>
+                            <MudTd>@context.Rate</MudTd>
+                            <MudTd>@context.Unit</MudTd>
                             </RowTemplate>
                         </MudTable>
                 </MudItem>
@@ -112,19 +107,19 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
-                        <MudNumericField @bind-Value="Model.GrossAmount" T="int" Variant="Variant.Outlined" Label="Gross Amount"
+                        <MudNumericField Disabled="true" @bind-Value="Model.GrossAmount" T="double" Variant="Variant.Outlined" Label="Gross Amount"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="Model.TaxRate" T="int" Variant="Variant.Outlined" Label="Tax Rate"
+                    <MudNumericField OnKeyDown="CalculateTotal" @bind-Value="Model.TaxRate" T="double" Variant="Variant.Outlined" Label="Tax Rate"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="Model.TaxAmount" T="int" Variant="Variant.Outlined" Label="Tax Amount"
+                    <MudNumericField Disabled="true" @bind-Value="Model.TaxAmount" T="double" Variant="Variant.Outlined" Label="Tax Amount"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="Model.NetAmount" T="int" Variant="Variant.Outlined" Label="Net Amount"
+                    <MudNumericField Disabled="true" @bind-Value="Model.NetAmount" T="double" Variant="Variant.Outlined" Label="Net Amount"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
             </MudGrid>
@@ -136,7 +131,7 @@
                 </MudItem>
                 <MudItem xs="2">
                     <MudButton Variant="Variant.Filled" Size="Size.Large" StartIcon="@Icons.Material.Filled.Save"
-                               Color="Color.Primary">Save</MudButton>
+                               Color="Color.Primary" OnClick="Save">Save</MudButton>
                 </MudItem>
             </MudGrid>
 

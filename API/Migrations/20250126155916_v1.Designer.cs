@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(TMSContext))]
-    partial class TMSContextModelSnapshot : ModelSnapshot
+    [Migration("20250126155916_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,16 +34,16 @@ namespace API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CompanyAddress")
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(125)");
 
                     b.Property<string>("CompanyContact")
-                        .HasColumnType("nvarchar(12)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("CompanyEmail")
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("CompanyName")
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(30)");
 
                     b.Property<int?>("CreateBy")
                         .HasColumnType("int");
@@ -49,7 +52,7 @@ namespace API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FocalPersonContact")
-                        .HasColumnType("nvarchar(12)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("FocalPersonEmail")
                         .HasColumnType("nvarchar(50)");
@@ -70,7 +73,7 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(9)");
 
                     b.Property<string>("STRNo")
-                        .HasColumnType("nvarchar(17)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<int?>("UpdateBy")
                         .HasColumnType("int");

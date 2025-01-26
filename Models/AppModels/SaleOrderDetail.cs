@@ -2,7 +2,7 @@
 
 namespace Models.AppModels;
 
-public class SaleOrderDetail
+public class SaleOrderDetail : BaseEntity
 {
     [Column(TypeName = "varchar(30)")]
     public string ItemName { get; set; }
@@ -11,7 +11,7 @@ public class SaleOrderDetail
     [Column(TypeName = "nvarchar(15)")]
     public int Rate { get; set; }
     [Column(TypeName = "nvarchar(15)")]
-    public int Unit { get; set; }  
+    public int Unit { get; set; }
     [Column(TypeName = "nvarchar(15)")]
-    public int Discount { get; set; }  
+    public int Discount { get; set; }
 }

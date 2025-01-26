@@ -2,14 +2,14 @@
 
 namespace Models.AppModels;
 
-public class VendorInfo
+public class VendorInfo : BaseEntity
 {
     [Column(TypeName = "varchar(30)")]
-    public string NameOfVendor { get; set; } 
+    public string NameOfVendor { get; set; }
     [Column(TypeName = "nvarchar(15)")]
     public int Contact { get; set; }
     [Column(TypeName = "nvarchar(50)")]
     public string Email { get; set; }
     [Column(TypeName = "nvarchar(125)")]
-    public string Address { get; set; } 
+    public string Address { get; set; }
 }
