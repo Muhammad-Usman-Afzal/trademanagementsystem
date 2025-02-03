@@ -19,7 +19,7 @@ namespace UI.Pages.Purchase
         [Inject]
         public NavigationManager navigation { get; set; }
         [Inject]
-        public IPartyRepoUI _customerInfoRepoUI { get; set; }
+        public IPartyRepoUI _partyRepoUI { get; set; }
         [Inject]
         public IPurchaseOrderRepoUI _purchaseOrderRepoUI { get; set; }
 
@@ -28,8 +28,8 @@ namespace UI.Pages.Purchase
         #region Variables
 
         PurchaseOrder Model = new PurchaseOrder();
-        VendorInfo vendorInfo = new VendorInfo();
-        List<VendorInfo> vendorInfoList = new List<VendorInfo>();
+        Party party = new Party();
+        List<Party> parties = new List<Party>();
         PurchaseOrderDetail purchaseOrderDetail = new PurchaseOrderDetail();
         List<PurchaseOrderDetail> purchaseOrderDetailList = new List<PurchaseOrderDetail>();
         AppUsers UserSession = new AppUsers();
@@ -72,9 +72,9 @@ namespace UI.Pages.Purchase
                 _processing = true;
                 _ = InvokeAsync(StateHasChanged);
 
-                if (UserSession.Id > 0)
+                if (/*UserSession.Id > 0*/ true)
                 {
-                    //vendorInfoList = await _customerInfoRepoUI.GetAll("VendorInfo/GetVendor") ?? new List<VendorInfo>();
+                    parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
                 }
 
                 _processing = false;
@@ -89,7 +89,6 @@ namespace UI.Pages.Purchase
 
         async void Save()
         {
-            Model.VendorName = "abc";
             if (IsValidate())
             {
                 var res = Model.Id > 0 ? await _purchaseOrderRepoUI.Create("PurchaseOrder/Update", Model) : await _purchaseOrderRepoUI.Create("PurchaseOrder/Create", Model) ?? new PurchaseOrder();
@@ -121,32 +120,32 @@ namespace UI.Pages.Purchase
                 ? false : true;
         }
 
-        private async Task<IEnumerable<VendorInfo>> SearchVendor(string value)
+        private async Task<IEnumerable<Party>> SearchVendor(string value)
         {
             await Task.Delay(0);
             if (string.IsNullOrEmpty(value))
-                return vendorInfoList;
-            return vendorInfoList.Where(x => !string.IsNullOrEmpty(x.NameOfVendor) ? x.NameOfVendor.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+                return parties;
+            return parties.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
         }
 
-        void OnVendorChange(VendorInfo Value)
+        void OnPartyChanged(Party Value)
         {
             try
             {
                 if (Value != null)
                 {
-                    vendorInfo = Value;
-                    Model.VendorName = Value.NameOfVendor;
+                    party = Value;
+                    Model.VendorName = Value.FocalPersonName;
+                    Model.DeliveryFrom = Value.CompanyAddress;
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
         }
 
-        void AddItem()
+        void AddItem(PurchaseOrderDetail POdetail)
         {
-            PurchaseOrderDetail detail=purchaseOrderDetail;
-            Model.purchaseOrderDetail.Add(detail);
-            detail = new PurchaseOrderDetail();
+            Model.purchaseOrderDetail.Add(POdetail);
+            purchaseOrderDetail = new PurchaseOrderDetail();
 
             CalculateTotal();
         }

@@ -28,14 +28,14 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="6">
-                    <MudAutocomplete Required="true" T="VendorInfo" Label="Choose Vendor" SearchFunc="@SearchVendor" Value="vendorInfo"
-                                     CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e == null ? null : $"{e.NameOfVendor}")"
-                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ValueChanged="OnVendorChange"
+                    <MudAutocomplete Required="true" T="Party" Label="Choose Vendor" SearchFunc="@SearchVendor" Value="party"
+                                     CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e.Id == 0 ? null : $"{e.FocalPersonName} ({e.CompanyName})")"
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ValueChanged="OnPartyChanged"
                                      HelperText="Please enter the Vendor Name" HelperTextOnFocus="true" Strict="false">
                     </MudAutocomplete>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="Model.DeliveryFrom" T="string" Variant="Variant.Outlined"
+                    <MudTextField Disabled="true" @bind-Value="Model.DeliveryFrom" T="string" Variant="Variant.Outlined"
                     Label="Delivery Form"></MudTextField>
                 </MudItem>
             </MudGrid>
@@ -73,7 +73,7 @@
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="1">
-                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="AddItem" />
+                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Size="Size.Medium" OnClick="@(()=> AddItem(purchaseOrderDetail))" />
                 </MudItem>
             </MudGrid>
 
