@@ -31,4 +31,7 @@ public class Party : BaseEntity
 
     [Column(TypeName = "nvarchar(50)")]
     public string FocalPersonEmail { get; set; }
+    
+    [Column(TypeName = "nvarchar(50)")]
+    public string PartyType { get; set; }
 }
