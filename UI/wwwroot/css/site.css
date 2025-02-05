@@ -63,10 +63,10 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-    /*My Custom CSS*/
+/*My Custom CSS*/
 
-    .form-radius{
-        border-radius:25px !important;
-    }
+.LogoForSignIn {
+    width: 120px;
+}
 
-    /*End*/
+/*End*/

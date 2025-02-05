@@ -1,28 +1,154 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>UI</PageTitle>
-
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<PageTitle>App Name</PageTitle>
 
 @* Required *@
-<MudThemeProvider />
+<MudThemeProvider Theme="MyCustomTheme" />
 
 @* Needed for dialogs *@
-<MudDialogProvider />
+<MudDialogProvider DisableBackdropClick="true" />
 
 @* Needed for snackbars *@
 <MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="15">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudIcon Icon="@Icons.Rounded.WavingHand" Class="mr-3" />
+        <MudText Class="mt-1 mr-3">Hi! @(UserSession != null ? UserSession.UserName : "")</MudText>
+        <MudMenu AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopRight" LockScroll="false" Style="padding:15px !important;">
+            <ActivatorContent>
+                <MudAvatar Color="Color.Primary">@(UserSession != null ? UserSession?.UserName?.Substring(0, 1)?.ToUpper() : "")</MudAvatar>
+            </ActivatorContent>
+            <ChildContent>
+                <MudGrid Style="width:250px; background-color:#f5e9ff;">
+                    <MudItem xs="12">
+                        <MudGrid Justify="Justify.Center">
+                            <MudBadge Color="Color.Success" Overlap="true" Bordered="true" Class="mt-10">
+                                <MudAvatar Style="height:70px; width:70px; font-size:2rem;" Elevation="10" Color="Color.Primary">@(UserSession != null ? UserSession?.UserName?.Substring(0, 1)?.ToUpper() : "")</MudAvatar>
+                            </MudBadge>
+                        </MudGrid>
+                    </MudItem>
+                    <br /><br />
+                    <MudItem xs="12">
+                        <MudChip Label="true" Style="margin-left:35%;">Online</MudChip>
+                    </MudItem>
+                    <br />
+                    <MudItem xs="12">
+                        <MudDivider Class="ml-5 mt-2" />
+                        @* <MudMenuItem Icon="@Icons.Rounded.Person" Href="userprofile">My Profile</MudMenuItem> *@
+                        <MudMenuItem Icon="@Icons.Rounded.Logout" OnClick="LogOut">Logout</MudMenuItem>
+                    </MudItem>
+                </MudGrid>
+            </ChildContent>
+        </MudMenu>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="15" Style="background: linear-gradient(190deg, #607d8b, black);">
+        <MudDrawerHeader>
+            @* <MudImage Src="images/HBK-Logo.png" Class="logo-navbar" /> *@
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer Class="my-16" Style="max-width: 1200px;">
+
+            @Body
+
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+
+    [Inject]
+    public ProtectedLocalStorage _localStorage { get; set; }
+    [Inject]
+    public NavigationManager navigation { get; set; }
+    [Inject]
+    public IDialogService _dialogService { get; set; }
+
+    AppUsers UserSession = new AppUsers();
+    bool _drawerOpen = false;
+
+    void DrawerToggle()
+    {
+        try
+        {
+            _drawerOpen = !_drawerOpen;
+        }
+        catch (Exception ex)
+        {
+            UILogger.WriteLog(ex);
+        }
+    }
+
+    async void LogOut()
+    {
+        try
+        {
+            if (await IsLogOut())
+            {
+                await _localStorage.DeleteAsync("User");
+                navigation.NavigateTo("/signin");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            UILogger.WriteLog(ex);
+        }
+    }
+
+    private async Task<bool> IsLogOut()
+    {
+        bool? result = await _dialogService.ShowMessageBox(
+            "Warning",
+            "Are your sure! You want to Signing Out the PTS System?",
+            yesText: "Yes", cancelText: "No");
+        return result == null ? false : true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            if (firstRender)
+            {
+                var userSession = await _localStorage.GetAsync<AppUsers>("User");
+                UserSession = userSession.Value ?? new AppUsers();
+
+                StateHasChanged();
+            }
+
+            return;
+        }
+        catch (Exception ex)
+        {
+            UILogger.WriteLog(ex);
+        }
+    }
+
+    // -- Customize Theme
+
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = Colors.Amber.Accent4,
+                Secondary = Colors.BlueGrey.Lighten3,
+                AppbarBackground = Colors.BlueGrey.Default,
+            },
+            // PaletteDark = new PaletteDark()
+            // {
+            //     Primary = Colors.Blue.Lighten1
+            // },
+
+            // LayoutProperties = new LayoutProperties()
+            // {
+            //     DrawerWidthLeft = "260px",
+            //     DrawerWidthRight = "300px"
+            // }
+        };
+
+}
