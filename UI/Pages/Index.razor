@@ -1,9 +1,207 @@
 ﻿@page "/index"
 
-<PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<MudContainer Class="TopBorderForContainer">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="11">
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h4">Dashboard</MudText>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="4">
+                    <MudCard style="border-radius: 20px; color: white; height: 175px;
+                             background: linear-gradient(40deg, rgba(51,179,233,1) 2%, rgba(51,233,216,1) 62%, rgba(70,124,232,1) 93%);">
+                        <MudCardContent>
+                            <MudText Style="font-weight: bold; font-size: 23px;">Sale Achivement</MudText>
+                            <MudText Style="font-weight: bold; font-size: 37px;">78% <MudIcon Icon="@Icons.Material.Filled.Bolt" Size="Size.Large" /></MudText>
+                            <MudText Style="font-size: 18px;">We have sold so much in the last year.</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudCard style="border-radius: 20px; color: white; background-color: #ffc400; height: 175px;">
+                        <MudCardContent>
+                            <MudText Style="font-weight: bold; font-size: 23px;">Invoice Achivement</MudText>
+                            <MudText Style="font-size: 18px;">We have sold so much in the last year.</MudText>
+                        </MudCardContent>
+                        <MudButton Variant="Variant.Text" style="color:white">  Learn More</MudButton>
+                    </MudCard>
+                </MudItem>
+                <MudItem xs="4">
+                    <MudGrid>
+                        <MudItem xs="12">
+                            <MudText> Sales </MudText>
+                            <MudProgressLinear Value="60" Color="Color.Warning" Rounded="true" Size="Size.Large"></MudProgressLinear>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText> Invoice </MudText>
+                            <MudProgressLinear Value="75" Color="Color.Secondary" Rounded="true" Size="Size.Large"></MudProgressLinear>
+                        </MudItem>
+
+                        <MudItem xs="12">
+                            <MudText> Items </MudText>
+                            <MudProgressLinear Value="90" BufferValue="100" Color="Color.Primary" Rounded="true" Striped="true" Size="Size.Large"></MudProgressLinear>
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="8">
+                    <div>
+                        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+                    </div>
+
+                    @code {
+        public List<ChartSeries> Series = new List<ChartSeries>()
+                    {
+                    new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
+                    new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+                    new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+                    };
+        public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+                    }
+                </MudItem>
+
+                <MudItem xs="4">
+                    <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px"
+                              InputData="@data" InputLabels="@labels">
+                    </MudChart>
+
+                    @code {
+        public double[] data = { 25, 27, 28, 88 };
+        public string[] labels = { "Sales", "Invoices", "Basket Size", "Total" };
+                    }
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="7">
+                    <MudTable Items="@elements" FixedHeader="false" HorizontalScrollbar="true" Class="Table">
+                        <HeaderContent>
+                            <MudTh>  </MudTh>
+                            <MudTh>Store</MudTh>
+                            <MudTh>        </MudTh>
+                            <MudTh>Walk-In</MudTh>
+                            <MudTh>        </MudTh>
+                            <MudTh>B2B</MudTh>
+                            <MudTh>        </MudTh>
+                            <MudTh>Total</MudTh>
+                            <MudTh>      </MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="item">
+                            <MudTh>  </MudTh>
+                            <MudTd>@item.Store</MudTd>
+                            <MudTh>        </MudTh>
+                            <MudTd>@item.WalkIn</MudTd>
+                            <MudTh>        </MudTh>
+                            <MudTd>@item.B2B</MudTd>
+                            <MudTh>        </MudTh>
+                            <MudTd>@item.Total</MudTd>
+                            <MudTh>      </MudTh>
+                        </RowTemplate>
+                    </MudTable>
+
+                    @code {
+        public class Element
+        {
+            public int Id { get; set; }
+            public string Store { get; set; }
+            public int WalkIn { get; set; }
+            public int B2B { get; set; }
+            public int Total => WalkIn + B2B; // Auto calculate total
+        }
+
+        public List<Element> elements = new List<Element>
+                    {
+                    new Element { Id = 1, Store = "Store A", WalkIn = 50, B2B = 20 },
+                    new Element { Id = 2, Store = "Store B", WalkIn = 40, B2B = 40 },
+                    new Element { Id = 3, Store = "Store C", WalkIn = 15, B2B = 33 },
+                    new Element { Id = 4, Store = "Store D", WalkIn = 80, B2B = 10 },
+                    new Element { Id = 5, Store = "Store E", WalkIn = 62, B2B = 25 }
+                    };
+                    }
+                </MudItem>
+
+                <MudItem xs="4">
+                    <MudTable Items="@elements1" FixedHeader="false" HorizontalScrollbar="true" Class="Table">
+                        <HeaderContent>
+                            <MudTh>Sales</MudTh>
+                            <MudTh>Invoices</MudTh>
+                            <MudTh>Basket Size</MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="item">
+                            <MudTd>@item.Sales</MudTd>
+                            <MudTd>@item.Invoices</MudTd>
+                            <MudTd>@item.BasketSize</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+
+                    @code {
+        private class Element1
+        {
+            public int Id { get; set; }
+            public double Sales { get; set; }
+            public int Invoices { get; set; }
+            public double BasketSize { get; set; }
+        }
+
+        private List<Element1> elements1 = new List<Element1>
+                    {
+                    new Element1 { Id = 1, Sales = 15000.50, Invoices = 30, BasketSize = 500.02 },
+                    new Element1 { Id = 2, Sales = 21000.75, Invoices = 50, BasketSize = 420.15 },
+                    new Element1 { Id = 3, Sales = 17500.00, Invoices = 40, BasketSize = 437.50 },
+                    new Element1 { Id = 4, Sales = 9000.90, Invoices = 20, BasketSize = 450.45 },
+                    new Element1 { Id = 5, Sales = 12500.30, Invoices = 25, BasketSize = 500.01 }
+                    };
+                    }
+                </MudItem>
+
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <div>
+                        <MudChart ChartType="ChartType.Line" ChartSeries="@Seriesss" XAxisLabels="@XAxisLabelsss" Width="100%" Height="350px" CanHideSeries />
+                        <MudButton Variant="Variant.Filled" @onclick="RandomizeData">Randomize Data</MudButton>
+                    </div>
+
+                    @code {
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            RandomizeData();
+        }
+
+        public List<ChartSeries> Seriesss = new List<ChartSeries>();
+        public string[] XAxisLabelsss = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+        Random random = new Random();
+        public void RandomizeData()
+        {
+            var newSeriesss = new List<ChartSeries>();
+            for (int s = 1; s <= 6; s++)
+            {
+                var seriesss = new ChartSeries() { Name = $"Series {s}", Data = new double[5] };
+                for (int i = 0; i < 5; i++)
+                    seriesss.Data[i] = random.NextDouble() * 100;
+                newSeriesss.Add(seriesss);
+            }
+            Seriesss = newSeriesss;
+            StateHasChanged();
+        }
+                    }
+                </MudItem>
+            </MudGrid>
+
+
+        </MudItem>
+    </MudGrid>
+</MudContainer>
