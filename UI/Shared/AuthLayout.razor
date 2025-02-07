@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="MyCustomTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<PageTitle>App</PageTitle>
+
+<div class="page" style=" background-image:url(final_slider_1.jpg); background-repeat: no-repeat, repeat;">
+    <main>
+        <article  class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code{
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = Colors.Amber.Accent4,
+                Secondary = Colors.BlueGrey.Lighten3,
+                AppbarBackground = Colors.BlueGrey.Default,
+            },
+            // PaletteDark = new PaletteDark()
+            // {
+            //     Primary = Colors.Blue.Lighten1
+            // },
+
+            // LayoutProperties = new LayoutProperties()
+            // {
+            //     DrawerWidthLeft = "260px",
+            //     DrawerWidthRight = "300px"
+            // }
+        };
+}

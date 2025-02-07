@@ -1,0 +1,79 @@
+﻿@page "/"
+@layout AuthLayout
+
+<PageTitle>Sign In</PageTitle>
+
+<style>
+    body {
+        background-image: url('images/bg.jpg'); /* Add your image path here */
+        background-size: cover;
+        background-position: left;
+        background-repeat: no-repeat;
+        height: 60vh;
+        margin: 0;
+    }
+
+    /* .signin-box {
+        height: 491px;
+        box-shadow: 0 0 50px 10px darkgrey;
+    } */
+
+    .signin-box {
+        height: 491px;
+        box-shadow: 0 0 30px -10px black;
+        background-color: white; /* Optional: Add a background color to the signin box to make it stand out */
+        /* left: 275px; */
+        position: relative;
+        border-radius:25px;
+    }
+
+    .signin-logo {
+        width: 250px;
+        margin-left: 15%;
+        /* margin-top: -53px; */
+        /* border: 2px solid black; */
+        padding: 15px;
+        border-radius: 20%;
+    }
+</style>
+
+<MudGrid Justify="Justify.Center" Class="mt-14">
+    <MudItem xs="4">
+        <MudGrid Justify="Justify.Center" Class="signin-box">
+            <MudGrid Justify="Justify.Center" Class="mt-5">
+                @* <MudItem xs="10">
+                    <MudImage Src="images/NCI-Logo.png" Class="signin-logo" />
+                </MudItem> *@
+            </MudGrid>
+            <MudItem xs="10">
+                <MudGrid Justify="Justify.Center">
+                    <MudText Typo="Typo.h4" Class="text-bold">Sign-in</MudText>
+                </MudGrid>
+                <MudDivider Class="mt-5" />
+
+                <MudGrid Justify="Justify.Center" Class="mt-10">
+                    <MudItem xs="12">
+                        <MudTextField @bind-Value="u" T="string" Label="User Name" HelperText="Enter the User Name" HelperTextOnFocus="true" Variant="Variant.Outlined" Clearable="true" />
+                        <MudTextField @bind-Value="p" InputType="InputType.Password" T="string" Label="Password" HelperText="Enter the Password" HelperTextOnFocus="true" Variant="Variant.Outlined" Clearable="true" Immediate="true" />
+                    </MudItem>
+                </MudGrid>
+
+                <MudGrid Justify="Justify.Center">
+                    @* <MudButton OnClick="GenerateIDCards" Variant="Variant.Text" EndIcon="@Icons.Material.Rounded.AppRegistration" Color="Color.Error">Sign Up</MudButton> *@
+                    @*<MudButton Href="" Variant="Variant.Text" EndIcon="@Icons.Material.Rounded.QuestionMark" Color="Color.Error">Forget Password</MudButton>*@
+                    <MudButton OnClick="ValidateLogin" Disabled="@_processing" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Rounded.Key" Style="border-radius:25px;">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Sign-in</MudText>
+                        }
+                    </MudButton>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+</MudGrid>
