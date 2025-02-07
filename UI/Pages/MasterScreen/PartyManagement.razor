@@ -5,7 +5,7 @@
 		<MudText Typo="Typo.h3">Party Managment</MudText>
 	</MudItem>
 	<MudItem xs="2">
-		<MudFab StartIcon="@Icons.Material.Filled.Create" Label="*Create New" Color="Color.Info" OnClick="@(()=>AddPartyVisible = true)" />
+		<MudFab StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Info" OnClick="@(()=>AddPartyVisible = true)" />
 	</MudItem>
 </MudGrid>
 
@@ -13,8 +13,9 @@
 
 <MudGrid Justify="Justify.Center">
 	<MudItem xs="12">
-		<MudTable Items="@customerInfoList" Hover="true">
+		<MudTable Items="@customerInfoList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
 			<HeaderContent>
+				<MudTh>Party Type</MudTh>
 				<MudTh>Company Name</MudTh>
 				<MudTh>Is Registred</MudTh>
 				<MudTh>Contact Person</MudTh>
@@ -23,6 +24,24 @@
 				<MudTh></MudTh>
 			</HeaderContent>
 			<RowTemplate>
+				<MudTd>
+					@if (context.PartyType == "Supplier")
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Supplier</MudChip>
+					}
+					else if (context.PartyType == "Vendor")
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Vendor</MudChip>
+					}
+					else if (context.PartyType == "Contractor")
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Contractor</MudChip>
+					}
+					else if (context.PartyType == "Customer")
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Customer</MudChip>
+					}
+				</MudTd>
 				<MudTd>@context.CompanyName</MudTd>
 				@if (@context.IsRegisterd == true)
 				{
@@ -146,20 +165,20 @@
 				<MudGrid Justify="Justify.FlexEnd">
 
 					<MudItem xs="2">
-						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Save" 
-						OnClick="SaveAsync" Color="Color.Success">
+						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
+								   OnClick="SaveAsync" Color="Color.Success">
 							Save
 						</MudButton>
 					</MudItem>
 					<MudItem xs="2">
-						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh" 
-						Color="Color.Primary" OnClick="@(()=>Model=new Party())">
+						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh"
+								   Color="Color.Primary" OnClick="@(()=>Model=new Party())">
 							Clear
 						</MudButton>
 					</MudItem>
 					<MudItem xs="2">
-						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Clear" 
-						OnClick="CloseParty">
+						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Clear"
+								   OnClick="CloseParty">
 							Close
 						</MudButton>
 					</MudItem>

@@ -19,6 +19,10 @@ builder.Services.AddHttpClient<IPurchaseOrderRepoUI, PurchaseOrderServiceUI>(cli
 {
     client.BaseAddress = new Uri(APIBaseUrl);
 });
+builder.Services.AddHttpClient<IProductDetailsRepoUI, ProductDetailsServiceUI>(client =>
+{
+    client.BaseAddress = new Uri(APIBaseUrl);
+});
 
 #endregion
 

@@ -1,0 +1,118 @@
+﻿@page "/ProductManagement"
+
+<MudGrid>
+	<MudItem xs="10">
+		<MudText Typo="Typo.h3">Product Management</MudText>
+	</MudItem>
+	<MudItem xs="2">
+		<MudFab StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Info" OnClick="@(()=>AddPartyVisible = true)" />
+	</MudItem>
+</MudGrid>
+
+<MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
+
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12">
+		<MudTable Items="@ProductDetailsList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
+			<HeaderContent>
+				<MudTh>Company Name</MudTh>
+				<MudTh>Contact Person</MudTh>
+				<MudTh>Rate</MudTh>
+				<MudTh>Email</MudTh>
+				<MudTh></MudTh>
+			</HeaderContent>
+			<RowTemplate>
+				<MudTd>@context.Party.CompanyName</MudTd>
+				<MudTd>@context.ItemName</MudTd>
+				<MudTd>@context.Rate</MudTd>
+				<MudTd>
+					@if (context.Isprocessed == true)
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Processed</MudChip>
+					}
+					else
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Secondary">Un-Processed</MudChip>
+					}
+				</MudTd>
+				<MudTd>
+					<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" OnClick="@(()=> GridtoCall(context))" />
+				</MudTd>
+			</RowTemplate>
+		</MudTable>
+	</MudItem>
+</MudGrid>
+
+
+
+
+<MudDialog @bind-IsVisible="AddPartyVisible" Options="dialogOptions">
+	<DialogContent>
+		<MudGrid Justify="Justify.Center" Class="shadow-lg form-radius" Style="height: 95vh; margin: 10px; padding: 10px; width: 99%;">
+			<MudItem xs="10">
+				<MudGrid Justify="Justify.FlexStart">
+					<MudItem xs="12">
+						<MudText Typo="Typo.h5">Product Management</MudText>
+					</MudItem>
+				</MudGrid>
+
+				<MudGrid>
+					<MudItem xs="12">
+						<MudAutocomplete T="Party" Label="Brand Name" ValueChanged="onBrandSelect"
+										 Value="party" SearchFunc="@SearchBrand" ToStringFunc="@(e => e == null ? null : $"{e.CompanyName}")"
+										 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" Required="true" />
+					</MudItem>
+				</MudGrid>
+
+				<MudGrid Justify="Justify.Center">
+					<MudItem xs="4">
+						<MudTextField @bind-Value="Model.ItemName" T="string" Variant="Variant.Text" Required="true"
+									  MaxLength="30" RequiredError="Please fill this field" Label="Name Of Customer"></MudTextField>
+					</MudItem>
+					<MudItem xs="4">
+						<MudNumericField @bind-Value="Model.Rate" HideSpinButtons="true" Label="Rate"></MudNumericField>
+					</MudItem>
+					<MudItem xs="4">
+						<MudCheckBox @bind-Value="Model.Isprocessed">
+							@if (Model.Isprocessed == true)
+							{
+								<MudText>Processed</MudText>
+							}
+							else
+							{
+								<MudText>Un-Processed</MudText>
+							}
+						</MudCheckBox>
+
+					</MudItem>
+				</MudGrid>
+
+
+				<MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
+
+				<MudGrid Justify="Justify.FlexEnd">
+
+					<MudItem xs="2">
+						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
+								   OnClick="SaveAsync" Color="Color.Success">
+							Save
+						</MudButton>
+					</MudItem>
+					<MudItem xs="2">
+						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh"
+								   Color="Color.Primary" OnClick="@(()=>Model=new ProductDetails())">
+							Clear
+						</MudButton>
+					</MudItem>
+					<MudItem xs="2">
+						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Clear"
+								   OnClick="CloseParty">
+							Close
+						</MudButton>
+					</MudItem>
+
+				</MudGrid>
+			</MudItem>
+		</MudGrid>
+	</DialogContent>
+</MudDialog>
