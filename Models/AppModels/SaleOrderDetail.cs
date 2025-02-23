@@ -4,14 +4,10 @@ namespace Models.AppModels;
 
 public class SaleOrderDetail : BaseEntity
 {
-    [Column(TypeName = "varchar(30)")]
-    public string ItemName { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
+    public int ItemId { get; set; }
+    public ProductDetails Item { get; set; } = new ProductDetails();
     public int Qty { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int Rate { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int Unit { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int Discount { get; set; }
 }

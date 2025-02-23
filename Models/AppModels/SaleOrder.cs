@@ -8,20 +8,18 @@ public class SaleOrder : BaseEntity
     public string SRNo { get; set; }
     public DateTime SRDate { get; set; }
     public DateTime ExpectedDeliveryDate { get; set; }
-    [Column(TypeName = "varchar(30)")]
-    public string SupplierName { get; set; } //Supplier
+    public int SupplierId { get; set; } //Supplier
+    public Party Supplier { get; set; } = new Party();
     [Column(TypeName = "nvarchar(20)")]
     public string PaymentMethod { get; set; }
     [Column(TypeName = "nvarchar(125)")]
     public string Remarks { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int GrossAmount { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int DiscountAmount { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int TaxRate { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int TaxAmount { get; set; }
-    [Column(TypeName = "nvarchar(15)")]
     public int NetAmount { get; set; }
+    public bool IspaymentClear { get; set; }
+    public List<SaleOrderDetail> SODetails { get; set; } = new List<SaleOrderDetail>();
+
 }

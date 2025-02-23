@@ -3,19 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.AppModels;
 
-public class PurchaseOrder : BaseEntity
+public class Order : BaseEntity
 {
     [Column(TypeName = "varchar(15)")]
-    public string PONo { get; set; }
+    public string OrderNo { get; set; }
     
-    public DateTime? PODate { get; set; } = DateTime.Now;
+    public DateTime? OrderDate { get; set; } = DateTime.Now;
     
-    public int VendorId { get; set; } //Vendor
+    public int PartyId { get; set; } //Vendor
     public Party Vendor { get; set; } = new Party();
     
     [Column(TypeName = "varchar(25)")]
     public string PaymentMode { get; set; }
-    
+    public OrderTypes OType { get; set; } = new OrderTypes();
     public double GrossAmount { get; set; }
     
     public double TaxRate { get; set; }
@@ -25,5 +25,12 @@ public class PurchaseOrder : BaseEntity
     public double NetAmount { get; set; }
 
     public bool IspaymentClear { get; set; }
-    public List<PurchaseOrderDetail> PODetail { get; set; } = new List<PurchaseOrderDetail>();
+    public List<OrderDetail> PODetail { get; set; } = new List<OrderDetail>();
+}
+
+public enum OrderTypes
+{
+    PurchaseOrder = 1,
+    SaleOrder,
+    ProductionOrder
 }

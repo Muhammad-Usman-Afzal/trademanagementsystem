@@ -13,28 +13,31 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="vendorInfo.NameOfVendor" T="string" Variant="Variant.Outlined" Label="Vander Name"></MudTextField>
+                    <MudAutocomplete T="Party" Label="Farword To" ValueChanged="onVanderSelect"
+                                     Value="party" SearchFunc="@SearchVander" ToStringFunc="@(e => e == null ? null : $"{e.CompanyName}")"
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" Required="true" />
+                    @* <MudTextField @bind-Value="vendorInfo.NameOfVendor" T="string" Variant="Variant.Text" Label="Vander Name"></MudTextField> *@
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="purchaseOrder.PONo" T="string" Variant="Variant.Outlined" Label="PO No"></MudTextField>
-                </MudItem>
-            </MudGrid>
-
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="purchaseOrder.DeliveryFrom" T="string" Variant="Variant.Outlined" Label="Delivery From"></MudTextField>
-                </MudItem>
-                <MudItem xs="6">
-                    <MudDatePicker @bind-Date="purchaseOrder.PODate" Variant="Variant.Outlined" Label="PO Date"></MudDatePicker>
+                    <MudTextField @bind-Value="purchaseOrder.PONo" T="string" Variant="Variant.Text" Label="PO No"></MudTextField>
                 </MudItem>
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="6">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Delivery To"></MudTextField>
+                    <MudTextField @bind-Value="purchaseOrder.Vendor.CompanyAddress" T="string" Variant="Variant.Text" Label="Delivery From"></MudTextField>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudDatePicker Variant="Variant.Outlined" Label="Receiving Date"></MudDatePicker>
+                    <MudDatePicker @bind-Date="purchaseOrder.PODate" Variant="Variant.Text" Label="PO Date"></MudDatePicker>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudTextField T="string" Variant="Variant.Text" Label="Delivery To"></MudTextField>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudDatePicker Variant="Variant.Text" Label="Receiving Date"></MudDatePicker>
                 </MudItem>
             </MudGrid>
 
@@ -91,25 +94,25 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Remarks" Lines="8"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Text" Label="Remarks" Lines="8"></MudTextField>
                 </MudItem>
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.GrossAmount" T="double" Variant="Variant.Outlined" Label="Gross Amount"
+                    <MudNumericField @bind-Value="purchaseOrder.GrossAmount" T="double" Variant="Variant.Text" Label="Gross Amount"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.TaxRate" T="double" Variant="Variant.Outlined" Label="Tax Rate"
+                    <MudNumericField @bind-Value="purchaseOrder.TaxRate" T="double" Variant="Variant.Text" Label="Tax Rate"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.TaxAmount" T="double" Variant="Variant.Outlined" Label="Tax Amount"
+                    <MudNumericField @bind-Value="purchaseOrder.TaxAmount" T="double" Variant="Variant.Text" Label="Tax Amount"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.NetAmount" T="double" Variant="Variant.Outlined" Label="Net Amount"
+                    <MudNumericField @bind-Value="purchaseOrder.NetAmount" T="double" Variant="Variant.Text" Label="Net Amount"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
             </MudGrid>

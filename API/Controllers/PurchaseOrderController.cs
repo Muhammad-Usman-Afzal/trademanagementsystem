@@ -79,7 +79,11 @@ public class PurchaseOrderController : ControllerBase
             {
                 return Problem("Entity set 'TMSContext.PurchaseOrder'  is null.");
             }
-
+            PurchaseOrder.Vendor = null;
+            foreach(var a in PurchaseOrder.PODetail)
+            {
+                a.Item = null;
+            }
             await _PurchaseOrderRepo.Create(PurchaseOrder);
 
             return CreatedAtAction("GetPurchaseOrderById", new { id = PurchaseOrder.Id }, PurchaseOrder);

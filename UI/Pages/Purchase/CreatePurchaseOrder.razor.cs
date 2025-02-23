@@ -23,6 +23,8 @@ namespace UI.Pages.Purchase
         [Inject]
         public IPurchaseOrderRepoUI _purchaseOrderRepoUI { get; set; }
 
+        [Inject]
+        public IProductDetailsRepoUI _ProductDetailsRepoUI{ get; set; }
         #endregion
 
         #region Variables
@@ -30,6 +32,8 @@ namespace UI.Pages.Purchase
         PurchaseOrder Model = new PurchaseOrder();
         Party party = new Party();
         List<Party> parties = new List<Party>();
+        ProductDetails ProDetalil = new ProductDetails();
+        List<ProductDetails> ProDetalilList = new List<ProductDetails>();
         PurchaseOrderDetail purchaseOrderDetail = new PurchaseOrderDetail();
         List<PurchaseOrderDetail> purchaseOrderDetailList = new List<PurchaseOrderDetail>();
         AppUsers UserSession = new AppUsers();
@@ -75,8 +79,8 @@ namespace UI.Pages.Purchase
                 if (/*UserSession.Id > 0*/ true)
                 {
                     parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
+                    ProDetalilList = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
                 }
-
                 _processing = false;
             }
             catch (Exception ex)
@@ -97,7 +101,7 @@ namespace UI.Pages.Purchase
                 {
                     snackbar.Add("Purchase Order has been saved successfully", Severity.Success);
                     Model = new PurchaseOrder();
-                    navigation.NavigateTo("/CreatePurchaseOrder", forceLoad: true);
+                    navigation.NavigateTo("/PurchaseOrder");
                 }
                 else
                 {
@@ -114,8 +118,7 @@ namespace UI.Pages.Purchase
         {
             return
                 string.IsNullOrEmpty(Model.PODate.ToString()) ||
-                string.IsNullOrEmpty(Model.VendorName) ||
-                string.IsNullOrEmpty(Model.DeliveryFrom) ||
+                Model.VendorId < 0 ||
                 string.IsNullOrEmpty(Model.PaymentMode)
                 ? false : true;
         }
@@ -127,6 +130,13 @@ namespace UI.Pages.Purchase
                 return parties;
             return parties.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
         }
+        private async Task<IEnumerable<ProductDetails>> SearchProDetails(string value)
+        {
+            await Task.Delay(0);
+            if (string.IsNullOrEmpty(value))
+                return ProDetalilList;
+            return ProDetalilList.Where(x => !string.IsNullOrEmpty(x.ItemName) ? x.ItemName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+        }
 
         void OnPartyChanged(Party Value)
         {
@@ -135,16 +145,31 @@ namespace UI.Pages.Purchase
                 if (Value != null)
                 {
                     party = Value;
-                    Model.VendorName = Value.FocalPersonName;
-                    Model.DeliveryFrom = Value.CompanyAddress;
+                    Model.VendorId = Value.Id;
+                    Model.Vendor = Value;
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
         }
 
+        void OnProductChanged(ProductDetails Value)
+        {
+            try
+            {
+                if (Value != null)
+                {
+                    ProDetalil = Value;
+                    purchaseOrderDetail.ItemId = Value.Id;
+                    purchaseOrderDetail.Item = Value;
+                }
+            }
+            catch (Exception ex) { UILogger.WriteLog(ex); }
+        }
+
+
         void AddItem(PurchaseOrderDetail POdetail)
         {
-            Model.purchaseOrderDetail.Add(POdetail);
+            Model.PODetail.Add(POdetail);
             purchaseOrderDetail = new PurchaseOrderDetail();
 
             CalculateTotal();
@@ -152,15 +177,15 @@ namespace UI.Pages.Purchase
 
         void CalculateTotal()
         {
-            if (Model.purchaseOrderDetail.Count > 0)
+            if (Model.PODetail.Count > 0)
             {
-                Model.GrossAmount = Model.purchaseOrderDetail.Sum(x => x.Rate * x.Qty);
+                Model.GrossAmount = Model.PODetail.Sum(x => x.Rate * x.Qty);
                 Model.NetAmount = Model.GrossAmount - Model.TaxAmount;
             }
             if (Model.TaxRate > 0 && Model.GrossAmount > 0)
             {
                 Model.TaxAmount = Model.GrossAmount * Model.TaxRate / 100;
-                Model.NetAmount = Model.GrossAmount - Model.TaxAmount;
+                Model.NetAmount = Model.GrossAmount + Model.TaxAmount;
             }
         }
 

@@ -9,6 +9,5 @@ public class ProductDetails : BaseEntity
 
     [Column(TypeName = "nvarchar(50)")]
     public string ItemName { get; set; }
-    public int Rate { get; set; }
     public bool Isprocessed { get; set; }
 }

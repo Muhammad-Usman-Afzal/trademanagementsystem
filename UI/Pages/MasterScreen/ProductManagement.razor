@@ -15,16 +15,14 @@
 	<MudItem xs="12">
 		<MudTable Items="@ProductDetailsList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
 			<HeaderContent>
-				<MudTh>Company Name</MudTh>
-				<MudTh>Contact Person</MudTh>
-				<MudTh>Rate</MudTh>
-				<MudTh>Email</MudTh>
+				<MudTh>Brand</MudTh>
+				<MudTh>Item Name</MudTh>
+				<MudTh>Type</MudTh>
 				<MudTh></MudTh>
 			</HeaderContent>
 			<RowTemplate>
 				<MudTd>@context.Party.CompanyName</MudTd>
 				<MudTd>@context.ItemName</MudTd>
-				<MudTd>@context.Rate</MudTd>
 				<MudTd>
 					@if (context.Isprocessed == true)
 					{
@@ -65,15 +63,15 @@
 				</MudGrid>
 
 				<MudGrid Justify="Justify.Center">
-					<MudItem xs="4">
+					<MudItem xs="8">
 						<MudTextField @bind-Value="Model.ItemName" T="string" Variant="Variant.Text" Required="true"
-									  MaxLength="30" RequiredError="Please fill this field" Label="Name Of Customer"></MudTextField>
+									  MaxLength="30" RequiredError="Please fill this field" Label="Item Name"></MudTextField>
 					</MudItem>
-					<MudItem xs="4">
+					@* <MudItem xs="4">
 						<MudNumericField @bind-Value="Model.Rate" HideSpinButtons="true" Label="Rate"></MudNumericField>
-					</MudItem>
+					</MudItem> *@
 					<MudItem xs="4">
-						<MudCheckBox @bind-Value="Model.Isprocessed">
+						@* <MudCheckBox @bind-Value="Model.Isprocessed">
 							@if (Model.Isprocessed == true)
 							{
 								<MudText>Processed</MudText>
@@ -82,8 +80,17 @@
 							{
 								<MudText>Un-Processed</MudText>
 							}
-						</MudCheckBox>
-
+						</MudCheckBox> *@
+						<MudSwitch @bind-Value="Model.Isprocessed" Style="margin-top: 15px;">
+							@if (Model.Isprocessed == true)
+							{
+								<MudText>This is Processed Item</MudText>
+							}
+							else
+							{
+								<MudText>This is Un-Processed Item</MudText>
+							}
+						</MudSwitch>
 					</MudItem>
 				</MudGrid>
 
@@ -100,7 +107,7 @@
 					</MudItem>
 					<MudItem xs="2">
 						<MudButton Variant="Variant.Filled" Size="Size.Small" Class=" shadow-lg form-radius" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh"
-								   Color="Color.Primary" OnClick="@(()=>Model=new ProductDetails())">
+								   Color="Color.Primary" OnClick="@(()=>{Model=new ProductDetails();party = new Party();})">
 							Clear
 						</MudButton>
 					</MudItem>

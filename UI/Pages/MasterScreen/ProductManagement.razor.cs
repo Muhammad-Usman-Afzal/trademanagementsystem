@@ -91,6 +91,7 @@ public partial class ProductManagement
 
             if (result.Id > 0)
             {
+                await Task.Delay(3000);
                 _Snackbar.Add("Saved successfully", Severity.Success);
                 Navigate.NavigateTo("/ProductManagement", forceLoad: true);
             }
@@ -100,12 +101,12 @@ public partial class ProductManagement
             }
 
         }
-
     }
 
     void CloseParty()
     {
         Model = new ProductDetails();
+        party = new Party();
         AddPartyVisible = false;
     }
 

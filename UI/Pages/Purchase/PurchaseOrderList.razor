@@ -1,43 +1,50 @@
 ﻿@page "/PurchaseOrder"
 
-<MudContainer Class="shadow-lg form-radius">
 
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="11">
 
-            <MudGrid Justify="Justify.FlexStart">
-                <MudItem xs="12">
-                    <MudText Typo="Typo.h4">Purchase Order</MudText>
-                </MudItem>
-            </MudGrid>
+<MudGrid>
+	<MudItem xs="10">
+		<MudText Typo="Typo.h3">Purchase Order</MudText>
+	</MudItem>
+	<MudItem xs="2">
+		<MudFab StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Info" OnClick="CreatePO" />
+	</MudItem>
+</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="8">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Search"></MudTextField>
-                </MudItem>
-                <MudItem xs="4">
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary">New Create</MudButton>
-                </MudItem>
-            </MudGrid>
+<MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12">
-                    <MudTable Items="purchaseOrderDetailList">
-                        <HeaderContent>
-                            <MudTh>Item Name</MudTh>
-                            <MudTh>Quantity</MudTh>
-                            <MudTh>Rate</MudTh>
-                            <MudTh>Unit</MudTh>
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd>@context.ItemName</MudTd>
-                            </RowTemplate>
-                        </MudTable>
-                    </MudItem>
-                </MudGrid>
-
-            </MudItem>
-        </MudGrid>
-
-    </MudContainer>
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12">
+		<MudTable Items="@POList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
+			<HeaderContent>
+				<MudTh>Status</MudTh>
+				<MudTh>PO Date</MudTh>
+				<MudTh>PO Num</MudTh>
+				<MudTh>Vander Name</MudTh>
+				<MudTh>Item Count</MudTh>
+				<MudTh>Total Amount</MudTh>
+				<MudTh></MudTh>
+			</HeaderContent>
+			<RowTemplate>
+				<MudTd>
+					@if (context.IspaymentClear == true)
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Success">Closed</MudChip>
+					}
+					else
+					{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Primary">Open</MudChip>
+					}
+				</MudTd>
+				<MudTd>@context.PODate</MudTd>
+				<MudTd>@context.PONo</MudTd>
+				<MudTd>@context.Vendor.CompanyName</MudTd>
+				<MudTd>@context.PODetail.Count()</MudTd>
+				<MudTd>@context.NetAmount</MudTd>
+				<MudTd>
+					<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" />
+				</MudTd>
+			</RowTemplate>
+		</MudTable>
+	</MudItem>
+</MudGrid>
