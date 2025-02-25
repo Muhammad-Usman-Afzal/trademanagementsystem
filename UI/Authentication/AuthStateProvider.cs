@@ -26,7 +26,7 @@ public class AuthStateProvider : AuthenticationStateProvider
                     return oAnonymus;
                 }
                 //UILog.oUser = user;
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(jwtTokenString), "jwtAuthType")));
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(jwtTokenString), "Bearer")));
             }
             else
             {

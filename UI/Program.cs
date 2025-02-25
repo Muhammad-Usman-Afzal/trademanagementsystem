@@ -23,7 +23,6 @@ builder.Services.AddHttpClient<IProductDetailsRepoUI, ProductDetailsServiceUI>(c
 {
     client.BaseAddress = new Uri(APIBaseUrl);
 });
-
 builder.Services.AddHttpClient<IOrderRepoUI, OrderServiceUI>(client =>
 {
     client.BaseAddress = new Uri(APIBaseUrl);
@@ -36,7 +35,14 @@ builder.Services.AddHttpClient<IOrderTransactionsRepoUI, OrderTransactionsServic
 {
     client.BaseAddress = new Uri(APIBaseUrl);
 });
-
+builder.Services.AddHttpClient<IAppUsersRepoUI, AppUsersServiceUI>(client =>
+{
+    client.BaseAddress = new Uri(APIBaseUrl);
+});
+builder.Services.AddHttpClient<IMasterMenuRepoUI, MasterMenuServiceUI>(client =>
+{
+    client.BaseAddress = new Uri(APIBaseUrl);
+});
 
 #endregion
 

@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f1f5f9;
 }
 
 h1:focus {
@@ -63,10 +64,26 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-/*My Custom CSS*/
+/* My Custom CSS */
 
 .LogoForSignIn {
     width: 120px;
 }
 
-/*End*/
+.myFormContainer {
+    /*border-top: solid 5px #1565C0;*/
+    border-radius: 25px;
+    /*box-shadow: 0 0 50px 0 lightgray;*/
+    padding: 25px;
+    /*padding-bottom: 50px;*/
+    background-color: white;
+}
+
+.Table {
+    box-shadow: 0px 1px 12px #498ed8;
+    height: 350px;
+    margin-bottom: 35px;
+    border-radius: 12px;
+}
+
+/* End */

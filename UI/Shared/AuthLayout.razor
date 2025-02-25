@@ -4,24 +4,24 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<PageTitle>App</PageTitle>
+<PageTitle>NCI - ERP</PageTitle>
 
-<div class="page" style=" background-image:url(final_slider_1.jpg); background-repeat: no-repeat, repeat;">
-    <main>
-        <article  class="content px-4">
+@* <MudLayout> *@
+    @* <MudMainContent> *@
+        @* <MudContainer Class="my-16" Style="max-width: 1200px;"> *@
             @Body
-        </article>
-    </main>
-</div>
+        @* </MudContainer> *@
+    @* </MudMainContent> *@
+@* </MudLayout> *@
 
 @code{
     MudTheme MyCustomTheme = new MudTheme()
         {
             Palette = new PaletteLight()
             {
-                Primary = Colors.Amber.Accent4,
-                Secondary = Colors.BlueGrey.Lighten3,
-                AppbarBackground = Colors.BlueGrey.Default,
+                Primary = Colors.DeepPurple.Accent4,
+                Secondary = Colors.BlueGrey.Darken4,
+                AppbarBackground = Colors.Shades.White
             },
             // PaletteDark = new PaletteDark()
             // {

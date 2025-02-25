@@ -1,0 +1,243 @@
+﻿@page "/um"
+
+<style>
+    .mytabs {
+        background-color: #edebeb;
+        border-radius: 10px;
+    }
+
+    .tabheader .mud-tabs-tabbar {
+        background: none;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .tabheader .mud-tab-slider.mud-tab-slider-horizontal {
+        display: none;
+    }
+</style>
+
+<MudGrid Class="mt-0">
+    <MudItem lg="1">
+        <MudGrid Justify="Justify.FlexEnd">
+            <MudTooltip Text="Back">
+                <MudIconButton Icon="@Icons.Material.Rounded.ArrowCircleLeft" Color="Color.Primary" Size="Size.Large"></MudIconButton>
+            </MudTooltip>
+        </MudGrid>
+    </MudItem>
+    <MudItem lg="10" Class="mt-3">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudDivider Vertical="true" Class="mt-1 mr-2" Style="width:2px; height:30px;" />
+            <MudText Typo="Typo.h5">User Management</MudText>
+        </MudGrid>
+    </MudItem>
+    <MudItem lg="1">
+        <MudGrid Justify="Justify.FlexEnd">
+            <MudTooltip Text="View List">
+                <MudIconButton OnClick="OpenDialog" Icon="@Icons.Material.Rounded.ViewList" Color="Color.Primary" Size="Size.Large"></MudIconButton>
+            </MudTooltip>
+        </MudGrid>
+    </MudItem>
+</MudGrid>
+
+<MudDivider Class="mt-2 mb-2" />
+
+@if (_pageloading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid Justify="Justify.Center">
+        <MudItem lg="11">
+            <MudTabs @bind-ActivePanelIndex="activeIndex" Class="tabheader" TabPanelClass="mytabs" Elevation="0" ApplyEffectsToContainer="true" PanelClass="pa-6" Centered="false">
+
+                <MudTabPanel Text="Add User" Icon="@Icons.Material.Rounded.PersonAdd">
+                    <MudContainer Class="myFormContainer">
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem lg="6">
+                                <MudTextField @bind-Value="Model.FullName" T="string" Variant="Variant.Outlined" Label="Full Name" Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Rounded.TextFields" AdornmentColor="Color.Default"></MudTextField>
+                            </MudItem>
+                            <MudItem lg="6">
+                                <MudTextField @bind-Value="Model.UserName" T="string" Variant="Variant.Outlined" Label="User Name" Adornment="Adornment.Start"
+                                              AdornmentIcon="@Icons.Material.Rounded.Person" AdornmentColor="Color.Default"></MudTextField>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid Justify="Justify.Center">
+                            <MudItem lg="6">
+                                <MudTextField @bind-Value="Model.Password" T="string" Variant="Variant.Outlined" Label="Password" Adornment="Adornment.Start"
+                                              InputType="InputType.Password" AdornmentIcon="@Icons.Material.Rounded.Lock" AdornmentColor="Color.Default"></MudTextField>
+                            </MudItem>
+                            <MudItem lg="6">
+                                <MudCheckBox @bind-Value="Model.IsSuperUser" T="bool?" Label="Super User" Color="Color.Primary"><MudIcon Icon="@Icons.Material.Rounded.AdminPanelSettings"></MudIcon></MudCheckBox>
+                            </MudItem>
+                        </MudGrid>
+                        <MudGrid Justify="Justify.FlexEnd" Class="mt-5">
+                            <MudItem lg="2">
+                                <MudButton OnClick="@(()=> Next(1))" Variant="Variant.Outlined" EndIcon="@Icons.Material.Rounded.KeyboardDoubleArrowRight"
+                                           Color="Color.Primary" Style="border-radius:25px; width: 100%;">Next</MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudContainer>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Authorization" Icon="@Icons.Material.Rounded.Security">
+                    <MudContainer Class="myFormContainer">
+                        <MudGrid Justify="Justify.Center">
+                            @if (Model.Id == 0)
+                            {
+                                foreach (var item in lstScreens)
+                                {
+                                    <MudItem xs="6">
+                                        <MudAlert Icon="@item.IconURL" Variant="Variant.Text" Severity="Severity.Normal"><b>@item.MenuName</b></MudAlert>
+                                    </MudItem>
+                                    <MudItem xs="6">
+                                        <MudSelect Variant="Variant.Outlined" @bind-Value="@item.AuthorizedPermission">
+                                            @foreach (var permission in Enum.GetValues(typeof(UserPermission)).Cast<UserPermission>())
+                                            {
+                                                <MudSelectItem Value="@permission">@permission</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                }
+                            }
+                            @if (Model.Id > 0)
+                            {
+                                foreach (var item in Model.AuthorizedScreens)
+                                {
+                                    <MudItem xs="6">
+                                        <MudAlert Icon="@item.MasterMenu?.IconURL" Variant="Variant.Text" Severity="Severity.Normal"><b>@item.MasterMenu?.MenuName</b></MudAlert>
+                                    </MudItem>
+                                    <MudItem xs="6">
+                                        <MudSelect Variant="Variant.Outlined" @bind-Value="@item.AuthorizedPermission">
+                                            @foreach (var permission in Enum.GetValues(typeof(UserPermission)).Cast<UserPermission>())
+                                            {
+                                                <MudSelectItem Value="@permission">@permission</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </MudItem>
+                                }
+                            }
+                        </MudGrid>
+                        
+                        <MudGrid Justify="Justify.FlexEnd" Class="mt-5">
+                            <MudItem lg="2">
+                                <MudButton OnClick="@(()=> Next(1))" Variant="Variant.Outlined" EndIcon="@Icons.Material.Rounded.KeyboardDoubleArrowLeft"
+                                           Color="Color.Primary" Style="border-radius:25px; width: 100%; margin-left: 55px;">Prev</MudButton>
+                            </MudItem>
+                            <MudItem lg="2">
+                                <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Rounded.Refresh"
+                                           Color="Color.Primary" Style="border-radius:25px; width: 100%; margin-left: 40px;">Referesh</MudButton>
+                            </MudItem>
+                            <MudItem lg="2">
+                                <MudButton Disabled="@(CurrentPermission==UserPermission.ViewOnly)" OnClick="Save" Variant="Variant.Filled" StartIcon="@Icons.Material.Rounded.Save"
+                                           Color="Color.Primary" Style="border-radius:25px; width: 80%; margin-left: 25px;">
+                                    @if (_processing)
+                                    {
+                                        <MudProgressCircular Class="ms-n1" Size="Size.Medium" Indeterminate="true" />
+                                        <MudText Class="ms-2">Processing</MudText>
+                                    }
+                                    else
+                                    {
+                                        <MudText>Save</MudText>
+                                    }
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudContainer>
+                </MudTabPanel>
+
+            </MudTabs>
+        </MudItem>
+    </MudGrid>
+}
+
+<MudDialog ContentStyle="margin-top:-25px;" @bind-IsVisible="_dlgvisible" Options="_dialogOptions">
+    <DialogContent>
+        @if (_gridloading || (lstUser != null && lstUser.Count > 0))
+        {
+            <MudGrid>
+                <MudItem lg="1" Class="mt-2">
+                    <MudText Typo="Typo.button">Filters<MudIcon Icon="@Icons.Material.Rounded.FilterAlt" /> </MudText>
+                </MudItem>
+                <MudItem lg="11">
+                    <MudChipSet T="bool?">
+                        <MudChip Icon="@Icons.Material.TwoTone.CheckCircle" Color="Color.Success" Variant="Variant.Text">Active</MudChip>
+                        <MudChip Icon="@Icons.Material.TwoTone.Cancel" Color="Color.Error" Variant="Variant.Text">In-Active</MudChip>
+                    </MudChipSet>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="mt-5" />
+            <div class="d-flex row mt-5" style="justify-content:center;">
+
+                <MudGrid>
+                    <MudItem lg="12">
+
+                        <MudTable Dense="true" Height="400px" LoadingProgressColor="Color.Primary" Loading="_gridloading" Items="lstUser" Striped="true" Hover="true" FixedHeader="true" Filter="new Func<AppUsers,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+                            <ToolBarContent>
+                                <MudText Typo="Typo.h6">Type to search with branch name</MudText>
+                                <MudSpacer />
+                                <MudTextField Immediate="true" @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                            </ToolBarContent>
+                            <HeaderContent>
+                                <MudTh>Full Name</MudTh>
+                                <MudTh>Username</MudTh>
+                                <MudTh>Active/In-Active</MudTh>
+                                <MudTh>Action</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd>@context.FullName</MudTd>
+                                    <MudTd>@context.UserName</MudTd>
+                                    @if (@context.IsActive == true)
+                                {
+                                    <MudTd><MudChip T="bool" Icon="@Icons.Material.TwoTone.CheckCircle" Label="true" Color="Color.Success" Variant="Variant.Text" Size="Size.Small">Active</MudChip></MudTd>
+                                }
+                                @if (@context.IsActive == false)
+                                {
+                                    <MudTd><MudChip T="bool" Icon="@Icons.Material.TwoTone.Cancel" Label="true" Color="Color.Error" Variant="Variant.Text" Size="Size.Small">In-Active</MudChip></MudTd>
+                                }
+                                <MudTd>
+                                    <MudIconButton OnClick="@(()=> Edit(context))" Icon="@Icons.Material.Rounded.Edit"></MudIconButton>
+                                </MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager />
+                            </PagerContent>
+                        </MudTable>
+
+                    </MudItem>
+                </MudGrid>
+
+            </div>
+        }
+        @if ((lstUser == null || lstUser.Count == 0) && _isDisplay)
+        {
+            <MudGrid Class="mt-15">
+                <MudItem lg="12">
+                    <MudCard Elevation="0">
+                        <MudCardContent>
+                            <MudGrid Justify="Justify.SpaceBetween">
+                                <MudItem lg="4">
+                                    <MudGrid Justify="Justify.FlexEnd">
+                                        <MudImage Src="images/notfound.png" Width="200" />
+                                    </MudGrid>
+                                </MudItem>
+                                <MudItem lg="4" Class="mt-5">
+                                    <MudText Typo="Typo.h6" Color="Color.Error">No Record Found</MudText>
+                                    <MudText Typo="Typo.caption" Style="color:darkgray;">You have no any Record. You can create a new Record by clicking the right side button.</MudText>
+                                </MudItem>
+                                <MudItem lg="4" Class="mt-12">
+                                    <MudGrid Justify="Justify.FlexStart">
+                                        <MudButton Href="um" Variant="Variant.Outlined" Color="Color.Primary" Style="border-radius:25px;">Create New* <MudIcon Icon="@Icons.Material.TwoTone.PostAdd" Class="ml-2" /></MudButton>
+                                    </MudGrid>
+                                </MudItem>
+                            </MudGrid>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+        }
+    </DialogContent>
+</MudDialog>

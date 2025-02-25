@@ -3,17 +3,31 @@
 public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
 {
     private readonly HttpClient _httpClient;
+    private readonly ProtectedLocalStorage _localStorage;
 
-    public BaseServiceUI(HttpClient httpClient)
+    public BaseServiceUI(HttpClient httpClient, ProtectedLocalStorage localStorage)
     {
         _httpClient = httpClient;
+        _localStorage = localStorage;
+    }
+
+    private async Task SetAuthorizationHeader()
+    {
+        var userSession = await _localStorage.GetAsync<AppUsers>("User");
+        string token = userSession.Value?.BearerToken ?? string.Empty;
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
     }
 
     public async Task<List<T>> GetAll(string APIName)
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<List<T>>(APIName);
+            await SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<List<T>>(APIName) ?? new List<T>();
         }
         catch (Exception ex)
         {
@@ -26,7 +40,8 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<List<T>>(APIName);
+            await SetAuthorizationHeader();
+            return await _httpClient.GetFromJsonAsync<List<T>>(APIName) ?? new List<T>();
         }
         catch (Exception ex)
         {
@@ -39,6 +54,7 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
     {
         try
         {
+            await SetAuthorizationHeader();
             return await _httpClient.GetFromJsonAsync<T>(APIName);
         }
         catch (Exception ex)
@@ -48,10 +64,11 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         }
     }
 
-    public T GetLastRecord(string APIName)
+    public async Task<T> GetLastRecord(string APIName)
     {
         try
         {
+            await SetAuthorizationHeader();
             return _httpClient.GetFromJsonAsync<T>(APIName).Result;
         }
         catch (Exception ex)
@@ -61,26 +78,11 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         }
     }
 
-    public async Task<string> GetSingleByColumnAsync(string APIName)
+    public async Task<bool> GetBooleanByCondition(string APIName)
     {
         try
         {
-            //return await _httpClient.GetFromJsonAsync<string>(APIName) ?? string.Empty;
-            var response = await _httpClient.GetStringAsync(APIName);
-            //Console.WriteLine($"API Response: {response}"); // Debug Log
-            return response ?? string.Empty;
-        }
-        catch (Exception ex)
-        {
-            UILogger.WriteLog(ex);
-            return string.Empty;
-        }
-    }
-
-    public bool GetBooleanByCondition(string APIName)
-    {
-        try
-        {
+            await SetAuthorizationHeader();
             return _httpClient.GetFromJsonAsync<bool>(APIName).Result;
         }
         catch (Exception ex)
@@ -119,6 +121,7 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
     {
         try
         {
+            await SetAuthorizationHeader();
             return await _httpClient.PostAsJsonAsync(APIName, entity)
             .Result.Content.ReadFromJsonAsync<T>();
         }
@@ -133,7 +136,8 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
     {
         try
         {
-            return await _httpClient.PostAsJsonAsync(APIName, entity)
+            await SetAuthorizationHeader();
+            return await _httpClient.PutAsJsonAsync(APIName, entity)
             .Result.Content.ReadFromJsonAsync<T>();
         }
         catch (Exception ex)
@@ -147,6 +151,7 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
     {
         try
         {
+            await SetAuthorizationHeader();
             return await _httpClient.GetFromJsonAsync<T>(APIName);
         }
         catch (Exception ex)
@@ -160,6 +165,7 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
     {
         try
         {
+            await SetAuthorizationHeader();
             await _httpClient.PostAsJsonAsync(APIName, EntitiesCollection);
         }
         catch (Exception ex)
@@ -172,6 +178,7 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
     {
         try
         {
+            await SetAuthorizationHeader();
             return await _httpClient.PostAsJsonAsync(APIName, EntitiesCollection)
             .Result.Content.ReadFromJsonAsync<bool>();
         }
@@ -179,6 +186,20 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         {
             UILogger.WriteLog(ex);
             return false;
+        }
+    }
+
+    public async Task<string> GetSingleByColumnAsync(string APIName)
+    {
+        try
+        {
+            await SetAuthorizationHeader();
+            return await _httpClient.GetStringAsync(APIName);
+        }
+        catch (Exception ex)
+        {
+            UILogger.WriteLog(ex);
+            return string.Empty;
         }
     }
 
@@ -280,5 +301,4 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         }
         return val;
     }
-
 }

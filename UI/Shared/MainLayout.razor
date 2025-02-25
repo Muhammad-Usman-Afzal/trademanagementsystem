@@ -1,6 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>App Name</PageTitle>
+<style>
+    .profile-pic {
+        width: 100px !important;
+        height: 100px !important;
+        margin-top: 50px;
+        margin-left: 40px;
+    }
+</style>
+
+<PageTitle>NCI - ERP</PageTitle>
 
 @* Required *@
 <MudThemeProvider Theme="MyCustomTheme" />
@@ -12,18 +21,20 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="15">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+    <MudAppBar Elevation="3">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Style="color:#424242;" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudImage Width="25" Src="images/logo.png"></MudImage><MudText Class="ml-1 text-black">Khalil Traders</MudText>
         <MudSpacer />
-        <MudIcon Icon="@Icons.Rounded.WavingHand" Class="mr-3" />
-        <MudText Class="mt-1 mr-3">Hi! @(UserSession != null ? UserSession.UserName : "")</MudText>
-        <MudMenu AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopRight" LockScroll="false" Style="padding:15px !important;">
+        @* <MudIcon Icon="@Icons.Rounded.WavingHand" Class="mr-3" /> *@
+        @* <MudText Style="color:#424242;" Class="mt-1 mr-3">Hi! @(UserSession != null ? UserSession.UserName : "")</MudText> *@
+        <MudMenu AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.BottomCenter" ListClass="overflow-hidden">
             <ActivatorContent>
-                <MudAvatar Color="Color.Primary">@(UserSession != null ? UserSession?.UserName?.Substring(0, 1)?.ToUpper() : "")</MudAvatar>
+                @* <MudButton Variant="Variant.Text" Color="Color.Primary">@(UserSession != null ? UserSession?.UserName?.Substring(0, 1)?.ToUpper() : "Manager")</MudButton> *@
+                <MudButton Variant="Variant.Text" Color="Color.Primary" EndIcon="@Icons.Rounded.ArrowDropDown">@UserSession?.UserName</MudButton>
             </ActivatorContent>
             <ChildContent>
-                <MudGrid Style="width:250px; background-color:#f5e9ff;">
-                    <MudItem xs="12">
+                <MudGrid>
+                    @* <MudItem lg="12">
                         <MudGrid Justify="Justify.Center">
                             <MudBadge Color="Color.Success" Overlap="true" Bordered="true" Class="mt-10">
                                 <MudAvatar Style="height:70px; width:70px; font-size:2rem;" Elevation="10" Color="Color.Primary">@(UserSession != null ? UserSession?.UserName?.Substring(0, 1)?.ToUpper() : "")</MudAvatar>
@@ -31,12 +42,12 @@
                         </MudGrid>
                     </MudItem>
                     <br /><br />
-                    <MudItem xs="12">
+                    <MudItem lg="12">
                         <MudChip Label="true" Style="margin-left:35%;">Online</MudChip>
                     </MudItem>
-                    <br />
-                    <MudItem xs="12">
-                        <MudDivider Class="ml-5 mt-2" />
+                    <br /> *@
+                    <MudItem lg="12">
+                        @* <MudDivider Class="ml-5 mt-2" /> *@
                         @* <MudMenuItem Icon="@Icons.Rounded.Person" Href="userprofile">My Profile</MudMenuItem> *@
                         <MudMenuItem Icon="@Icons.Rounded.Logout" OnClick="LogOut">Logout</MudMenuItem>
                     </MudItem>
@@ -44,17 +55,27 @@
             </ChildContent>
         </MudMenu>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="15" Style="background: linear-gradient(190deg, #607d8b, black);">
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="15" Variant="DrawerVariant.Temporary" Style="background-color:#0f172a;">
         <MudDrawerHeader>
-            @* <MudImage Src="images/HBK-Logo.png" Class="logo-navbar" /> *@
+            <MudGrid Justify="Justify.Center">
+                <MudItem lg="12">
+            <MudAvatar Class="profile-pic">
+                <MudImage Src="images/dp.jpg"></MudImage>
+            </MudAvatar>
+                </MudItem>
+                <MudItem lg="12" Style="margin-top:-15px; text-align:center; color:lightgray;">
+            <MudText>Sharjeel Sultan</MudText>
+                </MudItem>
+                <MudItem lg="12" Style="margin-top:-20px; text-align:center; color:gray;">
+            <MudText Typo="Typo.caption">msharjeelsultan@mail.com</MudText>
+                </MudItem>
+            </MudGrid>
         </MudDrawerHeader>
         <NavMenu />
     </MudDrawer>
     <MudMainContent Style="background-color:#f1f5f9;">
-        <MudContainer Class="my-16" Style="max-width: 1200px;">
-
+        <MudContainer Class="mt-5" Style="max-width: 1200px;">
             @Body
-
         </MudContainer>
     </MudMainContent>
 </MudLayout>
@@ -104,7 +125,7 @@
     {
         bool? result = await _dialogService.ShowMessageBox(
             "Warning",
-            "Are your sure! You want to Signing Out the PTS System?",
+            "Are your sure! You want to Signing Out the TMS System?",
             yesText: "Yes", cancelText: "No");
         return result == null ? false : true;
     }
@@ -135,9 +156,9 @@
         {
             Palette = new PaletteLight()
             {
-                Primary = Colors.Amber.Accent4,
-                Secondary = Colors.BlueGrey.Lighten3,
-                AppbarBackground = Colors.BlueGrey.Default,
+                Primary = Colors.DeepPurple.Accent4,
+                Secondary = Colors.BlueGrey.Darken4,
+                AppbarBackground = Colors.Shades.White
             },
             // PaletteDark = new PaletteDark()
             // {

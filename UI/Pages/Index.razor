@@ -1,50 +1,90 @@
 ﻿@page "/index"
 
+<style>
+    .MyCard {
+        padding: 10px;
+        border-radius: 12px;
+        background-color: white;
+        height: 216px;
+        width: 260px;
+        margin-left: 62px;
+    }
+</style>
 
+@if (_processing)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid Justify="Justify.Center" Class="mt-15">
+        <MudCard Class="MyCard">
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem lg="8">
+                        <MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Summary</MudText>
+                    </MudItem>
+                </MudGrid>
+                <MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #3780F7; margin-bottom: -12px;">21</MudText>
+                <MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #3780F7;">Due Tasks</MudText>
+                <MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">Completed: <b>13</b></MudText>
+            </MudCardContent>
+        </MudCard>
+        <MudCard Class="MyCard">
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem lg="8">
+                        <MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Overdue</MudText>
+                    </MudItem>
+                </MudGrid>
+                <MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #EF4444; margin-bottom: -12px;">17</MudText>
+                <MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #DE262B;">Tasks</MudText>
+                <MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">
+                    From Yesterday: <b>9</b>
+                </MudText>
+            </MudCardContent>
+        </MudCard>
+        <MudCard Class="MyCard">
+            <MudCardContent>
+                <MudGrid>
+                    <MudItem lg="8">
+                        <MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Issues</MudText>
+                    </MudItem>
+                </MudGrid>
+                <MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #F59E0B; margin-bottom: -12px;">24</MudText>
+                <MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #E8A74B;">Open</MudText>
+                <MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">Closed Today: <b>19</b></MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudGrid>
+}
 
-<MudContainer Class="TopBorderForContainer">
+@* <MudContainer Class="myFormContainer">
     <MudGrid Justify="Justify.Center">
-        <MudItem xs="11">
+        <MudItem lg="11">
 
             <MudGrid Justify="Justify.FlexStart">
-                <MudItem xs="12">
+                <MudItem lg="12">
                     <MudText Typo="Typo.h4">Dashboard</MudText>
                 </MudItem>
             </MudGrid>
 
+
+
             <MudGrid Justify="Justify.Center">
-                <MudItem xs="4">
-                    <MudCard style="border-radius: 20px; color: white; height: 175px;
-                             background: linear-gradient(40deg, rgba(51,179,233,1) 2%, rgba(51,233,216,1) 62%, rgba(70,124,232,1) 93%);">
-                        <MudCardContent>
-                            <MudText Style="font-weight: bold; font-size: 23px;">Sale Achivement</MudText>
-                            <MudText Style="font-weight: bold; font-size: 37px;">78% <MudIcon Icon="@Icons.Material.Filled.Bolt" Size="Size.Large" /></MudText>
-                            <MudText Style="font-size: 18px;">We have sold so much in the last year.</MudText>
-                        </MudCardContent>
-                    </MudCard>
-                </MudItem>
-                <MudItem xs="4">
-                    <MudCard style="border-radius: 20px; color: white; background-color: #ffc400; height: 175px;">
-                        <MudCardContent>
-                            <MudText Style="font-weight: bold; font-size: 23px;">Invoice Achivement</MudText>
-                            <MudText Style="font-size: 18px;">We have sold so much in the last year.</MudText>
-                        </MudCardContent>
-                        <MudButton Variant="Variant.Text" style="color:white">  Learn More</MudButton>
-                    </MudCard>
-                </MudItem>
-                <MudItem xs="4">
+                <MudItem lg="12">
                     <MudGrid>
-                        <MudItem xs="12">
+                        <MudItem lg="12">
                             <MudText> Sales </MudText>
                             <MudProgressLinear Value="60" Color="Color.Warning" Rounded="true" Size="Size.Large"></MudProgressLinear>
                         </MudItem>
 
-                        <MudItem xs="12">
+                        <MudItem lg="12">
                             <MudText> Invoice </MudText>
                             <MudProgressLinear Value="75" Color="Color.Secondary" Rounded="true" Size="Size.Large"></MudProgressLinear>
                         </MudItem>
 
-                        <MudItem xs="12">
+                        <MudItem lg="12">
                             <MudText> Items </MudText>
                             <MudProgressLinear Value="90" BufferValue="100" Color="Color.Primary" Rounded="true" Striped="true" Size="Size.Large"></MudProgressLinear>
                         </MudItem>
@@ -53,7 +93,7 @@
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
-                <MudItem xs="8">
+                <MudItem lg="8">
                     <div>
                         <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
                     </div>
@@ -69,7 +109,7 @@
                     }
                 </MudItem>
 
-                <MudItem xs="4">
+                <MudItem lg="4">
                     <MudChart ChartType="ChartType.Donut" Width="300px" Height="300px"
                               InputData="@data" InputLabels="@labels">
                     </MudChart>
@@ -82,8 +122,8 @@
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
-                <MudItem xs="7">
-                    <MudTable Items="@elements" FixedHeader="false" HorizontalScrollbar="true" Class="Table">
+                <MudItem lg="7">
+                    <MudTable Items="@elements" Hover="true" Breakpoint="Breakpoint.Sm" FixedHeader="false" HorizontalScrollbar="true" Class="Table">
                         <HeaderContent>
                             <MudTh>  </MudTh>
                             <MudTh>Store</MudTh>
@@ -129,7 +169,7 @@
                     }
                 </MudItem>
 
-                <MudItem xs="4">
+                <MudItem lg="4">
                     <MudTable Items="@elements1" FixedHeader="false" HorizontalScrollbar="true" Class="Table">
                         <HeaderContent>
                             <MudTh>Sales</MudTh>
@@ -166,7 +206,7 @@
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
-                <MudItem xs="12">
+                <MudItem lg="12">
                     <div>
                         <MudChart ChartType="ChartType.Line" ChartSeries="@Seriesss" XAxisLabels="@XAxisLabelsss" Width="100%" Height="350px" CanHideSeries />
                         <MudButton Variant="Variant.Filled" @onclick="RandomizeData">Randomize Data</MudButton>
@@ -204,4 +244,4 @@
 
         </MudItem>
     </MudGrid>
-</MudContainer>
+</MudContainer> *@

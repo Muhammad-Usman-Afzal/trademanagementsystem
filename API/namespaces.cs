@@ -6,3 +6,7 @@ global using API.Data;
 global using Microsoft.AspNetCore.Mvc;
 global using System.Data;
 global using API.Services;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.IdentityModel.Tokens;
+global using System.Text;

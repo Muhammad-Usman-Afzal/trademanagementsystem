@@ -10,8 +10,8 @@ public interface IBaseRepoUI<T> where T : BaseEntity
     Task<T> UpdateById(string APIName);
     Task UpdateDetail(string APIName, List<T> EntitiesCollection);
     Task<bool> BulkInsert(string APIName, List<T> EntitiesCollection);
-    bool GetBooleanByCondition(string APIName);
-    T GetLastRecord(string APIName);
+    Task<bool> GetBooleanByCondition(string APIName);
+    Task<T> GetLastRecord(string APIName);
     string Decryption(string cipherText);
     Task<string> GetSingleByColumnAsync(string APIName);
 }

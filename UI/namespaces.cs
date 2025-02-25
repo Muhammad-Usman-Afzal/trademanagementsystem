@@ -19,3 +19,4 @@ global using System.Text;
 global using UI.Services;
 global using Microsoft.AspNetCore.Components;
 global using MudBlazor;
+global using System.Net.Http.Headers;
