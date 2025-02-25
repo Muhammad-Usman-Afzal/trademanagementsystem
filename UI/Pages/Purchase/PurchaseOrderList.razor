@@ -43,7 +43,7 @@
 				<MudTd>@context.OrderDetail.Count()</MudTd>
 				<MudTd>@context.NetAmount</MudTd>
 				<MudTd>
-					<MudIconButton Icon="@Icons.Material.Filled.TransitEnterexit" Color="Color.Success" aria-label="Recive Purchase Order" />
+					<MudIconButton Icon="@Icons.Material.Filled.TransitEnterexit" Color="Color.Success" aria-label="Recive Purchase Order" OnClick="@(()=>Navigate.NavigateTo($"/PurchaseOrderReceive/{context.Id}"))" />
 				</MudTd>
 				<MudTd>
 					<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" Color="Color.Primary" />
