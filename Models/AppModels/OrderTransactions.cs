@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace Models.AppModels
 {
-    internal class OrderTransactions : BaseEntity
+    public class OrderTransactions : BaseEntity
     {
         [Column(TypeName = "nvarchar(15)")]
-        public string TransectionType { get; set; }
-        
+        public TransectionTypes TType { get; set; } = new TransectionTypes();
         [Column(TypeName = "nvarchar(200)")]
-        
         public string Remaeks { get; set; }
-        
+        public DateTime TransectionDate { get; set; }
         public int Qty { get; set; }
     }
 }
@@ -23,9 +21,8 @@ namespace Models.AppModels
 
 public enum TransectionTypes
 {
-    WorkInProgress = 1,
-    Resolved,
-    Rejected,
-    Withdraw,
-    Farworded
+    PurchaseReceive = 1,
+    Dispatch,
+    GoodsIssuance,
+    GoodsReceipt
 }

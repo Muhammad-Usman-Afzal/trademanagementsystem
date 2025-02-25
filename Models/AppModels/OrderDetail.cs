@@ -10,5 +10,5 @@ public class OrderDetail : BaseEntity
     public double Rate { get; set; }
     [Column(TypeName = "nvarchar(15)")]
     public string Unit { get; set; }
-    List<OrderTransactions> OT { get; set; } =  new List<OrderTransactions>();
+    public List<OrderTransactions> OT { get; set; } =  new List<OrderTransactions>();
 }

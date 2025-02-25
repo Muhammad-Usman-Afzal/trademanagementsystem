@@ -1,4 +1,6 @@
-﻿namespace API.Data;
+﻿using System.Transactions;
+
+namespace API.Data;
 
 public class TMSContext : DbContext
 {
@@ -16,8 +18,13 @@ public class TMSContext : DbContext
 
         modelBuilder.Entity<PurchaseOrder>().Navigation(x => x.Vendor).AutoInclude();
         modelBuilder.Entity<PurchaseOrder>().Navigation(x => x.PODetail).AutoInclude();
+        
+        modelBuilder.Entity<Order>().Navigation(x => x.Party).AutoInclude();
+        modelBuilder.Entity<Order>().Navigation(x => x.OrderDetail).AutoInclude();
 
-
+        modelBuilder.Entity<OrderDetail>().Navigation(x => x.Item).AutoInclude();
+        modelBuilder.Entity<OrderDetail>().Navigation(x => x.OT).AutoInclude();
+        
         modelBuilder.Entity<PurchaseOrderDetail>().Navigation(x => x.Item).AutoInclude();
         
 
@@ -37,4 +44,7 @@ public class TMSContext : DbContext
     public DbSet<PurchaseOrderDetail> PurchaseOrderDetails { get; set; } = default!;
     public DbSet<SaleOrder> SaleOrders { get; set; } = default!;
     public DbSet<SaleOrderDetail> SaleOrderDetails { get; set; } = default!;
+    public DbSet<Order> Order { get; set; } = default!;
+    public DbSet<OrderDetail> OrderDetails { get; set; } = default!;
+    public DbSet<OrderTransactions> OrderTransactions { get; set; } = default!;
 }

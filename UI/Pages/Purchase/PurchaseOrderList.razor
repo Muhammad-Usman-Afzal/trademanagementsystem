@@ -24,6 +24,7 @@
 				<MudTh>Item Count</MudTh>
 				<MudTh>Total Amount</MudTh>
 				<MudTh></MudTh>
+				<MudTh></MudTh>
 			</HeaderContent>
 			<RowTemplate>
 				<MudTd>
@@ -36,13 +37,16 @@
 						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Primary">Open</MudChip>
 					}
 				</MudTd>
-				<MudTd>@context.PODate</MudTd>
-				<MudTd>@context.PONo</MudTd>
-				<MudTd>@context.Vendor.CompanyName</MudTd>
-				<MudTd>@context.PODetail.Count()</MudTd>
+				<MudTd>@context.OrderDate</MudTd>
+				<MudTd>@context.OrderNo</MudTd>
+				<MudTd>@context.Party.CompanyName</MudTd>
+				<MudTd>@context.OrderDetail.Count()</MudTd>
 				<MudTd>@context.NetAmount</MudTd>
 				<MudTd>
-					<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" />
+					<MudIconButton Icon="@Icons.Material.Filled.TransitEnterexit" Color="Color.Success" aria-label="Recive Purchase Order" />
+				</MudTd>
+				<MudTd>
+					<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" Color="Color.Primary" />
 				</MudTd>
 			</RowTemplate>
 		</MudTable>

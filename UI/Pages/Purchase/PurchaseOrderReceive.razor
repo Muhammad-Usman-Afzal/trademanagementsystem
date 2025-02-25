@@ -13,19 +13,19 @@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="6">
-                    <MudAutocomplete T="Party" Label="Farword To" ValueChanged="onVanderSelect"
+                    @* <MudAutocomplete T="Party" Label="Farword To" ValueChanged="onVanderSelect"
                                      Value="party" SearchFunc="@SearchVander" ToStringFunc="@(e => e == null ? null : $"{e.CompanyName}")"
-                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" Required="true" />
-                    @* <MudTextField @bind-Value="vendorInfo.NameOfVendor" T="string" Variant="Variant.Text" Label="Vander Name"></MudTextField> *@
+                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" Required="true" /> *@
+                    <MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Vendor Name"></MudTextField>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="purchaseOrder.PONo" T="string" Variant="Variant.Text" Label="PO No"></MudTextField>
+                    <MudTextField Disabled="true" @bind-Value="purchaseOrder.PONo" T="string" Variant="Variant.Text" Label="PO No."></MudTextField>
                 </MudItem>
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="purchaseOrder.Vendor.CompanyAddress" T="string" Variant="Variant.Text" Label="Delivery From"></MudTextField>
+                    <MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Vendor Address"></MudTextField>
                 </MudItem>
                 <MudItem xs="6">
                     <MudDatePicker @bind-Date="purchaseOrder.PODate" Variant="Variant.Text" Label="PO Date"></MudDatePicker>

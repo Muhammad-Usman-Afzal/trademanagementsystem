@@ -22,23 +22,27 @@ namespace UI.Pages.Purchase
         public IPartyRepoUI _partyRepoUI { get; set; }
         [Inject]
         public IPurchaseOrderRepoUI _purchaseOrderRepoUI { get; set; }
-
         [Inject]
-        public IProductDetailsRepoUI _ProductDetailsRepoUI{ get; set; }
+        public IOrderRepoUI _orderRepoUI { get; set; }
+        [Inject]
+        public IProductDetailsRepoUI _ProductDetailsRepoUI { get; set; }
         #endregion
 
         #region Variables
 
-        PurchaseOrder Model = new PurchaseOrder();
+        //PurchaseOrder Model = new PurchaseOrder();
+        Order Model = new Order();
         Party party = new Party();
         List<Party> parties = new List<Party>();
+        List<Party> Vanders = new List<Party>();
         ProductDetails ProDetalil = new ProductDetails();
         List<ProductDetails> ProDetalilList = new List<ProductDetails>();
-        PurchaseOrderDetail purchaseOrderDetail = new PurchaseOrderDetail();
+        //PurchaseOrderDetail purchaseOrderDetail = new PurchaseOrderDetail();
+        OrderDetail purchaseOrderDetail = new OrderDetail();
         List<PurchaseOrderDetail> purchaseOrderDetailList = new List<PurchaseOrderDetail>();
         AppUsers UserSession = new AppUsers();
 
-        private bool _processing = false;
+        private bool _processing = false, _productdetails = true;
 
         #endregion
 
@@ -79,7 +83,14 @@ namespace UI.Pages.Purchase
                 if (/*UserSession.Id > 0*/ true)
                 {
                     parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
+
+                    parties = parties.Where(x => x.PartyType == "Vendor").ToList();
+
                     ProDetalilList = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
+
+
+                    Model.TaxRate = 18;
+                    Model.OrderNo = await CreatePONumberAsync();
                 }
                 _processing = false;
             }
@@ -95,12 +106,14 @@ namespace UI.Pages.Purchase
         {
             if (IsValidate())
             {
-                var res = Model.Id > 0 ? await _purchaseOrderRepoUI.Create("PurchaseOrder/Update", Model) : await _purchaseOrderRepoUI.Create("PurchaseOrder/Create", Model) ?? new PurchaseOrder();
+                Model.OType = OrderTypes.PurchaseOrder;
+                Model.Status = OrderStatus.Opened;
+                var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();
 
                 if (res != null && res.Id > 0)
                 {
                     snackbar.Add("Purchase Order has been saved successfully", Severity.Success);
-                    Model = new PurchaseOrder();
+                    Model = new Order();
                     navigation.NavigateTo("/PurchaseOrder");
                 }
                 else
@@ -117,9 +130,9 @@ namespace UI.Pages.Purchase
         bool IsValidate()
         {
             return
-                string.IsNullOrEmpty(Model.PODate.ToString()) ||
-                Model.VendorId < 0 ||
-                string.IsNullOrEmpty(Model.PaymentMode)
+                string.IsNullOrEmpty(Model.OrderDate.ToString()) || string.IsNullOrEmpty(Model.OrderNo) ||
+                Model.PartyId < 0 || string.IsNullOrEmpty(Model.PaymentMode) || string.IsNullOrEmpty(Model.OrderMode) ||
+                Model.OrderDetail.Count > 0
                 ? false : true;
         }
 
@@ -145,8 +158,10 @@ namespace UI.Pages.Purchase
                 if (Value != null)
                 {
                     party = Value;
-                    Model.VendorId = Value.Id;
-                    Model.Vendor = Value;
+                    Model.PartyId = Value.Id;
+                    Model.Party = Value;
+                    _productdetails = false;
+                    ProDetalilList = ProDetalilList.Where(x => x.PartyId == Model.PartyId && x.Isprocessed == false).ToList();
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
@@ -167,19 +182,33 @@ namespace UI.Pages.Purchase
         }
 
 
-        void AddItem(PurchaseOrderDetail POdetail)
+        void AddItem(OrderDetail POdetail)
         {
-            Model.PODetail.Add(POdetail);
-            purchaseOrderDetail = new PurchaseOrderDetail();
+            if (_productdetails == false)
+            {
+                if (POdetail.Qty > 0 && POdetail.Rate > 0 && !String.IsNullOrEmpty(POdetail.Unit))
+                {
+                    Model.OrderDetail.Add(POdetail);
+                    purchaseOrderDetail = new OrderDetail();
 
-            CalculateTotal();
+                    CalculateTotal();
+                }
+                else
+                {
+                    snackbar.Add("Kindly fill all Required Data", Severity.Warning);
+                }
+            }
+            else
+            {
+                snackbar.Add("Please Select Vendor first", Severity.Warning);
+            }
         }
 
         void CalculateTotal()
         {
-            if (Model.PODetail.Count > 0)
+            if (Model.OrderDetail.Count > 0)
             {
-                Model.GrossAmount = Model.PODetail.Sum(x => x.Rate * x.Qty);
+                Model.GrossAmount = Model.OrderDetail.Sum(x => x.Rate * x.Qty);
                 Model.NetAmount = Model.GrossAmount - Model.TaxAmount;
             }
             if (Model.TaxRate > 0 && Model.GrossAmount > 0)
@@ -188,6 +217,27 @@ namespace UI.Pages.Purchase
                 Model.NetAmount = Model.GrossAmount + Model.TaxAmount;
             }
         }
+
+        public async Task<string> CreatePONumberAsync()
+        {
+            var lastOrderNo = await _orderRepoUI.GetSingleByColumnAsync($"Order/GetOrderNumberByType?orderType={OrderTypes.PurchaseOrder}");
+
+            if (!string.IsNullOrEmpty(lastOrderNo) && lastOrderNo.Contains("PO-"))
+            {
+                string[] parts = lastOrderNo.Split('-');
+
+                if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                {
+                    number++;
+                    string newNumber = number.ToString($"D{parts[1].Length}");
+
+                    return $"{parts[0]}-{newNumber}";
+                }
+            }
+
+            return "PO-0001"; // First order case
+        }
+
 
         #endregion
     }

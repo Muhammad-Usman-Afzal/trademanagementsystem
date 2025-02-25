@@ -13,12 +13,12 @@
 
 			<MudGrid Justify="Justify.Center">
 				<MudItem xs="3">
-					<MudTextField @bind-Value="Model.PONo" ReadOnly="true" HelperText="PO-No Genrate Automatically" T="string" Variant="Variant.Outlined" Label="PO No"></MudTextField>
+					<MudTextField @bind-Value="Model.OrderNo" ReadOnly="true" HelperText="PO-No Genrate Automatically" T="string" Variant="Variant.Outlined" Label="PO No"></MudTextField>
 				</MudItem>
 				<MudItem xs="6">
 				</MudItem>
 				<MudItem xs="3">
-					<MudDatePicker @bind-Date="Model.PODate" Variant="Variant.Outlined" Label="PO Date"></MudDatePicker>
+					<MudDatePicker @bind-Date="Model.OrderDate" Variant="Variant.Outlined" Label="PO Date"></MudDatePicker>
 				</MudItem>
 			</MudGrid>
 
@@ -36,19 +36,25 @@
 									 HelperText="Please enter the Vendor Name" HelperTextOnFocus="true" Strict="false">
 					</MudAutocomplete>
 				</MudItem>
-				<MudItem xs="6">
+				<MudItem xs="3">
 					<MudSelect @bind-Value="Model.PaymentMode" T="string" Label="Payment Method" Variant="Variant.Text" AdornmentColor="Color.Primary">
 						<MudSelectItem Value="@("Cash")">Cash</MudSelectItem>
 						<MudSelectItem Value="@("Cheque")">Cheque</MudSelectItem>
 						<MudSelectItem Value="@("Bank Transfer")">Bank Transfer</MudSelectItem>
 					</MudSelect>
 				</MudItem>
+				<MudItem xs="3">
+					<MudSelect @bind-Value="Model.OrderMode" T="string" Label="Purchase Type" Variant="Variant.Text" AdornmentColor="Color.Primary">
+						<MudSelectItem Value="@("Local")">Local</MudSelectItem>
+						<MudSelectItem Value="@("Import")">Import</MudSelectItem>
+					</MudSelect>
+				</MudItem>
 			</MudGrid>
 
 			<MudGrid Justify="Justify.Center">
 				<MudItem xs="12">
-					<MudTextField Disabled="true" @bind-Value="Model.Vendor.CompanyAddress" T="string" Variant="Variant.Text"
-								  Label="Delivery Form"></MudTextField>
+					<MudTextField Disabled="true" @bind-Value="Model.Party.CompanyAddress" T="string" Variant="Variant.Text"
+								  Label="Vendor Address"></MudTextField>
 				</MudItem>
 			</MudGrid>
 
@@ -63,21 +69,21 @@
 					<MudAutocomplete Required="true" T="ProductDetails" Label="Item Name" SearchFunc="@SearchProDetails" Value="ProDetalil"
 									 CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e.Id == 0 ? null : e.ItemName)"
 									 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ValueChanged="OnProductChanged"
-									 HelperText="Please enter the Product Name" HelperTextOnFocus="true" Strict="false">
+									 HelperText="Please enter the Product Name" HelperTextOnFocus="true" Strict="false" Disabled="_productdetails">
 					</MudAutocomplete>
 
 					@* <MudTextField @bind-Value="purchaseOrderDetail.ItemName" T="string" Variant="Variant.Outlined" Label="Item Name"></MudTextField> *@
 				</MudItem>
 				<MudItem xs="2">
 					<MudNumericField @bind-Value="purchaseOrderDetail.Qty" T="int" Variant="Variant.Text" Label="Quantity"
-									 HideSpinButtons="true"></MudNumericField>
+									 HideSpinButtons="true" Disabled="_productdetails" ></MudNumericField>
 				</MudItem>
 				<MudItem xs="2">
 					<MudNumericField @bind-Value="purchaseOrderDetail.Rate" T="double" Variant="Variant.Text" Label="Rate"
-									 HideSpinButtons="true"></MudNumericField>
+									 HideSpinButtons="true" Disabled="_productdetails"></MudNumericField>
 				</MudItem>
 				<MudItem xs="2">
-					<MudSelect @bind-Value="purchaseOrderDetail.Unit" T="string" Label="Unit Type" Variant="Variant.Text" AdornmentColor="Color.Primary">
+					<MudSelect @bind-Value="purchaseOrderDetail.Unit" Disabled="_productdetails" T="string" Label="Unit Type" Variant="Variant.Text" AdornmentColor="Color.Primary">
 						<MudSelectItem Value="@("Cone")">Cone</MudSelectItem>
 						<MudSelectItem Value="@("Hangs")">Hangs</MudSelectItem>
 					</MudSelect>
@@ -98,12 +104,12 @@
 
 			<MudGrid Justify="Justify.Center" Style=" margin-bottom:15px;">
 
-				@if (Model.PODetail.Count > 0)
+				@if (Model.OrderDetail.Count > 0)
 				{
 
 					<MudGrid Justify="Justify.Center">
 						<MudItem xs="12">
-							<MudTable Items="Model.PODetail">
+							<MudTable Items="Model.OrderDetail">
 								<HeaderContent>
 									<MudTh>Item Name</MudTh>
 									<MudTh>Quantity</MudTh>
@@ -130,7 +136,7 @@
 						</MudItem>
 						<MudItem xs="3">
 							<MudNumericField OnKeyDown="CalculateTotal" @bind-Value="Model.TaxRate" T="double" Variant="Variant.Text" Label="Tax Rate"
-											 HideSpinButtons="true"></MudNumericField>
+											 HideSpinButtons="true" ReadOnly="true"></MudNumericField>
 						</MudItem>
 						<MudItem xs="3">
 							<MudNumericField Disabled="true" @bind-Value="Model.TaxAmount" T="double" Variant="Variant.Text" Label="Tax Amount"

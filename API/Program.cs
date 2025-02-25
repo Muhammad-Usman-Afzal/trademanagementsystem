@@ -15,6 +15,9 @@ builder.Services.AddScoped(typeof(IBaseRepo<>), typeof(BaseService<>));
 builder.Services.AddScoped<IPartyRepo, PartyService>();
 builder.Services.AddScoped<IPurchaseOrderRepo, PurchaseOrderService>();
 builder.Services.AddScoped<IProductDetailsRepo, ProductDetailsService>();
+builder.Services.AddScoped<IOrderRepo, OrderService>();
+builder.Services.AddScoped<IOrderDetailRepo, OrderDetailService>();
+builder.Services.AddScoped<IOrderTransactionsRepo, OrderTransectionService>();
 
 #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Models.AppModels;
 
@@ -11,11 +12,13 @@ public class Order : BaseEntity
     public DateTime? OrderDate { get; set; } = DateTime.Now;
     
     public int PartyId { get; set; } //Vendor
-    public Party Vendor { get; set; } = new Party();
+    public Party Party { get; set; } = new Party();
     
     [Column(TypeName = "varchar(25)")]
     public string PaymentMode { get; set; }
     public OrderTypes OType { get; set; } = new OrderTypes();
+    public OrderStatus Status { get; set; } = new OrderStatus();
+    public string OrderMode { get; set; }
     public double GrossAmount { get; set; }
     
     public double TaxRate { get; set; }
@@ -25,7 +28,8 @@ public class Order : BaseEntity
     public double NetAmount { get; set; }
 
     public bool IspaymentClear { get; set; }
-    public List<OrderDetail> PODetail { get; set; } = new List<OrderDetail>();
+
+    public List<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
 }
 
 public enum OrderTypes
@@ -33,4 +37,10 @@ public enum OrderTypes
     PurchaseOrder = 1,
     SaleOrder,
     ProductionOrder
+}
+
+public enum OrderStatus
+{
+    Opened = 1,
+    Closed
 }

@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /API/Migrations/TMSContextModelSnapshot.cs
 /API/Migrations
 /API/APILogs/APILog.txt
+/UI/UILogs/UILog.txt

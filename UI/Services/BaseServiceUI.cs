@@ -48,7 +48,7 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         }
     }
 
-    public async Task<T> GetLastRecord(string APIName)
+    public T GetLastRecord(string APIName)
     {
         try
         {
@@ -58,6 +58,22 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         {
             UILogger.WriteLog(ex);
             return default(T);
+        }
+    }
+
+    public async Task<string> GetSingleByColumnAsync(string APIName)
+    {
+        try
+        {
+            //return await _httpClient.GetFromJsonAsync<string>(APIName) ?? string.Empty;
+            var response = await _httpClient.GetStringAsync(APIName);
+            //Console.WriteLine($"API Response: {response}"); // Debug Log
+            return response ?? string.Empty;
+        }
+        catch (Exception ex)
+        {
+            UILogger.WriteLog(ex);
+            return string.Empty;
         }
     }
 

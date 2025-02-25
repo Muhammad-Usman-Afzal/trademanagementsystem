@@ -9,7 +9,7 @@ namespace UI.Pages.Purchase
         ISnackbar _Snackbar { get; set; }
 
         [Inject]
-        IPurchaseOrderRepoUI _purchaseOrderRepoUI { get; set; }
+        IOrderRepoUI _OrderRepoUI { get; set; }
         [Inject]
         NavigationManager Navigate { get; set; }
 
@@ -19,8 +19,8 @@ namespace UI.Pages.Purchase
 
 
         #region List
-        List<PurchaseOrder> POList = new List<PurchaseOrder>();
-        List<PurchaseOrderDetail> PODetailList = new List<PurchaseOrderDetail>();
+        List<Order> POList = new List<Order>();
+        List<OrderDetail> PODetailList = new List<OrderDetail>();
         #endregion
 
 
@@ -60,7 +60,7 @@ namespace UI.Pages.Purchase
             {
                 _processing = true;
                 _ = InvokeAsync(StateHasChanged);
-                POList = await _purchaseOrderRepoUI.GetAll("PurchaseOrder/GetPurchaseOrders") ?? new List<PurchaseOrder>();
+                POList = await _OrderRepoUI.GetAll("Order/GetOrders") ?? new List<Order>();
 
                 if (UserSession != null)
                 {
