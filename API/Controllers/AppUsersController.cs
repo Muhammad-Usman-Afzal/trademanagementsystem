@@ -1,6 +1,6 @@
 ﻿namespace API.Controllers;
 
-//[Authorize]
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class AppUsersController : ControllerBase
@@ -14,8 +14,7 @@ public class AppUsersController : ControllerBase
         _context = context;
     }
 
-    [Route("GetAppUsers")]
-    [HttpGet]
+    [HttpGet("GetAppUsers")]
     public async Task<ActionResult<List<AppUsers>>> GetAppUsers()
     {
         try

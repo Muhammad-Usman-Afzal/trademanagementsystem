@@ -1,13 +1,10 @@
-﻿using Microsoft.OpenApi.Models;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TMSContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TMSContext") ?? throw new InvalidOperationException("Connection string 'TMSContext' not found.")));
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -25,22 +22,41 @@ builder.Services.AddScoped<IMasterMenuRepo, MasterMenuService>();
 
 #endregion
 
+// Configure HttpClient to bypass SSL validation
+builder.Services.AddHttpClient("").ConfigurePrimaryHttpMessageHandler(() =>
+    new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+    });
+
+// In-Memory Caching
+builder.Services.AddMemoryCache();
+
 #region Jwt Authentication Config
 
-// Add authentication services
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
+// JWT Configuration
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
 
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TechnologyiansSolutionsKiSecretKeyBuhatHiSecret"))
-            };
-        });
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(secretKey),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer= jwtSettings["Issuer"],
+        ValidAudience= jwtSettings["Audience"]
+    };
+});
 
 #endregion
 
@@ -57,7 +73,6 @@ var bearerTokenScheme = new OpenApiSecurityScheme
 };
 var bearerTokenSecurity = new OpenApiSecurityRequirement
                          {
-
                             { bearerTokenScheme,new List<string>()}
                          };
 builder.Services.AddSwaggerGen(c =>
@@ -79,27 +94,29 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-
-    app.UseSwaggerUI(config =>
-    config.ConfigObject.AdditionalItems["syntaxHighlight"] = new Dictionary<string, object>
-    {
-        ["activated"] = false
-    });
-
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
-    });
+    app.UseSwaggerUI();
 }
+
+// Client-side Caching
+app.Use(async (context, next) =>
+{
+    context.Response.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue
+    {
+        Public = true,
+        MaxAge = TimeSpan.FromSeconds(60) // Cache duration
+    };
+    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new[] { "Accept-Encoding" };
+
+    await next();
+});
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
