@@ -1,5 +1,6 @@
 ﻿namespace API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class PartyController : ControllerBase
