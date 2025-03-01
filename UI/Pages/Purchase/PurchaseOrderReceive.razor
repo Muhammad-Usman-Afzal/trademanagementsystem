@@ -1,130 +1,127 @@
-﻿@page "/PurchaseOrderReceive"
+﻿@page "/PurchaseOrderReceive/{PONo:int}"
 
 <MudContainer Class="shadow-lg form-radius">
 
-    <MudGrid Justify="Justify.Center">
-        <MudItem xs="11">
+	<MudGrid Justify="Justify.Center">
+		<MudItem xs="11">
 
-            <MudGrid Justify="Justify.FlexStart">
-                <MudItem xs="12">
-                    <MudText Typo="Typo.h4">Purchase Order Receive</MudText>
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="10">
+					<MudText Typo="Typo.h4">Purchase Order Receive</MudText>
+				</MudItem>
+				<MudItem xs="2">
+					<MudChip T="string" Variant="Variant.Outlined" Color="Color.Primary" Style="width:100%">@PO.OrderMode</MudChip>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="6">
-                    @* <MudAutocomplete T="Party" Label="Farword To" ValueChanged="onVanderSelect"
-                                     Value="party" SearchFunc="@SearchVander" ToStringFunc="@(e => e == null ? null : $"{e.CompanyName}")"
-                                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" Required="true" /> *@
-                    <MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Vendor Name"></MudTextField>
-                </MudItem>
-                <MudItem xs="6">
-                    <MudTextField Disabled="true" @bind-Value="purchaseOrder.PONo" T="string" Variant="Variant.Text" Label="PO No."></MudTextField>
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="4">
+					<MudTextField Disabled="true" @bind-Value="PO.OrderNo" T="string" Variant="Variant.Text" Label="PO No." Margin="Margin.Dense"></MudTextField>
+				</MudItem>
+				<MudItem xs="4">
+					<MudDatePicker Disabled="true" @bind-Date="PO.OrderDate" Variant="Variant.Text" Label="PO Date" Margin="Margin.Dense"></MudDatePicker>
+				</MudItem>
+				<MudItem xs="4">
+					<MudDatePicker @bind-Value="transactions.TransectionDate" Variant="Variant.Text" Label="Receiving Date" Margin="Margin.Dense"></MudDatePicker>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="6">
-                    <MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Vendor Address"></MudTextField>
-                </MudItem>
-                <MudItem xs="6">
-                    <MudDatePicker @bind-Date="purchaseOrder.PODate" Variant="Variant.Text" Label="PO Date"></MudDatePicker>
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="4">
+					<MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Vendor Name" @bind-Value="PO.Party.CompanyName" Margin="Margin.Dense"></MudTextField>
+				</MudItem>
+				@* <MudItem xs="7"></MudItem> *@
+			</MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="12">
+					<MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Delivery From" @bind-Value="PO.Party.CompanyAddress" Margin="Margin.Dense"></MudTextField>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="6">
-                    <MudTextField T="string" Variant="Variant.Text" Label="Delivery To"></MudTextField>
-                </MudItem>
-                <MudItem xs="6">
-                    <MudDatePicker Variant="Variant.Text" Label="Receiving Date"></MudDatePicker>
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="3">
+					<MudCheckBox @bind-Value="transactions.IsDirectDelivery" Label="Is Direct Deliver" LabelPosition="LabelPosition.Start"></MudCheckBox>
+				</MudItem>
+				<MudItem xs="9">
+					@if (transactions.IsDirectDelivery)
+					{
+						<MudAutocomplete Required="true" T="Party" Label="Delivery to" SearchFunc="@SearchVendor" Value="party"
+										 CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e.Id == 0 ? null : $"{e.CompanyName} ({e.CompanyAddress})")"
+										 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ValueChanged="OnPartyChanged"
+										 Strict="false" Dense="true" Style="margin-top:-10px;">
+						</MudAutocomplete>
+					}
+					else
+					{
+						<MudSelect @bind-Value="transactions.RecivingLocation" Style="margin-top:-10px;" T="string" Dense="true" Label="Delivery to" Variant="Variant.Text" Margin="Margin.Dense" AdornmentColor="Color.Primary">
+							<MudSelectItem Value="@("Jilani")">Jilani</MudSelectItem>
+							<MudSelectItem Value="@("MM")">MM</MudSelectItem>
+							<MudSelectItem Value="@("Railway")">Railway</MudSelectItem>
+							<MudSelectItem Value="@("Shop")">Shop</MudSelectItem>
+							<MudSelectItem Value="@("Home")">Home</MudSelectItem>
+							<MudSelectItem Value="@("Weahouse")">Weahouse</MudSelectItem>
+						</MudSelect>
+					}
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12">
-                    <MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
-                </MudItem>
-            </MudGrid>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.FlexStart">
-                <MudItem xs="2">
-                    <MudButton Variant="Variant.Filled" Size="Size.Large"
-                               Color="Color.Primary">Cash</MudButton>
-                </MudItem>
-                <MudItem xs="4">
-                    <MudButton Variant="Variant.Filled" Size="Size.Large"
-                               Color="Color.Primary">Full Payment</MudButton>
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="12">
+					<MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12">
-                    <MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.SpaceAround">
+				<MudItem xs="3">
+					<MudAutocomplete T="OrderDetail" Label="Farword To" ValueChanged="onVanderSelect" Margin="Margin.Dense"
+									 Value="Model" SearchFunc="@SearchVander" ToStringFunc="@(e => e == null ? null : $"{e.Item.ItemName}")"
+									 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" />
+				</MudItem>
+				<MudItem xs="3"></MudItem>
+				<MudItem xs="3">
+					<MudNumericField @bind-Value="transactions.Qty" T="int" Variant="Variant.Text" Label="Reciving Qty" Margin="Margin.Dense" HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12">
-                    <MudTable Items="@elements" Hover="true">
-                        <HeaderContent>
-                            <MudTh>Item Name</MudTh>
-                            <MudTh>Quantity</MudTh>
-                            <MudTh>Rate</MudTh>
-                            <MudTh>Unit</MudTh>
-                        </HeaderContent>
-                        <RowTemplate>
-                            <MudTd>@context.Name</MudTd>
-                                <MudButton Variant="Variant.Filled" Size="Size.Large" StartIcon="@Icons.Material.Filled.Add"
-                                           Color="Color.Primary">Receiving Qty</MudButton>
-                            </RowTemplate>
-                        </MudTable>
-                        @code {
-        private class Element
-        {
-            public string Name { get; set; }
-        }
-        private List<Element> elements = new List<Element> { };
-                    }
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="12">
+					<MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
+				</MudItem>
+			</MudGrid>
 
-            <br />
-            <br />
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="12">
+					<MudTextField T="string" Variant="Variant.Outlined" Label="Remarks" Margin="Margin.Dense" Lines="2"></MudTextField>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12">
-                    <MudTextField T="string" Variant="Variant.Text" Label="Remarks" Lines="8"></MudTextField>
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="3">
+					<MudNumericField Disabled="true" @bind-Value="PO.GrossAmount" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Gross Amount"
+									 HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+				<MudItem xs="3">
+					<MudNumericField Disabled="true" @bind-Value="PO.TaxRate" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Tax Rate"
+									 HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+				<MudItem xs="3">
+					<MudNumericField Disabled="true" @bind-Value="PO.TaxAmount" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Tax Amount"
+									 HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+				<MudItem xs="3">
+					<MudNumericField Disabled="true" @bind-Value="PO.NetAmount" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Net Amount"
+									 HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.GrossAmount" T="double" Variant="Variant.Text" Label="Gross Amount"
-                                     HideSpinButtons="true"></MudNumericField>
-                </MudItem>
-                <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.TaxRate" T="double" Variant="Variant.Text" Label="Tax Rate"
-                                     HideSpinButtons="true"></MudNumericField>
-                </MudItem>
-                <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.TaxAmount" T="double" Variant="Variant.Text" Label="Tax Amount"
-                                     HideSpinButtons="true"></MudNumericField>
-                </MudItem>
-                <MudItem xs="3">
-                    <MudNumericField @bind-Value="purchaseOrder.NetAmount" T="double" Variant="Variant.Text" Label="Net Amount"
-                                     HideSpinButtons="true"></MudNumericField>
-                </MudItem>
-            </MudGrid>
+			<MudGrid Justify="Justify.FlexStart">
+				<MudItem xs="3">
+					<MudButton Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary">Receive</MudButton>
+				</MudItem>
+			</MudGrid>
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="3">
-                    <MudButton Variant="Variant.Filled" Size="Size.Large"
-                               Color="Color.Primary">Receive</MudButton>
-                </MudItem>
-            </MudGrid>
-
-        </MudItem>
-    </MudGrid>
+		</MudItem>
+	</MudGrid>
 
 </MudContainer>

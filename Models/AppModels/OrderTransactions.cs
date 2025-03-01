@@ -9,12 +9,16 @@ namespace Models.AppModels
 {
     public class OrderTransactions : BaseEntity
     {
-        [Column(TypeName = "nvarchar(15)")]
         public TransectionTypes TType { get; set; } = new TransectionTypes();
+        public DateTime TransectionDate { get; set; } = DateTime.Now;
+        public int Qty { get; set; }
+        public string ReciverParty { get; set; }
+        public string RecivingLocation { get; set; }
+        public bool IsDirectDelivery { get; set; }
+
         [Column(TypeName = "nvarchar(200)")]
         public string Remaeks { get; set; }
-        public DateTime TransectionDate { get; set; }
-        public int Qty { get; set; }
+
     }
 }
 
