@@ -86,4 +86,17 @@ a, .btn-link {
     border-radius: 12px;
 }
 
+.br-0{
+    border-radius:10px;
+}
+.br-1 {
+    border-radius: 15px;
+}
+.br-2 {
+    border-radius: 25px;
+}
+.br-3 {
+    border-radius: 50px;
+}
+
 /* End */

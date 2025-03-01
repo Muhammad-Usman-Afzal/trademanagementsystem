@@ -1,50 +1,32 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Trading System</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
+	<div class="container-fluid">
+		<a class="navbar-brand" href="">Trading System</a>
+		<button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+	</div>
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="index" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Party">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Party Management
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ProductManagement">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Product Management
-            </NavLink>
-        </div>
+	<nav class="flex-column">
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="index" Match="NavLinkMatch.All">
+				<span class="oi oi-home" aria-hidden="true"></span> Home
+			</NavLink>
+		</div>
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="Party">
+				<span class="oi oi-list-rich" aria-hidden="true"></span> Party Management
+			</NavLink>
+		</div>
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="ProductManagement">
+				<span class="oi oi-list-rich" aria-hidden="true"></span> Product Management
+			</NavLink>
+		</div>
 
-        <MudNavGroup  style="color:white;" Title="Production"> 
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CreateProductionOrder">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Create PO
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ProductionPlan">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Production Plan
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ProductionReceive">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Production Receive
-            </NavLink>
-        </div>
-        </MudNavGroup>
-
-        @*
+		@*
         <MudNavGroup Title="Sale">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="CreateSaleOrder">
@@ -62,30 +44,50 @@
             </NavLink>
         </div>
             </MudNavGroup>*@
+		@if (false)
+		{
+			<MudNavGroup style="color:white;" Title="Purchase" Icon="@Icons.Material.Filled.ShoppingCartCheckout">
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="PurchaseOrder">
+						<span class="oi oi-list-rich" aria-hidden="true"></span> Purchase Order
+					</NavLink>
+				</div>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="PurchaseOrderReceive">
+						<span class="oi oi-list-rich" aria-hidden="true"></span> PO Receive
+					</NavLink>
+				</div>
+			</MudNavGroup>
+			<MudNavGroup style="color:white;" Title="Production">
 
-        <MudNavGroup style="color:white;" Title="Purchase" Icon="@Icons.Material.Filled.ShoppingCartCheckout">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="PurchaseOrder">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Purchase Order
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="PurchaseOrderReceive">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> PO Receive
-            </NavLink>
-        </div>
-        </MudNavGroup>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="CreateProductionOrder">
+						<span class="oi oi-list-rich" aria-hidden="true"></span> Create PO
+					</NavLink>
+				</div>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="ProductionPlan">
+						<span class="oi oi-list-rich" aria-hidden="true"></span> Production Plan
+					</NavLink>
+				</div>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="ProductionReceive">
+						<span class="oi oi-list-rich" aria-hidden="true"></span> Production Receive
+					</NavLink>
+				</div>
+			</MudNavGroup>
+		}
 
-    </nav>
+	</nav>
 </div>
 
 @code {
-    private bool collapseNavMenu = true;
+	private bool collapseNavMenu = true;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+	private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+	private void ToggleNavMenu()
+	{
+		collapseNavMenu = !collapseNavMenu;
+	}
 }

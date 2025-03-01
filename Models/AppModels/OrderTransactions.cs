@@ -15,7 +15,7 @@ namespace Models.AppModels
         public string ReciverParty { get; set; }
         public string RecivingLocation { get; set; }
         public bool IsDirectDelivery { get; set; }
-
+        
         [Column(TypeName = "nvarchar(200)")]
         public string Remaeks { get; set; }
 

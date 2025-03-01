@@ -1,62 +1,66 @@
 ﻿@page "/index"
 
 <style>
-    .MyCard {
-        padding: 10px;
-        border-radius: 12px;
-        background-color: white;
-        height: 216px;
-        width: 260px;
-        margin-left: 62px;
-    }
+	.MyCard {
+		padding: 10px;
+		border-radius: 12px;
+		background-color: white;
+		height: 216px;
+		width: 260px;
+		margin-left: 62px;
+	}
 </style>
 
 @if (_processing)
 {
-    <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+	<MudProgressLinear Color="Color.Primary" Indeterminate="true" />
 }
 else
 {
-    <MudGrid Justify="Justify.Center" Class="mt-15">
-        <MudCard Class="MyCard">
-            <MudCardContent>
-                <MudGrid>
-                    <MudItem lg="8">
-                        <MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Summary</MudText>
-                    </MudItem>
-                </MudGrid>
-                <MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #3780F7; margin-bottom: -12px;">21</MudText>
-                <MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #3780F7;">Due Tasks</MudText>
-                <MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">Completed: <b>13</b></MudText>
-            </MudCardContent>
-        </MudCard>
-        <MudCard Class="MyCard">
-            <MudCardContent>
-                <MudGrid>
-                    <MudItem lg="8">
-                        <MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Overdue</MudText>
-                    </MudItem>
-                </MudGrid>
-                <MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #EF4444; margin-bottom: -12px;">17</MudText>
-                <MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #DE262B;">Tasks</MudText>
-                <MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">
-                    From Yesterday: <b>9</b>
+	<MudGrid Justify="Justify.Center" Class="mt-15">
+		<MudCard Class="MyCard">
+			<MudCardContent>
+				<MudGrid>
+					<MudItem lg="8">
+						<MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Parties</MudText>
+					</MudItem>
+				</MudGrid>
+				<MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #3780F7; margin-bottom: -12px;">@PartyCount.Count()</MudText>
+				<MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #3780F7;">Total</MudText>
+				<MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">
+                    Vander: <b>@vendorcount</b> | Supplier: <b>@SupplyerCount</b> | Contractor: <b>@ContractorCount</b>
                 </MudText>
-            </MudCardContent>
-        </MudCard>
-        <MudCard Class="MyCard">
-            <MudCardContent>
-                <MudGrid>
-                    <MudItem lg="8">
-                        <MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Issues</MudText>
-                    </MudItem>
-                </MudGrid>
-                <MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #F59E0B; margin-bottom: -12px;">24</MudText>
-                <MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #E8A74B;">Open</MudText>
-                <MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">Closed Today: <b>19</b></MudText>
-            </MudCardContent>
-        </MudCard>
-    </MudGrid>
+			</MudCardContent>
+		</MudCard>
+		<MudCard Class="MyCard">
+			<MudCardContent>
+				<MudGrid>
+					<MudItem lg="8">
+						<MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Products</MudText>
+					</MudItem>
+				</MudGrid>
+				<MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #EF4444; margin-bottom: -12px;">@ProductCount.Count()</MudText>
+				<MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #DE262B;">Total</MudText>
+				<MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">
+                    Processed: <b>@ProcessedCount</b> | Un-Processed: <b>@UnprocessedCount</b>
+				</MudText>
+			</MudCardContent>
+		</MudCard>
+		<MudCard Class="MyCard">
+			<MudCardContent>
+				<MudGrid>
+					<MudItem lg="8">
+						<MudText Typo="Typo.h6" Style="font-weight: 500; color: #202124;">Users</MudText>
+					</MudItem>
+				</MudGrid>
+				<MudText Typo="Typo.h3" Align="Align.Center" Style="font-size: 65px; font-weight: bold; color: #F59E0B; margin-bottom: -12px;">@userCount.Count()</MudText>
+				<MudText Typo="Typo.body1" Align="Align.Center" Style="font-size: 16px; font-weight: 500; color: #E8A74B;">Total</MudText>
+				<MudText Typo="Typo.body2" Align="Align.Center" Style="font-size: 14px; color: #6B7280; margin-top: 10px;">
+                    Active: <b>@userCount.Count()</b> | In-Active: <b>0</b>
+                    </MudText>
+			</MudCardContent>
+		</MudCard>
+	</MudGrid>
 }
 
 @* <MudContainer Class="myFormContainer">

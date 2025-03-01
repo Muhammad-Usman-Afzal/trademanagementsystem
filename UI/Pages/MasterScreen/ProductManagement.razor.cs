@@ -67,6 +67,8 @@ public partial class ProductManagement
             if (UserSession != null || true)
             {
                 BrandList = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
+                BrandList = BrandList.Where(x => x.PartyType == "Vendor").ToList();
+
                 ProductDetailsList = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
 
             }
