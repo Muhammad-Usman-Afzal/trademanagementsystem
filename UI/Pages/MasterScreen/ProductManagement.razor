@@ -24,7 +24,7 @@
 
 <MudGrid Justify="Justify.Center">
 	<MudItem xs="12">
-		@if (ProductDetailsList != null || ProductDetailsList.Count > 0)
+		@if (ProductDetailsList != null && ProductDetailsList.Count > 0)
 		{
 			<MudTable Items="@ProductDetailsList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
 				<HeaderContent>
@@ -56,12 +56,12 @@
 		{
 			<MudGrid Class="mt-15">
 				<MudItem lg="12">
-					<MudCard Elevation="0">
+					<MudCard Elevation="0" Style="background:none;">
 						<MudCardContent>
 							<MudGrid Justify="Justify.SpaceBetween">
 								<MudItem lg="4">
 									<MudGrid Justify="Justify.FlexEnd">
-										<MudImage Src="images/notfound.png" Width="200" />
+										<MudImage Src="images/Not-Found.png" Width="200" />
 									</MudGrid>
 								</MudItem>
 								<MudItem lg="4" Class="mt-5">
@@ -85,7 +85,7 @@
 
 
 
-<MudDialog @bind-IsVisible="AddPartyVisible" Options="dialogOptions">
+<MudDialog @bind-IsVisible="AddPartyVisible" Options="dialogOptions" style="border-radius:25px;">
 	<DialogContent>
 		<MudGrid Justify="Justify.Center" Style="height: 100%; margin: 10px; padding: 10px; width: 99%;">
 			<MudItem xs="10">
@@ -162,9 +162,17 @@
 				<MudGrid Justify="Justify.FlexEnd">
 
 					<MudItem xs="2">
-						<MudButton Variant="Variant.Filled" Size="Size.Small" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
+						<MudButton Variant="Variant.Filled" Disabled="_processing" Size="Size.Small" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
 								   OnClick="SaveAsync" Color="Color.Primary">
-							Save
+							@if (_processing)
+							{
+								<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+								<MudText Class="ms-2">Processing</MudText>
+							}
+							else
+							{
+								<MudText>Save</MudText>
+							}
 						</MudButton>
 					</MudItem>
 					<MudItem xs="2">

@@ -64,7 +64,8 @@ public partial class ProductManagement
             _processing = true;
             _ = InvokeAsync(StateHasChanged);
 
-            if (UserSession != null || true)
+
+            if (UserSession != null)
             {
                 BrandList = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
                 BrandList = BrandList.Where(x => x.PartyType == "Vendor").ToList();
@@ -83,6 +84,10 @@ public partial class ProductManagement
 
     async Task SaveAsync()
     {
+        _processing = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(1);
+
         if (string.IsNullOrEmpty(Model.ItemName) || Model.PartyId <= 0)
         {
             _Snackbar.Add("Please fill all fields.", Severity.Error);
@@ -103,6 +108,8 @@ public partial class ProductManagement
             }
 
         }
+
+        _processing = false;
     }
 
     void CloseParty()

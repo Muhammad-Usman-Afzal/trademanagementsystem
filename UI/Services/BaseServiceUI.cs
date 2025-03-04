@@ -137,7 +137,7 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         try
         {
             await SetAuthorizationHeader();
-            return await _httpClient.PutAsJsonAsync(APIName, entity)
+            return await _httpClient.PostAsJsonAsync(APIName, entity)
             .Result.Content.ReadFromJsonAsync<T>();
         }
         catch (Exception ex)

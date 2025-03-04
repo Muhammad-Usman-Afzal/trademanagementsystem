@@ -2,6 +2,7 @@
 @page "/signin"
 @layout AuthLayout
 
+
 <PageTitle>Sign-in</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="no-scroll">
@@ -20,7 +21,7 @@
                 <br />
 
                 <MudTextField @bind-Value="Model.UserName" T="string" Label="User Name" HelperText="Enter the User Name" HelperTextOnFocus="true" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Person" Class="mt-5" />
-                <MudTextField @bind-Value="Model.Password" T="string" Label="Password" HelperText="Enter the Password" HelperTextOnFocus="true" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Lock" InputType="InputType.Password" Immediate="true" />
+                <MudTextField @bind-Value="Model.Password" T="string" Label="Password" HelperText="Enter the Password" OnKeyDown="Enter" HelperTextOnFocus="true" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Lock" InputType="InputType.Password" Immediate="true" />
 
                 <MudGrid Justify="Justify.Center" Class="pa-6">
                 <MudButton Class="w-50" OnClick="ValidateLogin" Size="Size.Large" Disabled="@_processing" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Rounded.Key" Style="border-radius:25px;">

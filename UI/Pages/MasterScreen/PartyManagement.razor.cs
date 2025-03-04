@@ -6,7 +6,8 @@ public partial class PartyManagement
 {
     [Inject]
     ISnackbar _Snackbar { get; set; }
-
+    [Inject]
+    public ProtectedLocalStorage _localStorage { get; set; }
     [Inject]
     IPartyRepoUI _partyRepoUI { get; set; }
     [Inject]
@@ -14,7 +15,7 @@ public partial class PartyManagement
 
 
     #region Variables
-    private bool _processing = false, AddPartyVisible = false;
+    private bool _processing = false, AddPartyVisible = false, DisableContolle = false;
     #endregion
 
 
@@ -38,16 +39,18 @@ public partial class PartyManagement
 
             if (firstRender)
             {
-                //UserSession = await _localStorage.GetItemAsync<UserDetails>("User");
-                //if (UserSession == null)
-                //{
-                //    navigation.NavigateTo("/signin");
-                //}
-                //else
-                //{
-                //    await OnInitializedAsync();
-                //    StateHasChanged();
-                //}
+                var userSession = await _localStorage.GetAsync<AppUsers>("User");
+                UserSession = userSession.Value ?? new AppUsers();
+
+                if (UserSession.Id == 0)
+                {
+                    Navigate.NavigateTo("/signin");
+                }
+                else
+                {
+                    await OnInitializedAsync();
+                    StateHasChanged();
+                }
             }
         }
         catch (Exception ex) { UILogger.WriteLog(ex); }
@@ -59,11 +62,10 @@ public partial class PartyManagement
         {
             _processing = true;
             _ = InvokeAsync(StateHasChanged);
-            customerInfoList = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
 
             if (UserSession != null)
             {
-
+                customerInfoList = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
             }
             _processing = false;
         }
@@ -76,6 +78,10 @@ public partial class PartyManagement
 
     async Task SaveAsync()
     {
+        DisableContolle = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(1);
+
         if (string.IsNullOrEmpty(Model.CompanyName) || string.IsNullOrEmpty(Model.CompanyContact) || string.IsNullOrEmpty(Model.CompanyEmail) || string.IsNullOrEmpty(Model.CompanyAddress)
             || string.IsNullOrEmpty(Model.FocalPersonName) || string.IsNullOrEmpty(Model.FocalPersonContact) || string.IsNullOrEmpty(Model.FocalPersonEmail) || string.IsNullOrEmpty(Model.PartyType))
         {
@@ -96,7 +102,8 @@ public partial class PartyManagement
             }
 
         }
-
+        DisableContolle = false;
+        StateHasChanged();
     }
 
     void CloseParty()
