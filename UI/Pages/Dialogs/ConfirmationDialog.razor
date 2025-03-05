@@ -1,0 +1,17 @@
+﻿@inject IDialogService DialogService
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string ContentText { get; set; }
+    [Parameter] public string ButtonText { get; set; }
+    [Parameter] public string CancelButtonText { get; set; }
+}
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6">@ContentText</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Close(DialogResult.Ok(true))" Color="Color.Error">@ButtonText</MudButton>
+        <MudButton OnClick="() => MudDialog.Close(DialogResult.Cancel())" Color="Color.Primary">@CancelButtonText</MudButton>
+    </DialogActions>
+</MudDialog>

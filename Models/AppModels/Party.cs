@@ -7,7 +7,7 @@ public class Party : BaseEntity
     [Column(TypeName = "varchar(100)")]
     public string CompanyName { get; set; }
 
-    [Column(TypeName = "nvarchar(12)")]
+    [Column(TypeName = "nvarchar(13)")]
     public string CompanyContact { get; set; }
 
     [Column(TypeName = "nvarchar(50)")]
@@ -23,15 +23,15 @@ public class Party : BaseEntity
     [Column(TypeName = "nvarchar(17)")]
     public string STRNo { get; set; }
 
-    [Column(TypeName = "varchar(30)")]
+    [Column(TypeName = "varchar(50)")]
     public string FocalPersonName { get; set; }
 
-    [Column(TypeName = "nvarchar(12)")]
+    [Column(TypeName = "nvarchar(13)")]
     public string FocalPersonContact { get; set; }
 
     [Column(TypeName = "nvarchar(50)")]
     public string FocalPersonEmail { get; set; }
     
-    [Column(TypeName = "nvarchar(50)")]
+    [Column(TypeName = "nvarchar(12)")]
     public string PartyType { get; set; }
 }

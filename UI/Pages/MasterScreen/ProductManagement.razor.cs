@@ -6,7 +6,8 @@ public partial class ProductManagement
 {
     [Inject]
     ISnackbar _Snackbar { get; set; }
-
+    [Inject]
+    public ProtectedLocalStorage _localStorage { get; set; }
     [Inject]
     IPartyRepoUI _partyRepoUI { get; set; }
     [Inject]
@@ -42,16 +43,18 @@ public partial class ProductManagement
 
             if (firstRender)
             {
-                //UserSession = await _localStorage.GetItemAsync<UserDetails>("User");
-                //if (UserSession == null)
-                //{
-                //    navigation.NavigateTo("/signin");
-                //}
-                //else
-                //{
-                //    await OnInitializedAsync();
-                //    StateHasChanged();
-                //}
+                var userSession = await _localStorage.GetAsync<AppUsers>("User");
+                UserSession = userSession.Value ?? new AppUsers();
+
+                if (UserSession == null)
+                {
+                    Navigate.NavigateTo("/signin");
+                }
+                else
+                {
+                    await OnInitializedAsync();
+                    StateHasChanged();
+                }
             }
         }
         catch (Exception ex) { UILogger.WriteLog(ex); }
