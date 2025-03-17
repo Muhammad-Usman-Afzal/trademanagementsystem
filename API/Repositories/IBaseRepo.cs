@@ -12,10 +12,10 @@ public interface IBaseRepo<T> where T : BaseEntity
     Task Delete(T entity);
     Task<bool> CreateDetail(List<T> entity);
     Task DeleteDetail(List<T> entity);
-    Task DeleteById(int Id);
     Task UpdateById(T entity);
     Task DeleteByCondition(Expression<Func<T, bool>> expression);
     //Task UpdateUserWorkStatus(int Id, bool IsAnyTeamMemberWorking);
     bool GetBooleanByCondition(Expression<Func<T, bool>> expression);
     Task<T> GetLastSavedRecord();
+    Task<bool> DeleteById(int Id);
 }

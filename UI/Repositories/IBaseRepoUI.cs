@@ -14,4 +14,5 @@ public interface IBaseRepoUI<T> where T : BaseEntity
     Task<T> GetLastRecord(string APIName);
     string Decryption(string cipherText);
     Task<string> GetSingleByColumnAsync(string APIName);
+    Task<bool> DeleteById(string APIName);
 }

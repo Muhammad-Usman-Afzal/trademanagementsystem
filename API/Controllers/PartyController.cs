@@ -109,25 +109,30 @@ public class PartyController : ControllerBase
         catch (Exception ex) { APILogger.WriteLog(ex); return new Party(); }
     }
 
-    // DELETE: api/Party/5
-    //[HttpDelete("{id}")]
-    //public async Task<IActionResult> DeleteParty(int id)
-    //{
-    //    if (_context.Party == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    var Party = await _context.Party.FindAsync(id);
-    //    if (Party == null)
-    //    {
-    //        return NotFound();
-    //    }
+    [HttpDelete("Delete")]
+    public async Task<bool> Delete(int id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return false;
+            }
 
-    //    _context.Party.Remove(Party);
-    //    await _context.SaveChangesAsync();
+            var party = await _PartyRepo.GetById(id);
+            if (party == null)
+            {
+                return false;
+            }
 
-    //    return NoContent();
-    //}
+            return await _PartyRepo.DeleteById(id);
+        }
+        catch (Exception ex)
+        {
+            APILogger.WriteLog(ex);
+            return false;
+        }
+    }
 
     //private bool PartyExists(int id)
     //{

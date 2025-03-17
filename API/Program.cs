@@ -19,6 +19,7 @@ builder.Services.AddScoped<IOrderDetailRepo, OrderDetailService>();
 builder.Services.AddScoped<IOrderTransactionsRepo, OrderTransectionService>();
 builder.Services.AddScoped<IAppUsersRepo, AppUsersService>();
 builder.Services.AddScoped<IMasterMenuRepo, MasterMenuService>();
+builder.Services.AddScoped<IStockTransactionsRepo, StockTransactionsService>();
 
 #endregion
 

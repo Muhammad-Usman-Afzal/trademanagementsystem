@@ -1,10 +1,11 @@
 ﻿@page "/PurchaseOrderReceive/{PONo:int}"
 
-<MudContainer Class="shadow-lg form-radius">
+<MudCard>
 
 	<MudGrid Justify="Justify.Center">
 		<MudItem xs="11">
 
+			@* Page Header *@
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="10">
 					<MudText Typo="Typo.h4">Purchase Order Receive</MudText>
@@ -16,44 +17,45 @@
 
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="4">
-					<MudTextField Disabled="true" @bind-Value="PO.OrderNo" T="string" Variant="Variant.Text" Label="PO No." Margin="Margin.Dense"></MudTextField>
+					<MudTextField Disabled="true" @bind-Value="PO.OrderNo" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="PO No." ></MudTextField>
 				</MudItem>
 				<MudItem xs="4">
-					<MudDatePicker Disabled="true" @bind-Date="PO.OrderDate" Variant="Variant.Text" Label="PO Date" Margin="Margin.Dense"></MudDatePicker>
+					<MudDatePicker Disabled="true" @bind-Date="PO.OrderDate" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="PO Date" ></MudDatePicker>
 				</MudItem>
 				<MudItem xs="4">
-					<MudDatePicker @bind-Value="transactions.TransectionDate" Variant="Variant.Text" Label="Receiving Date" Margin="Margin.Dense"></MudDatePicker>
+					<MudDatePicker @bind-Value="transactions.TransectionDate" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="Receiving Date" ></MudDatePicker>
 				</MudItem>
 			</MudGrid>
 
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="4">
-					<MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Vendor Name" @bind-Value="PO.Party.CompanyName" Margin="Margin.Dense"></MudTextField>
+					<MudTextField Disabled="true" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="Vendor Name" @bind-Value="PO.Party.CompanyName" ></MudTextField>
 				</MudItem>
 				@* <MudItem xs="7"></MudItem> *@
 			</MudGrid>
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="12">
-					<MudTextField Disabled="true" T="string" Variant="Variant.Text" Label="Delivery From" @bind-Value="PO.Party.CompanyAddress" Margin="Margin.Dense"></MudTextField>
+					<MudTextField Disabled="true" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="Delivery From" @bind-Value="PO.Party.CompanyAddress" ></MudTextField>
 				</MudItem>
 			</MudGrid>
 
-			<MudGrid Justify="Justify.FlexStart">
+			<MudGrid Justify="Justify.FlexStart" Class="mt-4">
 				<MudItem xs="3">
 					<MudCheckBox @bind-Value="transactions.IsDirectDelivery" Label="Is Direct Deliver" LabelPosition="LabelPosition.Start"></MudCheckBox>
 				</MudItem>
 				<MudItem xs="9">
 					@if (transactions.IsDirectDelivery)
 					{
-						<MudAutocomplete Required="true" T="Party" Label="Delivery to" SearchFunc="@SearchVendor" Value="party"
+						<MudAutocomplete Required="true" T="Party" Label="Delivery to" SearchFunc="@SearchVendor" Value="party" Variant="Variant.Outlined"
+										 Adornment="Adornment.Start" Placeholder="Delivery to"
 										 CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e.Id == 0 ? null : $"{e.CompanyName} ({e.CompanyAddress})")"
 										 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ValueChanged="OnPartyChanged"
-										 Strict="false" Dense="true" Style="margin-top:-10px;">
+										 Strict="false"  Style="margin-top:-10px;">
 						</MudAutocomplete>
 					}
 					else
 					{
-						<MudSelect @bind-Value="transactions.RecivingLocation" Style="margin-top:-10px;" T="string" Dense="true" Label="Delivery to" Variant="Variant.Text" Margin="Margin.Dense" AdornmentColor="Color.Primary">
+						<MudSelect @bind-Value="transactions.RecivingLocation" Style="margin-top:-10px;" T="string" Label="Delivery to" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" AdornmentColor="Color.Primary">
 							<MudSelectItem Value="@("Jilani")">Jilani</MudSelectItem>
 							<MudSelectItem Value="@("MM")">MM</MudSelectItem>
 							<MudSelectItem Value="@("Railway")">Railway</MudSelectItem>
@@ -68,60 +70,87 @@
 
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="12">
-					<MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
+					<MudDivider Style="margin-top:10px; margin-bottom:10px; border:solid 1px black;" />
 				</MudItem>
 			</MudGrid>
 
 			<MudGrid Justify="Justify.SpaceAround">
-				<MudItem xs="3">
-					<MudAutocomplete T="OrderDetail" Label="Farword To" ValueChanged="onVanderSelect" Margin="Margin.Dense"
-									 Value="Model" SearchFunc="@SearchVander" ToStringFunc="@(e => e == null ? null : $"{e.Item.ItemName}")"
-									 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" />
+				<MudItem xs="2">
+					<MudAutocomplete T="OrderDetail" Label="PO Items" Placeholder="PO Items" ValueChanged="onItemSelect" 
+									 Value="Model" SearchFunc="@SearchItem" ToStringFunc="@(e => e == null ? null : $"{e.Item.ItemName}")" Variant="Variant.Outlined"
+									 AdornmentIcon="@Icons.Material.Filled.Search" Adornment="Adornment.Start" AdornmentColor="Color.Primary" Clearable="true" Strict="false" />
 				</MudItem>
-				<MudItem xs="3"></MudItem>
-				<MudItem xs="3">
-					<MudNumericField @bind-Value="transactions.Qty" T="int" Variant="Variant.Text" Label="Reciving Qty" Margin="Margin.Dense" HideSpinButtons="true"></MudNumericField>
+				<MudItem xs="2">
+					<MudNumericField @bind-Value="Model.Qty" T="int" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="Purchase Order Qty" Disabled="true" HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+				<MudItem xs="2">
+					<MudNumericField @bind-Value="TotalReciving" T="int" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="Total Reciving Qty" Disabled="true"  HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+				<MudItem xs="2">
+					<MudNumericField @bind-Value="transactions.Qty" Max="@RemaningQty" Min="1" T="int" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" Label="Reciving Qty" HelperText="@RemaningQty.ToString()" HelperTextOnFocus="true"  HideSpinButtons="true"></MudNumericField>
+				</MudItem>
+				<MudItem xs="2">
+					<MudIconButton Icon="@Icons.Material.Filled.AddToPhotos" Size="Size.Large" OnClick="@AddItem" />
 				</MudItem>
 			</MudGrid>
 
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="12">
-					<MudDivider Style="margin-top:20px; margin-bottom:20px; border:solid 1px black;" />
+					<MudDivider Style="margin-top:10px; margin-bottom:10px; border:solid 1px black;" />
 				</MudItem>
 			</MudGrid>
-
+			<MudGrid>
+				<MudItem xs="12">
+					<MudTable Items="@PODetail" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
+						<HeaderContent>
+							<MudTh>Item Name</MudTh>
+							<MudTh>Total Qty</MudTh>
+							<MudTh>Reciving</MudTh>
+							<MudTh>Action</MudTh>
+						</HeaderContent>
+						<RowTemplate>
+							<MudTd>@context.Item.ItemName</MudTd>
+							<MudTd>@context.Qty</MudTd>
+							<MudTd>@context.OT.Select(x=>x.Qty).FirstOrDefault()</MudTd>
+							<MudTd>
+								<MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="Edit" />
+							</MudTd>
+						</RowTemplate>
+					</MudTable>
+				</MudItem>
+			</MudGrid>
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="12">
-					<MudTextField T="string" Variant="Variant.Outlined" Label="Remarks" Margin="Margin.Dense" Lines="2"></MudTextField>
+					<MudTextField T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name" @bind-Value="transactions.Remaeks" Label="Remarks"  Lines="2"></MudTextField>
 				</MudItem>
 			</MudGrid>
 
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="3">
-					<MudNumericField Disabled="true" @bind-Value="PO.GrossAmount" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Gross Amount"
+					<MudNumericField Disabled="true" @bind-Value="PO.GrossAmount" T="double" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name"  Label="Gross Amount"
 									 HideSpinButtons="true"></MudNumericField>
 				</MudItem>
 				<MudItem xs="3">
-					<MudNumericField Disabled="true" @bind-Value="PO.TaxRate" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Tax Rate"
+					<MudNumericField Disabled="true" @bind-Value="PO.TaxRate" T="double" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name"  Label="Tax Rate"
 									 HideSpinButtons="true"></MudNumericField>
 				</MudItem>
 				<MudItem xs="3">
-					<MudNumericField Disabled="true" @bind-Value="PO.TaxAmount" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Tax Amount"
+					<MudNumericField Disabled="true" @bind-Value="PO.TaxAmount" T="double" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name"  Label="Tax Amount"
 									 HideSpinButtons="true"></MudNumericField>
 				</MudItem>
 				<MudItem xs="3">
-					<MudNumericField Disabled="true" @bind-Value="PO.NetAmount" T="double" Variant="Variant.Text" Margin="Margin.Dense" Label="Net Amount"
+					<MudNumericField Disabled="true" @bind-Value="PO.NetAmount" T="double" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Party Business Name"  Label="Net Amount"
 									 HideSpinButtons="true"></MudNumericField>
 				</MudItem>
 			</MudGrid>
 
-			<MudGrid Justify="Justify.FlexStart">
+			<MudGrid Justify="Justify.Center">
 				<MudItem xs="3">
-					<MudButton Variant="Variant.Filled" Size="Size.Large" Color="Color.Primary">Receive</MudButton>
+					<MudButton Variant="Variant.Filled" FullWidth="true" Size="Size.Large" Color="Color.Primary" OnClick="SaveAsync">Receive</MudButton>
 				</MudItem>
 			</MudGrid>
 
 		</MudItem>
 	</MudGrid>
 
-</MudContainer>
+</MudCard>

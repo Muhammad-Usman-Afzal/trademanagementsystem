@@ -104,7 +104,7 @@ public class BaseService<T> : IBaseRepo<T> where T : BaseEntity
             entity.ForEach(x => x.CreateOn = DateTime.Now);
 
             await entities.AddRangeAsync(entity);
-            return await _context.SaveChangesAsync()>0;
+            return await _context.SaveChangesAsync() > 0;
         }
         catch (Exception ex)
         {
@@ -119,7 +119,7 @@ public class BaseService<T> : IBaseRepo<T> where T : BaseEntity
     {
         try
         {
-            if (entity == null || entity.Id==0)
+            if (entity == null || entity.Id == 0)
             {
                 throw new ArgumentNullException("entity required");
             }
@@ -194,7 +194,7 @@ public class BaseService<T> : IBaseRepo<T> where T : BaseEntity
         }
     }
 
-    public async Task DeleteById(int Id)
+    public async Task<bool> DeleteById(int Id)
     {
         try
         {
@@ -203,11 +203,12 @@ public class BaseService<T> : IBaseRepo<T> where T : BaseEntity
             //    throw new ArgumentNullException("entity required");
             //}
             entities.Remove(await GetById(Id));
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
         catch (Exception ex)
         {
             APILogger.WriteLog(ex);
+            return false;
         }
     }
 

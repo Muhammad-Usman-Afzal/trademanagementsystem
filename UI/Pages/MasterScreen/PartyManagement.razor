@@ -66,6 +66,7 @@
 					<MudTd>@context.FocalPersonEmail</MudTd>
 					<MudTd>
 						<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" OnClick="@(()=> GridtoCall(context))" />
+						<MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="Delete" OnClick="@(()=>DeleteById(context.Id))" />
 					</MudTd>
 				</RowTemplate>
 			</MudTable>
@@ -141,7 +142,7 @@
 						<MudText Typo="Typo.h6">Company Details</MudText>
 					</MudItem>
 				</MudGrid>
-
+				
 				<MudGrid Justify="Justify.Center">
 					<MudItem xs="4">
 						<MudTextField @bind-Value="Model.CompanyName" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Required="true"
@@ -238,7 +239,6 @@
 										  Variant="Variant.Outlined"
 										  AdornmentIcon="@Icons.Material.Filled.Margin"
 										  Adornment="Adornment.Start"
-										  Required="true"
 										  RequiredError="Please fill this field"
 										  Label="STR No"
 										  InputType="InputType.Text"

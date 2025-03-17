@@ -37,12 +37,13 @@ namespace UI.Pages.Purchase
         List<Party> Vanders = new List<Party>();
         ProductDetails ProDetalil = new ProductDetails();
         List<ProductDetails> ProDetalilList = new List<ProductDetails>();
+        List<ProductDetails> CompanyDetalilList = new List<ProductDetails>();
         //PurchaseOrderDetail purchaseOrderDetail = new PurchaseOrderDetail();
         OrderDetail purchaseOrderDetail = new OrderDetail();
         List<PurchaseOrderDetail> purchaseOrderDetailList = new List<PurchaseOrderDetail>();
         AppUsers UserSession = new AppUsers();
 
-        private bool _processing = false, _productdetails = true;
+        private bool _processing = false, _productdetails = true, _Party;
 
         #endregion
 
@@ -132,7 +133,7 @@ namespace UI.Pages.Purchase
             return
                 string.IsNullOrEmpty(Model.OrderDate.ToString()) || string.IsNullOrEmpty(Model.OrderNo) ||
                 Model.PartyId < 0 || string.IsNullOrEmpty(Model.PaymentMode) || string.IsNullOrEmpty(Model.OrderMode) ||
-                Model.OrderDetail.Count > 0
+                Model.OrderDetail.Count < 0
                 ? false : true;
         }
 
@@ -147,8 +148,8 @@ namespace UI.Pages.Purchase
         {
             await Task.Delay(0);
             if (string.IsNullOrEmpty(value))
-                return ProDetalilList;
-            return ProDetalilList.Where(x => !string.IsNullOrEmpty(x.ItemName) ? x.ItemName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+                return CompanyDetalilList;
+            return CompanyDetalilList.Where(x => !string.IsNullOrEmpty(x.ItemName) ? x.ItemName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
         }
 
         void OnPartyChanged(Party Value)
@@ -160,8 +161,20 @@ namespace UI.Pages.Purchase
                     party = Value;
                     Model.PartyId = Value.Id;
                     Model.Party = Value;
-                    _productdetails = false;
-                    ProDetalilList = ProDetalilList.Where(x => x.PartyId == Model.PartyId && x.Isprocessed == false).ToList();
+                    CompanyDetalilList = ProDetalilList.Where(x => x.PartyId == Model.PartyId && x.Isprocessed == false).ToList();
+
+                    if(CompanyDetalilList.Count > 0)
+                    {
+                        _productdetails = false;
+                    }
+                    else
+                    {
+                        _productdetails = true;
+                        ProDetalil = new ProductDetails();
+                    }
+
+                    _productdetails = CompanyDetalilList.Count > 0 ?  false : true;
+
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
@@ -188,10 +201,35 @@ namespace UI.Pages.Purchase
             {
                 if (POdetail.Qty > 0 && POdetail.Rate > 0 && !String.IsNullOrEmpty(POdetail.Unit))
                 {
-                    Model.OrderDetail.Add(POdetail);
-                    purchaseOrderDetail = new OrderDetail();
+                    var existingItem = Model.OrderDetail.FirstOrDefault(x => x.ItemId == POdetail.ItemId);
+                    
+                    if (existingItem != null && existingItem.Unit == POdetail.Unit)
+                    {
+                        // Update the quantity
+                        existingItem.Qty += POdetail.Qty;
 
+                        // Update the rate if it is different
+                        if (existingItem.Rate != POdetail.Rate)
+                        {
+                            existingItem.Rate = POdetail.Rate;
+                        }
+                    }
+                    else
+                    {
+                        // Add new item if it does not exist
+                        Model.OrderDetail.Add(POdetail);
+                    }
+
+                    purchaseOrderDetail = new OrderDetail();
+                    ProDetalil = new ProductDetails();
                     CalculateTotal();
+
+                    StateHasChanged();
+
+                    if (Model.OrderDetail.Count > 0)
+                    {
+                        _Party = true;
+                    }
                 }
                 else
                 {
@@ -203,6 +241,19 @@ namespace UI.Pages.Purchase
                 snackbar.Add("Please Select Vendor first", Severity.Warning);
             }
         }
+
+        void RemoveItem(OrderDetail POdetail)
+        {
+                Model.OrderDetail.Remove(POdetail);
+        }
+
+        //void UpdateItem(OrderDetail POD)
+        //{
+        //    purchaseOrderDetail.Qty = POD.Qty;
+        //    purchaseOrderDetail.Rate = POD.Rate;
+        //    purchaseOrderDetail.Unit = POD.Unit;
+        //    ProDetalil = POD.Item;
+        //}
 
         void CalculateTotal()
         {

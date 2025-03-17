@@ -43,6 +43,10 @@ builder.Services.AddHttpClient<IMasterMenuRepoUI, MasterMenuServiceUI>(client =>
 {
     client.BaseAddress = new Uri(APIBaseUrl);
 });
+builder.Services.AddHttpClient<IStockTransactionsRepoUI, StockTransactionsServiceUI>(client =>
+{
+    client.BaseAddress = new Uri(APIBaseUrl);
+});
 
 #endregion
 

@@ -1,5 +1,6 @@
 ﻿using Models;
 using Models.AppModels;
+using MudBlazor;
 using UI.Repositories;
 
 namespace UI.Pages.Purchase
@@ -16,13 +17,23 @@ namespace UI.Pages.Purchase
         NavigationManager Navigate { get; set; }
         [Inject]
         IOrderRepoUI _OrderRepoUI { get; set; }
+        [Inject]
+        IOrderDetailRepoUI _OrderDetailRepoUI { get; set; }
+        [Inject]
+        IOrderTransactionsRepoUI _orderTransactionsRepoUI { get; set; }
+        [Inject]
+        public ProtectedLocalStorage _localStorage { get; set; }
+        [Inject]
+        IStockTransactionsRepoUI _stockTransactionsRepoUI { get; set; }
+
+
 
 
         #region Variables
         [Parameter]
         public int PONo { get; set; }
-        private int _PONo;
-        private bool _processing = false;
+        private int _PONo, TotalReciving, RemaningQty;
+        private bool _processing = false, DisableContolle=false;
         #endregion
 
         #region Objects
@@ -32,12 +43,16 @@ namespace UI.Pages.Purchase
         OrderDetail Model = new OrderDetail();
         OrderTransactions transactions = new OrderTransactions();
         PurchaseOrder purchaseOrder = new PurchaseOrder();
+        StockTransactions stockTransactions = new StockTransactions();
 
         #endregion
 
         #region Lists
         List<Party> parties = new List<Party>();
         List<OrderDetail> PODetail = new List<OrderDetail>();
+        List<OrderDetail> ModelList = new List<OrderDetail>();
+        List<OrderTransactions> POtransectionList = new List<OrderTransactions>();
+        List<StockTransactions> stockTransactionsList = new List<StockTransactions>();
         #endregion
 
         protected override Task OnParametersSetAsync()
@@ -63,16 +78,18 @@ namespace UI.Pages.Purchase
 
                 if (firstRender)
                 {
-                    //UserSession = await _localStorage.GetItemAsync<UserDetails>("User");
-                    //if (UserSession == null)
-                    //{
-                    //    navigation.NavigateTo("/signin");
-                    //}
-                    //else
-                    //{
-                    //    await OnInitializedAsync();
-                    //    StateHasChanged();
-                    //}
+                    var userSession = await _localStorage.GetAsync<AppUsers>("User");
+                    UserSession = userSession.Value ?? new AppUsers();
+
+                    if (UserSession.Id == 0)
+                    {
+                        Navigate.NavigateTo("/signin");
+                    }
+                    else
+                    {
+                        await OnInitializedAsync();
+                        StateHasChanged();
+                    }
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
@@ -84,13 +101,12 @@ namespace UI.Pages.Purchase
             {
                 _processing = true;
                 _ = InvokeAsync(StateHasChanged);
-                parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
-                PO = await _OrderRepoUI.GetSingleByCondition($"Order/GetOrderById?id={PONo}") ?? new Order();
-                parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
-
-                parties = parties.Where(x => x.PartyType == "Supplier").ToList();
                 if (UserSession != null)
                 {
+                    PO = await _OrderRepoUI.GetSingleByCondition($"Order/GetOrderById?id={PONo}") ?? new Order();
+                    parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
+
+                    parties = parties.Where(x => x.PartyType == "Customer").ToList();
 
                 }
                 _processing = false;
@@ -102,13 +118,15 @@ namespace UI.Pages.Purchase
             return;
         }
 
-        void onVanderSelect(OrderDetail value)
+        void onItemSelect(OrderDetail value)
         {
             try
             {
                 if (value != null)
                 {
                     Model = value;
+                    TotalReciving = Model.OT.Sum(odt => odt.Qty);
+                    RemaningQty = Model.Qty - TotalReciving;
                     //FarwordManagerId = value.Id;
                     //complainTrack.DepartmentManagerId = departmang.Id;
                 }
@@ -119,7 +137,7 @@ namespace UI.Pages.Purchase
             }
         }
 
-        private async Task<IEnumerable<OrderDetail>> SearchVander(string value)
+        private async Task<IEnumerable<OrderDetail>> SearchItem(string value)
         {
             await Task.Delay(0);
             if (string.IsNullOrEmpty(value))
@@ -147,6 +165,170 @@ namespace UI.Pages.Purchase
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
+        }
+
+        void AddItem()
+        {
+            if (true) // validate all fields
+            {
+                if (true)
+                {
+                    transactions.TType = TransectionTypes.PurchaseReceive;
+
+                    // Check if the item already exists in PODetail
+                    var existingItem = PODetail.FirstOrDefault(x => x.ItemId == Model.ItemId);
+
+                    if (existingItem != null)
+                    {
+                        // If item exists, update its transaction details
+                        var existingTransaction = existingItem.OT.FirstOrDefault(t => t.TType == TransectionTypes.PurchaseReceive);
+
+                        if (existingTransaction != null)
+                        {
+                            existingTransaction.Qty += transactions.Qty;
+                        }
+                        else
+                        {
+                            // If no transaction exists, add new transaction for this item
+                            existingItem.OT.Add(new OrderTransactions
+                            {
+                                Qty = transactions.Qty,
+                                TType = transactions.TType,
+                                ReciverParty = transactions.ReciverParty,
+                                RecivingLocation = transactions.RecivingLocation
+                                // Add other required properties
+                            });
+                        }
+                    }
+                    else
+                    {
+                        // If item doesn't exist, create a new record in PODetail
+                        Model.OT = new List<OrderTransactions>
+                            {
+                                new OrderTransactions
+                                    {
+                                        Qty = transactions.Qty,
+                                        TType = transactions.TType,
+                                        ReciverParty = transactions.ReciverParty,
+                                        RecivingLocation = transactions.RecivingLocation
+                                        // Add other required properties
+                                    }
+                            };
+
+                        PODetail.Add(Model);
+                    }
+
+                    // Reset transaction object
+                    transactions = new OrderTransactions();
+                    Model = new OrderDetail();
+                    TotalReciving = new int();
+                    RemaningQty = new int();
+                }
+                else
+                {
+                    _Snackbar.Add("Kindly fill all Required Data", Severity.Warning);
+                }
+            }
+            else
+            {
+                _Snackbar.Add("Please Select Vendor first", Severity.Warning);
+            }
+        }
+
+        async Task SaveAsync()
+        {
+            try
+            {
+                bool res;
+                DisableContolle = true;
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(1);
+
+                foreach (var po in PODetail)
+                {
+                    stockTransactionsList = new List<StockTransactions>
+                            {
+                                new StockTransactions
+                                    {
+                                        Qty = po.Qty,
+                                        StockType = StockTransectionTypes.Purchase,
+                                        ItemId = po.ItemId,
+                                        Warehouse = transactions.RecivingLocation,
+                                        ReferenceNumber = PO.OrderNo,
+                                    }
+                            };
+                }
+
+                if (await InsurtValidateAsync())
+                {
+                    await _OrderDetailRepoUI.UpdateDetail("OrderDetail/BulkUpdate", PODetail);
+                    await _stockTransactionsRepoUI.BulkInsert("StockTransactions/BulkInsert", stockTransactionsList);
+
+
+                    if (true)
+                    {
+                        //_Snackbar.Add("Saved successfully", Severity.Success);
+                        //Navigate.NavigateTo("/OrderDetails", forceLoad: true);
+                    }
+                    else
+                    {
+                        _Snackbar.Add("There is some thing Went worng While Creating New Recoard", Severity.Error);
+                    }
+                }
+                else
+                {
+                    _Snackbar.Add("Please fill all fields properly.", Severity.Warning);
+                }
+                DisableContolle = false;
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                _Snackbar.Add($"{ex}", Severity.Error);
+                _Snackbar.Add("There is some thing Went worng, Kindly contact to support ", Severity.Error);
+                throw;
+            }
+        }
+        
+        private async Task<bool> InsurtValidateAsync()
+        {
+            //if (Model.Id > 0 && (!String.IsNullOrEmpty(Model.NTN) || !String.IsNullOrEmpty(Model.STRNo)) && Model.IsRegisterd == false)
+            //{
+            //    showRegConfirmDialog = true;
+            //    bool confirm = await ShowConfirmationDialog();
+            //    if (!confirm)
+            //    {
+            //        return false;
+            //    }
+            //}
+            //if (Model.IsRegisterd)
+            //{
+            //    if (isContactInvalid || isEmailInvalid || (isNTNInvalid && isSTRInvalid) || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
+            //        || String.IsNullOrEmpty(Model.CompanyName) || String.IsNullOrEmpty(Model.CompanyAddress) || String.IsNullOrEmpty(Model.FocalPersonName))
+            //    {
+            //        return false;
+            //    }
+            //    else
+            //    {
+            //        return true;
+            //    }
+
+            //}
+            //else
+            //{
+            //    Model.NTN = null;
+            //    Model.STRNo = null;
+            //    if (isContactInvalid || isEmailInvalid || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
+            //        || String.IsNullOrEmpty(Model.CompanyName) || String.IsNullOrEmpty(Model.CompanyAddress) || String.IsNullOrEmpty(Model.FocalPersonName))
+            //    {
+            //        return false;
+            //    }
+            //    else
+            //    {
+            //        return true;
+            //    }
+            //}
+            return true;
         }
     }
 }

@@ -124,6 +124,25 @@ public partial class PartyManagement
         }
     }
 
+    async Task DeleteById(int Id)
+    {
+        bool IsConfirmed = await DeleteConfirmationDialog();
+
+        if(IsConfirmed)
+        {
+            if (await _partyRepoUI.DeleteById($"Party/Delete?id={Id}"))
+            {
+                _Snackbar.Add("Delete successfully", Severity.Success);
+                Navigate.NavigateTo("/Party", forceLoad: true);
+            }
+            else
+            {
+                _Snackbar.Add("There is something went worng while deleting new record", Severity.Error);
+            }
+        }
+    }
+
+
     void CloseParty()
     {
         Model = new Party();
@@ -132,7 +151,7 @@ public partial class PartyManagement
 
     private async Task<bool> InsurtValidateAsync()
     {
-        if (Model.Id>0 && !String.IsNullOrEmpty(Model.NTN) && !String.IsNullOrEmpty(Model.STRNo) && Model.IsRegisterd == false)
+        if (Model.Id>0 && (!String.IsNullOrEmpty(Model.NTN) || !String.IsNullOrEmpty(Model.STRNo)) && Model.IsRegisterd == false)
         {
             showRegConfirmDialog = true;
             bool confirm = await ShowConfirmationDialog();
@@ -143,7 +162,7 @@ public partial class PartyManagement
         }
         if (Model.IsRegisterd)
         {
-            if (isContactInvalid || isEmailInvalid || isNTNInvalid || isSTRInvalid || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
+            if (isContactInvalid || isEmailInvalid || (isNTNInvalid && isSTRInvalid) || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
                 || String.IsNullOrEmpty(Model.CompanyName) || String.IsNullOrEmpty(Model.CompanyAddress) || String.IsNullOrEmpty(Model.FocalPersonName))
             {
                 return false;
@@ -209,8 +228,15 @@ public partial class PartyManagement
 
     private void ValidateSTR(FocusEventArgs e)
     {
+        if(!string.IsNullOrEmpty(Model.STRNo))
+        {
         isSTRInvalid = string.IsNullOrWhiteSpace(Model.STRNo) ||
                       !System.Text.RegularExpressions.Regex.IsMatch(Model.STRNo, strPattern);
+        }
+        else
+        {
+            isSTRInvalid = false;
+        }
     }
     private void ValidateCompanyContact(FocusEventArgs e)
     {
@@ -234,6 +260,23 @@ public partial class PartyManagement
         };
 
         var dialog = dialogService.Show<ConfirmationDialog>("Confirm Action", parameters);
+        var result = await dialog.Result;
+
+        return !result.Cancelled; // Return true if user confirmed, false if canceled
+    }
+
+    private async Task<bool> DeleteConfirmationDialog()
+    {
+        var parameters = new DialogParameters
+    {
+        { "ContentText", $"Warning! If you delete {Model.CompanyName}, all associated products will also be deleted permanently. Are you sure you want to proceed?" },
+        { "ButtonText", "Delete" },
+        { "CancelButtonText", "Cancel" }
+    };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+        var dialog = dialogService.Show<ConfirmationDialog>("Confirm Deletion", parameters, options);
         var result = await dialog.Result;
 
         return !result.Cancelled; // Return true if user confirmed, false if canceled

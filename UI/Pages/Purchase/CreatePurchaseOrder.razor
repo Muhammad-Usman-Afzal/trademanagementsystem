@@ -67,19 +67,19 @@
 			<MudGrid Justify="Justify.Center">
 				<MudItem xs="4">
 					<MudAutocomplete Required="true" T="ProductDetails" Label="Item Name" SearchFunc="@SearchProDetails" Value="ProDetalil"
-									 CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e.Id == 0 ? null : e.ItemName)"
+									 CoerceText="false" ToStringFunc="@(e => e.Id == 0 ? null : e.ItemName)" Clearable="true"
 									 AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" ValueChanged="OnProductChanged"
-									 HelperText="Please enter the Product Name" HelperTextOnFocus="true" Strict="false" Disabled="_productdetails">
+									 HelperText="Please enter the Product Name" HelperTextOnFocus="true" Disabled="_productdetails">
 					</MudAutocomplete>
 
 					@* <MudTextField @bind-Value="purchaseOrderDetail.ItemName" T="string" Variant="Variant.Outlined" Label="Item Name"></MudTextField> *@
 				</MudItem>
 				<MudItem xs="2">
-					<MudNumericField @bind-Value="purchaseOrderDetail.Qty" T="int" Variant="Variant.Text" Label="Quantity"
+					<MudNumericField @bind-Value="purchaseOrderDetail.Qty" T="int" Variant="Variant.Text" Min="0" Label="Quantity"
 									 HideSpinButtons="true" Disabled="_productdetails" ></MudNumericField>
 				</MudItem>
 				<MudItem xs="2">
-					<MudNumericField @bind-Value="purchaseOrderDetail.Rate" T="double" Variant="Variant.Text" Label="Rate"
+					<MudNumericField @bind-Value="purchaseOrderDetail.Rate" T="double" Variant="Variant.Text" Min="0" Label="Rate"
 									 HideSpinButtons="true" Disabled="_productdetails"></MudNumericField>
 				</MudItem>
 				<MudItem xs="2">
@@ -115,12 +115,16 @@
 									<MudTh>Quantity</MudTh>
 									<MudTh>Rate</MudTh>
 									<MudTh>Unit</MudTh>
+									<MudTh>Action</MudTh>
 								</HeaderContent>
 								<RowTemplate>
 									<MudTd>@context.Item.ItemName</MudTd>
 									<MudTd>@context.Qty</MudTd>
 									<MudTd>@context.Rate</MudTd>
 									<MudTd>@context.Unit</MudTd>
+									<MudTd>
+										<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Dark" aria-label="Remove" OnClick="()=>RemoveItem(context)" />
+									</MudTd>
 								</RowTemplate>
 							</MudTable>
 						</MudItem>
@@ -157,7 +161,7 @@
 			<MudGrid Justify="Justify.FlexEnd">
 				<MudItem xs="2">
 					<MudButton Variant="Variant.Filled" Size="Size.Large" StartIcon="@Icons.Material.Filled.Clear"
-							   Color="Color.Primary">Clear</MudButton>
+							   Color="Color.Primary" OnClick="@(()=>Model.OrderDetail.Clear())">Clear</MudButton>
 				</MudItem>
 				<MudItem xs="2">
 					<MudButton Variant="Variant.Filled" Size="Size.Large" StartIcon="@Icons.Material.Filled.Save"

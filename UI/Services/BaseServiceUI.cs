@@ -203,71 +203,28 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
         }
     }
 
-    //public async Task CreateDetail(List<T> entity)
-    //{
-    //    if (entity == null)
-    //    {
-    //        throw new ArgumentNullException("entity required");
-    //    }
-    //    await entities.AddRangeAsync(entity);
-    //    await _context.SaveChangesAsync();
-    //}
+    public async Task<bool> DeleteById(string APIName)
+    {
+        try
+        {
+            await SetAuthorizationHeader();
 
-    ////public void Update(T entity) => entities.Update(entity);
+            HttpResponseMessage response = await _httpClient.DeleteAsync(APIName);
 
-    //public async Task Update(T entity)
-    //{
-    //    if (entity == null)
-    //    {
-    //        throw new ArgumentNullException("entity required");
-    //    }
-    //    entities.Update(entity);
-    //    await _context.SaveChangesAsync();
-    //}
+            if (!response.IsSuccessStatusCode)
+            {
+                UILogger.WriteLog($"Delete request failed: {response.StatusCode} - {response.ReasonPhrase}");
+                return false;
+            }
 
-    //public async Task UpdateById(T entity)
-    //{
-    //    if (entity == null)
-    //    {
-    //        throw new ArgumentNullException("entity required");
-    //    }
-    //    entities.Update(entity);
-    //    await _context.SaveChangesAsync();
-    //}
-
-    ////public void Delete(T entity) => entities.Remove(entity);
-
-    //public async Task Delete(T entity)
-    //{
-    //    if (entity == null)
-    //    {
-    //        throw new ArgumentNullException("entity required");
-    //    }
-    //    entities.Remove(entity);
-    //    await _context.SaveChangesAsync();
-    //}
-
-    //public async Task DeleteById(int Id)
-    //{
-    //    //if (entity == null)
-    //    //{
-    //    //    throw new ArgumentNullException("entity required");
-    //    //}
-    //    entities.Remove(await GetById(Id));
-    //    await _context.SaveChangesAsync();
-    //}
-
-    ////public void DeleteDetail(List<T> entity) => entities.RemoveRange(entity);
-
-    //public async Task DeleteDetail(List<T> entity)
-    //{
-    //    if (entity == null)
-    //    {
-    //        throw new ArgumentNullException("entity required");
-    //    }
-    //    entities.RemoveRange(entity);
-    //    await _context.SaveChangesAsync();
-    //}
+            return await response.Content.ReadFromJsonAsync<bool>();
+        }
+        catch (Exception ex)
+        {
+            UILogger.WriteLog(ex);
+            return false;
+        }
+    }
 
     public string Decryption(string cipherText)
     {
