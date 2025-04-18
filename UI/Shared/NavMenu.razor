@@ -11,9 +11,11 @@
 	<nav class="flex-column">
 		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="index" Match="NavLinkMatch.All">
-				<span class="oi oi-home" aria-hidden="true"></span> Home
+				<span class="oi oi-dashboard" aria-hidden="true"></span> Dashboard
 			</NavLink>
 		</div>
+
+		<MudNavGroup style="color:white;" Title="Master Forms" IconColor="Color.Inherit" Icon="@Icons.Material.Filled.DynamicForm">
 		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="Party">
 				<span class="oi oi-list-rich" aria-hidden="true"></span> Party Management
@@ -24,16 +26,20 @@
 				<span class="oi oi-list-rich" aria-hidden="true"></span> Product Management
 			</NavLink>
 		</div>
+		</MudNavGroup>
 
-		<MudNavGroup style="color:white;" Title="Purchase" Icon="@Icons.Material.Filled.ShoppingCartCheckout">
+		<MudNavGroup style="color:white;" Title="Purchase" IconColor="Color.Inherit" Icon="@Icons.Material.Filled.ShoppingCartCheckout">
 			<div class="nav-item px-3">
 				<NavLink class="nav-link" href="PurchaseOrder">
 					<span class="oi oi-list-rich" aria-hidden="true"></span> Purchase Order
 				</NavLink>
 			</div>
+		</MudNavGroup>
+
+		<MudNavGroup style="color:white;" Title="Reports" IconColor="Color.Inherit" Icon="@Icons.Material.Filled.DocumentScanner">
 			<div class="nav-item px-3">
-				<NavLink class="nav-link" href="PurchaseOrderReceive">
-					<span class="oi oi-list-rich" aria-hidden="true"></span> PO Receive
+				<NavLink class="nav-link" href="streport">
+					<span class="oi oi-list-rich" aria-hidden="true"></span> Stock View
 				</NavLink>
 			</div>
 		</MudNavGroup>

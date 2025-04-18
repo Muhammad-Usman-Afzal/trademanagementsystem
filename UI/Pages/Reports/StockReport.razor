@@ -1,0 +1,34 @@
+﻿@page "/streport"
+
+
+
+<MudGrid>
+	<MudItem xs="10">
+		<MudText Typo="Typo.h3">Stock Management</MudText>
+	</MudItem>
+</MudGrid>
+
+<MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
+
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12">
+		<MudTable Items="@STList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
+			<HeaderContent>
+				<MudTh>Warehouse</MudTh>
+				<MudTh>Item</MudTh>
+				<MudTh>Qty</MudTh>
+				<MudTh>Last Update</MudTh>
+				<MudTh>View Details</MudTh>
+			</HeaderContent>
+			<RowTemplate>
+				<MudTd>@context.Warehouse</MudTd>
+				<MudTd>@context.Item?.ItemName</MudTd>
+				<MudTd>@context.Qty</MudTd>
+				<MudTd>@context.TransectionDate</MudTd>
+				<MudTd>
+					<MudIconButton Icon="@Icons.Material.Filled.ViewList" Color="Color.Info" aria-label="View Details" OnClick="@(()=>_Snackbar.Add("Under Development",Severity.Info))" />
+				</MudTd>
+			</RowTemplate>
+		</MudTable>
+	</MudItem>
+</MudGrid>

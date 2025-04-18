@@ -244,19 +244,18 @@ namespace UI.Pages.Purchase
                 await InvokeAsync(StateHasChanged);
                 await Task.Delay(1);
 
-                foreach (var po in PODetail)
+                var stockTransactionsList = new List<StockTransactions>();
+
+                foreach (var po in PODetail.DistinctBy(x => x.ItemId))
                 {
-                    stockTransactionsList = new List<StockTransactions>
-                            {
-                                new StockTransactions
-                                    {
-                                        Qty = po.Qty,
-                                        StockType = StockTransectionTypes.Purchase,
-                                        ItemId = po.ItemId,
-                                        Warehouse = transactions.RecivingLocation,
-                                        ReferenceNumber = PO.OrderNo,
-                                    }
-                            };
+                    stockTransactionsList.Add(new StockTransactions
+                    {
+                        Qty = transactions.Qty,
+                        StockType = StockTransectionTypes.Purchase,
+                        ItemId = po.ItemId,
+                        Warehouse = transactions.RecivingLocation,
+                        ReferenceNumber = PO.OrderNo,
+                    });
                 }
 
                 if (await InsurtValidateAsync())
@@ -264,16 +263,8 @@ namespace UI.Pages.Purchase
                     await _OrderDetailRepoUI.UpdateDetail("OrderDetail/BulkUpdate", PODetail);
                     await _stockTransactionsRepoUI.BulkInsert("StockTransactions/BulkInsert", stockTransactionsList);
 
-
-                    if (true)
-                    {
-                        //_Snackbar.Add("Saved successfully", Severity.Success);
-                        //Navigate.NavigateTo("/OrderDetails", forceLoad: true);
-                    }
-                    else
-                    {
-                        _Snackbar.Add("There is some thing Went worng While Creating New Recoard", Severity.Error);
-                    }
+                    _Snackbar.Add("Saved successfully", Severity.Success);
+                    Navigate.NavigateTo("/PurchaseOrder", forceLoad: true);
                 }
                 else
                 {
