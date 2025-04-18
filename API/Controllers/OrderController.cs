@@ -60,8 +60,8 @@ public class OrderController : ControllerBase
         {
             //return _OrderRepo.GetByCondition(x => x.OType == orderType)?.OrderByDescending(x=>x.Id)?.FirstOrDefaultAsync()?.Result.OrderNo?? string.Empty;
             var lastOrder = await _OrderRepo.GetByCondition(x => x.OType == orderType)
-                                   .OrderByDescending(x => x.Id)
-                                   .FirstOrDefaultAsync();
+                                   //.OrderByDescending(x => x.Id)
+                                   .LastOrDefaultAsync();
 
             return lastOrder?.OrderNo ?? string.Empty;
         }
@@ -72,7 +72,20 @@ public class OrderController : ControllerBase
         }
     }
 
-
+    [HttpGet("GetOrdersByType")]
+    public async Task<ActionResult<List<Order>>> GetOrdersByType(OrderTypes orderType)
+    {
+        try
+        {
+            return await _OrderRepo.GetByCondition(x => x.OType == orderType)
+                                   .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            APILogger.WriteLog(ex);
+            return new List<Order>();
+        }
+    }
 
     // PUT: api/Order/5
     //[HttpPut("{id}")]

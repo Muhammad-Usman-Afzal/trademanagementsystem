@@ -7,11 +7,12 @@ namespace UI.Pages.Purchase
     {
         [Inject]
         ISnackbar _Snackbar { get; set; }
-
+        [Inject]
+        ProtectedLocalStorage _localStorage { get; set; }
         [Inject]
         IOrderRepoUI _OrderRepoUI { get; set; }
         [Inject]
-        NavigationManager Navigate { get; set; }
+        NavigationManager navigation { get; set; }
 
         #region Variables
         private bool _processing = false, CreatePODiloag = false;
@@ -39,16 +40,18 @@ namespace UI.Pages.Purchase
 
                 if (firstRender)
                 {
-                    //UserSession = await _localStorage.GetItemAsync<UserDetails>("User");
-                    //if (UserSession == null)
-                    //{
-                    //    navigation.NavigateTo("/signin");
-                    //}
-                    //else
-                    //{
-                    //    await OnInitializedAsync();
-                    //    StateHasChanged();
-                    //}
+                    var userSession = await _localStorage.GetAsync<AppUsers>("User");
+                    UserSession = userSession.Value ?? new AppUsers();
+
+                    if (UserSession == null)
+                    {
+                        navigation.NavigateTo("/signin");
+                    }
+                    else
+                    {
+                        await OnInitializedAsync();
+                        StateHasChanged();
+                    }
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
@@ -60,11 +63,10 @@ namespace UI.Pages.Purchase
             {
                 _processing = true;
                 _ = InvokeAsync(StateHasChanged);
-                POList = await _OrderRepoUI.GetAll("Order/GetOrders") ?? new List<Order>();
 
                 if (UserSession != null)
                 {
-
+                    POList = await _OrderRepoUI.GetAll($"Order/GetOrdersByType?orderType={OrderTypes.PurchaseOrder}") ?? new List<Order>();
                 }
                 _processing = false;
             }

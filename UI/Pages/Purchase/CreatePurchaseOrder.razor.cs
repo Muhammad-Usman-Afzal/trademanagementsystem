@@ -60,7 +60,7 @@ namespace UI.Pages.Purchase
                     var userSession = await _localStorage.GetAsync<AppUsers>("User");
                     UserSession = userSession.Value ?? new AppUsers();
 
-                    if (/*UserSession.Id == 0*/ false)
+                    if (UserSession.Id == 0)
                     {
                         navigation.NavigateTo("/signin");
                     }
@@ -81,14 +81,13 @@ namespace UI.Pages.Purchase
                 _processing = true;
                 _ = InvokeAsync(StateHasChanged);
 
-                if (/*UserSession.Id > 0*/ true)
+                if (UserSession.Id > 0)
                 {
                     parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
 
                     parties = parties.Where(x => x.PartyType == "Vendor").ToList();
 
                     ProDetalilList = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
-
 
                     Model.TaxRate = 18;
                     Model.OrderNo = await CreatePONumberAsync();
