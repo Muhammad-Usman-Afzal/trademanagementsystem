@@ -83,9 +83,9 @@ namespace UI.Pages.Purchase
 
                 if (UserSession.Id > 0)
                 {
-                    parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
+                    parties = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
 
-                    parties = parties.Where(x => x.PartyType == "Vendor").ToList();
+                    //parties = parties.Where(x => x.PartyType == "Vendor").ToList();
 
                     ProDetalilList = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
 

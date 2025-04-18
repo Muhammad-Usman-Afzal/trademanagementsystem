@@ -41,6 +41,20 @@ public class PartyController : ControllerBase
         }
     }
 
+    [HttpGet("GetPartiesByType")]
+    public async Task<ActionResult<List<Party>>> GetPartiesByType(string partyType)
+    {
+        try
+        {
+            return await _PartyRepo.GetByCondition(x => x.PartyType == partyType).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            APILogger.WriteLog(ex);
+            return new List<Party>();
+        }
+    }
+
     // PUT: api/Party/5
     //[HttpPut("{id}")]
     //public async Task<IActionResult> PutParty(int id, Party Party)
