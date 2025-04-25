@@ -1,4 +1,6 @@
-﻿namespace API.Controllers;
+﻿using API.Repositories;
+
+namespace API.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]
@@ -38,6 +40,20 @@ public class ProductDetailsController : ControllerBase
         {
             APILogger.WriteLog(ex);
             return new ProductDetails();
+        }
+    }
+
+    [HttpGet("GetProductDetailsByParty")]
+    public async Task<ActionResult<List<ProductDetails>>> GetProductDetailsByParty(int partyId)
+    {
+        try
+        {
+            return await _ProductDetailsRepo.GetByCondition(x => x.PartyId == partyId).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            APILogger.WriteLog(ex);
+            return new List<ProductDetails>();
         }
     }
 

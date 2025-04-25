@@ -58,12 +58,12 @@ public class OrderController : ControllerBase
     {
         try
         {
-            //return _OrderRepo.GetByCondition(x => x.OType == orderType)?.OrderByDescending(x=>x.Id)?.FirstOrDefaultAsync()?.Result.OrderNo?? string.Empty;
-            var lastOrder = await _OrderRepo.GetByCondition(x => x.OType == orderType)
-                                   //.OrderByDescending(x => x.Id)
-                                   .LastOrDefaultAsync();
+            return _OrderRepo.GetByCondition(x => x.OType == orderType)?.OrderByDescending(x => x.Id)?.FirstOrDefaultAsync()?.Result.OrderNo ?? string.Empty;
+            //var lastOrder = await _OrderRepo.GetByCondition(x => x.OType == orderType)
+            //                       //.OrderByDescending(x => x.Id)
+            //                       .LastOrDefaultAsync();
 
-            return lastOrder?.OrderNo ?? string.Empty;
+            //return lastOrder?.OrderNo ?? string.Empty;
         }
         catch (Exception ex)
         {

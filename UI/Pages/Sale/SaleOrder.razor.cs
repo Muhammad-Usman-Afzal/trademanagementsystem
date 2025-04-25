@@ -1,36 +1,28 @@
-﻿using Models;
-using UI.Repositories;
+﻿using UI.Repositories;
 
-namespace UI.Pages.Purchase
+namespace UI.Pages.Sale
 {
-    public partial class PurchaseOrderList
+    public partial class SaleOrder
     {
         [Inject]
         ISnackbar _Snackbar { get; set; }
         [Inject]
-        ProtectedLocalStorage _localStorage { get; set; }
+        public ProtectedLocalStorage _localStorage { get; set; }
         [Inject]
-        IOrderRepoUI _OrderRepoUI { get; set; }
+        IOrderRepoUI _orderRepoUI { get; set; }
         [Inject]
-        NavigationManager navigation { get; set; }
-
-        #region Variables
-        private bool _processing = false, CreatePODiloag = false;
-        #endregion
+        NavigationManager Navigate { get; set; }
+        [Inject]
+        IDialogService dialogService { get; set; }
 
 
-        #region List
-        List<Order> POList = new List<Order>();
-        List<OrderDetail> PODetailList = new List<OrderDetail>();
-        #endregion
+        private bool _processing = false;
 
+        List<Order> SOList = new List<Order>();
+        List<OrderDetail> SODetailList = new List<OrderDetail>();
 
-        #region Object
         AppUsers UserSession;
-        PurchaseOrder Model = new PurchaseOrder();
-        #endregion
 
-        private DialogOptions dialogOptions = new() { FullScreen = true, CloseButton = true, NoHeader = true, DisableBackdropClick = true, CloseOnEscapeKey = false };
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -43,9 +35,9 @@ namespace UI.Pages.Purchase
                     var userSession = await _localStorage.GetAsync<AppUsers>("User");
                     UserSession = userSession.Value ?? new AppUsers();
 
-                    if (UserSession == null)
+                    if (UserSession.Id == 0)
                     {
-                        navigation.NavigateTo("/signin");
+                        Navigate.NavigateTo("/signin");
                     }
                     else
                     {
@@ -66,7 +58,8 @@ namespace UI.Pages.Purchase
 
                 if (UserSession != null)
                 {
-                    POList = await _OrderRepoUI.GetAll($"Order/GetOrdersByType?orderType={OrderTypes.PurchaseOrder}") ?? new List<Order>();
+                    SOList = await _orderRepoUI.GetAll($"Order/GetOrdersByType?orderType={OrderTypes.SaleOrder}") ?? new List<Order>();
+
                 }
                 _processing = false;
             }
@@ -77,9 +70,5 @@ namespace UI.Pages.Purchase
             return;
         }
 
-        void CreatePO()
-        {
-            navigation.NavigateTo("CreatePurchaseOrder");
-        }
     }
 }

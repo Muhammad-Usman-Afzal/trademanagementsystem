@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using Models;
-using Models.AppModels;
-using MudBlazor;
-using System.Reflection.PortableExecutable;
+﻿using Models.AppModels;
+using UI.Repositories;
 
-namespace UI.Pages.Purchase
+namespace UI.Pages.Sale
 {
-    public partial class CreatePurchaseOrder
+    public partial class CreateSaleOrder
     {
         #region DI
 
@@ -21,31 +18,30 @@ namespace UI.Pages.Purchase
         [Inject]
         public IPartyRepoUI _partyRepoUI { get; set; }
         [Inject]
-        public IPurchaseOrderRepoUI _purchaseOrderRepoUI { get; set; }
-        [Inject]
         public IOrderRepoUI _orderRepoUI { get; set; }
+        [Inject]
+        public IOrderDetailRepoUI _OrderDetailRepoUI { get; set; }
         [Inject]
         public IProductDetailsRepoUI _ProductDetailsRepoUI { get; set; }
         #endregion
 
-        #region Variables
-
-        Order Model = new Order();
-        Party party = new Party();
-        List<Party> parties = new List<Party>();
-        List<Party> Vanders = new List<Party>();
-        ProductDetails ProDetalil = new ProductDetails();
-        List<ProductDetails> ProDetalilList = new List<ProductDetails>();
-        List<ProductDetails> CompanyDetalilList = new List<ProductDetails>();
-        OrderDetail purchaseOrderDetail = new OrderDetail();
-        List<PurchaseOrderDetail> purchaseOrderDetailList = new List<PurchaseOrderDetail>();
         AppUsers UserSession = new AppUsers();
+        Order Model = new Order();
+
+        Party Customer = new Party();
+        Party Brand = new Party();
+
+        List<Party> Brands = new List<Party>();
+        List<Party> Customers = new List<Party>();
+
+        OrderDetail SaleOrderDetail = new OrderDetail();
+        List<PurchaseOrderDetail> SaleOrderDetailList = new List<PurchaseOrderDetail>();
+
+        ProductDetails ProDetalil = new ProductDetails();
+        List<ProductDetails> CompanyProducts = new List<ProductDetails>();
 
         private bool _processing = false, _productdetails = true, _Party;
 
-        #endregion
-
-        #region Functions
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -81,14 +77,11 @@ namespace UI.Pages.Purchase
 
                 if (UserSession.Id > 0)
                 {
-                    parties = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
-
-                    //parties = parties.Where(x => x.PartyType == "Vendor").ToList();
-
-                    ProDetalilList = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
-
+                    Customers = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Customer") ?? new List<Party>();
+                    Brands = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
                     Model.TaxRate = 18;
-                    Model.OrderNo = await CreatePONumberAsync();
+                    Model.OrderDate = DateTime.Now;
+                    Model.OrderNo = await CreateSONumberAsync();
                 }
                 _processing = false;
             }
@@ -100,67 +93,80 @@ namespace UI.Pages.Purchase
             return;
         }
 
-        async void Save()
+        public async Task<string> CreateSONumberAsync()
         {
-            if (IsValidate())
-            {
-                Model.OType = OrderTypes.PurchaseOrder;
-                Model.Status = OrderStatus.Opened;
-                var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();
+            var lastOrderNo = await _orderRepoUI.GetSingleByColumnAsync($"Order/GetOrderNumberByType?orderType={OrderTypes.SaleOrder}");
 
-                if (res != null && res.Id > 0)
+            if (!string.IsNullOrEmpty(lastOrderNo) && lastOrderNo.Contains("SO-"))
+            {
+                string[] parts = lastOrderNo.Split('-');
+
+                if (parts.Length == 2 && int.TryParse(parts[1], out int number))
                 {
-                    snackbar.Add("Purchase Order has been saved successfully", Severity.Success);
-                    Model = new Order();
-                    navigation.NavigateTo("/PurchaseOrder");
-                }
-                else
-                {
-                    snackbar.Add("An error occurred while creating Purchase Order", Severity.Error);
+                    number++;
+                    string newNumber = number.ToString($"D{parts[1].Length}");
+
+                    return $"{parts[0]}-{newNumber}";
                 }
             }
-            else
-            {
-                snackbar.Add("Please fill all required field(s)", Severity.Error);
-            }
+
+            return "SO-0001"; // First order case
         }
 
-        bool IsValidate()
-        {
-            return
-                string.IsNullOrEmpty(Model.OrderDate.ToString()) || string.IsNullOrEmpty(Model.OrderNo) ||
-                Model.PartyId < 0 || string.IsNullOrEmpty(Model.PaymentMode) || string.IsNullOrEmpty(Model.OrderMode) ||
-                Model.OrderDetail.Count < 0
-                ? false : true;
-        }
-
-        private async Task<IEnumerable<Party>> SearchVendor(string value)
+        private async Task<IEnumerable<Party>> SearchCustomers(string value)
         {
             await Task.Delay(0);
             if (string.IsNullOrEmpty(value))
-                return parties;
-            return parties.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
-        }
-        private async Task<IEnumerable<ProductDetails>> SearchProDetails(string value)
-        {
-            await Task.Delay(0);
-            if (string.IsNullOrEmpty(value))
-                return CompanyDetalilList;
-            return CompanyDetalilList.Where(x => !string.IsNullOrEmpty(x.ItemName) ? x.ItemName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+                return Customers;
+            return Customers.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
         }
 
-        void OnPartyChanged(Party Value)
+        Task OnCustomerChanged(Party Value)
         {
             try
             {
                 if (Value != null)
                 {
-                    party = Value;
+                    Customer = Value;
                     Model.PartyId = Value.Id;
                     Model.Party = Value;
-                    CompanyDetalilList = ProDetalilList.Where(x => x.PartyId == Model.PartyId && x.Isprocessed == false).ToList();
 
-                    if(CompanyDetalilList.Count > 0)
+                    //CompanyProducts = await _ProductDetailsRepoUI.GetAll($"Party/GetPartiesByType?partyId={party.Id}") ?? new List<ProductDetails>();
+                    //if (CompanyProducts.Count > 0)
+                    //{
+                    //    _productdetails = false;
+                    //}
+                    //else
+                    //{
+                    //    _productdetails = true;
+                    //    ProDetalil = new ProductDetails();
+                    //}
+
+                }
+            }
+            catch (Exception ex) { UILogger.WriteLog(ex); }
+
+            return Task.CompletedTask;
+        }
+
+        private async Task<IEnumerable<Party>> SearchBrands(string value)
+        {
+            await Task.Delay(0);
+            if (string.IsNullOrEmpty(value))
+                return Brands;
+            return Brands.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+        }
+
+        async Task OnBrandsChangedAsync(Party Value)
+        {
+            try
+            {
+                if (Value != null)
+                {
+                    Brand = Value;
+                    
+                    CompanyProducts = await _ProductDetailsRepoUI.GetAll($"ProductDetails/GetProductDetailsByParty?partyId={Brand.Id}") ?? new List<ProductDetails>();
+                    if (CompanyProducts.Count > 0)
                     {
                         _productdetails = false;
                     }
@@ -170,11 +176,17 @@ namespace UI.Pages.Purchase
                         ProDetalil = new ProductDetails();
                     }
 
-                    _productdetails = CompanyDetalilList.Count > 0 ?  false : true;
-
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
+        }
+
+        private async Task<IEnumerable<ProductDetails>> SearchProDetails(string value)
+        {
+            await Task.Delay(0);
+            if (string.IsNullOrEmpty(value))
+                return CompanyProducts;
+            return CompanyProducts.Where(x => !string.IsNullOrEmpty(x.ItemName) ? x.ItemName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
         }
 
         void OnProductChanged(ProductDetails Value)
@@ -184,8 +196,8 @@ namespace UI.Pages.Purchase
                 if (Value != null)
                 {
                     ProDetalil = Value;
-                    purchaseOrderDetail.ItemId = Value.Id;
-                    purchaseOrderDetail.Item = Value;
+                    SaleOrderDetail.ItemId = Value.Id;
+                    SaleOrderDetail.Item = Value;
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
@@ -198,7 +210,7 @@ namespace UI.Pages.Purchase
                 if (POdetail.Qty > 0 && POdetail.Rate > 0 && !String.IsNullOrEmpty(POdetail.Unit))
                 {
                     var existingItem = Model.OrderDetail.FirstOrDefault(x => x.ItemId == POdetail.ItemId);
-                    
+
                     if (existingItem != null && existingItem.Unit == POdetail.Unit)
                     {
                         // Update the quantity
@@ -216,8 +228,9 @@ namespace UI.Pages.Purchase
                         Model.OrderDetail.Add(POdetail);
                     }
 
-                    purchaseOrderDetail = new OrderDetail();
+                    SaleOrderDetail = new OrderDetail();
                     ProDetalil = new ProductDetails();
+                    Brand = new Party();
                     CalculateTotal();
 
                     StateHasChanged();
@@ -239,7 +252,7 @@ namespace UI.Pages.Purchase
         }
         void RemoveItem(OrderDetail POdetail)
         {
-                Model.OrderDetail.Remove(POdetail);
+            Model.OrderDetail.Remove(POdetail);
         }
         void CalculateTotal()
         {
@@ -253,41 +266,44 @@ namespace UI.Pages.Purchase
                 Model.TaxAmount = Model.GrossAmount * Model.TaxRate / 100;
                 Model.NetAmount = Model.GrossAmount + Model.TaxAmount;
             }
-        OrderDetail purchaseOrderDetail = new OrderDetail();
+            OrderDetail purchaseOrderDetail = new OrderDetail();
         }
 
-
-
-        //void UpdateItem(OrderDetail POD)
-        //{
-        //    purchaseOrderDetail.Qty = POD.Qty;
-        //    purchaseOrderDetail.Rate = POD.Rate;
-        //    purchaseOrderDetail.Unit = POD.Unit;
-        //    ProDetalil = POD.Item;
-        //}
-
-
-        public async Task<string> CreatePONumberAsync()
+        bool IsValidate()
         {
-            var lastOrderNo = await _orderRepoUI.GetSingleByColumnAsync($"Order/GetOrderNumberByType?orderType={OrderTypes.PurchaseOrder}");
+            return
+                string.IsNullOrEmpty(Model.OrderDate.ToString()) || string.IsNullOrEmpty(Model.OrderNo) ||
+                Model.PartyId < 0 || string.IsNullOrEmpty(Model.PaymentMode) ||
+                Model.OrderDetail.Count < 0
+                ? false : true;
+        }
 
-            if (!string.IsNullOrEmpty(lastOrderNo) && lastOrderNo.Contains("PO-"))
+        async void Save()
+        {
+            if (IsValidate())
             {
-                string[] parts = lastOrderNo.Split('-');
+                Model.OType = OrderTypes.SaleOrder;
+                Model.Status = OrderStatus.Opened;
+                var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();
 
-                if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                if (res != null && res.Id > 0)
                 {
-                    number++;
-                    string newNumber = number.ToString($"D{parts[1].Length}");
-
-                    return $"{parts[0]}-{newNumber}";
+                    snackbar.Add("Sale Order has been saved successfully", Severity.Success);
+                    Model = new Order();
+                    navigation.NavigateTo("/SaleOrder");
+                }
+                else
+                {
+                    snackbar.Add("An error occurred while creating Sale Order", Severity.Error);
                 }
             }
-
-            return "PO-0001"; // First order case
+            else
+            {
+                snackbar.Add("Please fill all required field(s)", Severity.Error);
+            }
         }
 
 
-        #endregion
+
     }
 }

@@ -16,7 +16,7 @@ public class Order : BaseEntity
     public string PaymentMode { get; set; }
     public OrderTypes OType { get; set; } = new OrderTypes();
     public OrderStatus Status { get; set; } = new OrderStatus();
-    public string OrderMode { get; set; }
+    public string OrderMode { get; set; }  //Local, Import, Export
     public double GrossAmount { get; set; }
     
     public double TaxRate { get; set; }
