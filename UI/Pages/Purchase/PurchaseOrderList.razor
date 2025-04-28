@@ -1,20 +1,32 @@
 ﻿@page "/PurchaseOrder"
 
-
-
 <MudGrid>
-	<MudItem xs="10">
-		<MudText Typo="Typo.h3">Purchase Order</MudText>
+	<MudItem lg="1">
+		<MudGrid Justify="Justify.FlexEnd">
+			<MudTooltip Text="Back">
+				<MudIconButton Icon="@Icons.Material.Rounded.ArrowCircleLeft" Color="Color.Primary" Size="Size.Large" OnClick="@(()=>Navigate.NavigateTo("index"))"></MudIconButton>
+			</MudTooltip>
+		</MudGrid>
 	</MudItem>
-	<MudItem xs="2">
-		<MudFab StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Info" OnClick="CreatePO" />
+	<MudItem lg="9" Class="mt-3">
+		<MudGrid Justify="Justify.FlexStart">
+			<MudDivider Vertical="true" Class="mt-1 mr-2" Style="width:2px; height:30px;" />   @* OnClick="CreatePO" *@
+			<MudText Typo="Typo.h5" Class="mt-1">Purchase Order</MudText>
+		</MudGrid>
+	</MudItem>
+	<MudItem lg="2">
+		<MudFab StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Primary" Size="Size.Small" OnClick="CreatePO" />
 	</MudItem>
 </MudGrid>
 
 <MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
 
+
+
 <MudGrid Justify="Justify.Center">
 	<MudItem xs="12">
+		
+
 		<MudTable Items="@POList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
 			<HeaderContent>
 				<MudTh>Status</MudTh>
@@ -50,5 +62,33 @@
 				</MudTd>
 			</RowTemplate>
 		</MudTable>
+    
+
+
+			<MudGrid Class="mt-15">
+				<MudItem lg="12">
+					<MudCard Elevation="0" Style="background:none;">
+						<MudCardContent>
+							<MudGrid Justify="Justify.SpaceBetween">
+								<MudItem lg="4">
+									<MudGrid Justify="Justify.FlexEnd">
+										<MudImage Src="images/Not-Found.png" Width="200" />
+									</MudGrid>
+								</MudItem>
+								<MudItem lg="4" Class="mt-5">
+									<MudText Typo="Typo.h6" Color="Color.Error">No Record Found</MudText>
+									<MudText Typo="Typo.caption" Style="color:darkgray;">You have no any Record. You can create a new Record by clicking the right side button.</MudText>
+								</MudItem>
+								<MudItem lg="4" Class="mt-12">
+									<MudGrid Justify="Justify.FlexStart">
+							<MudButton OnClick="CreatePO" Variant="Variant.Outlined" Color="Color.Primary" Style="border-radius:25px;">Create New* <MudIcon Icon="@Icons.Material.TwoTone.PostAdd" Class="ml-2" /></MudButton>
+									</MudGrid>
+								</MudItem>
+							</MudGrid>
+						</MudCardContent>
+					</MudCard>
+				</MudItem>
+			</MudGrid>
+	
 	</MudItem>
 </MudGrid>

@@ -4,50 +4,57 @@
 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="11">
-
+          
             <MudGrid Justify="Justify.FlexStart">
                 <MudItem xs="12">
-                    <MudText Typo="Typo.h4">Create Production Order</MudText>
+                    <MudText Typo="Typo.h5">Create Production Order</MudText>
                 </MudItem>
-            </MudGrid>
+            </MudGrid> 
+            
+
+            <MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:1px;margin-top:10px;" />
+
+            <MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:15px;" />
+
+
 
             <MudGrid Justify="Justify.FlexStart">
                 <MudItem xs="4">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="PO No" Disabled="true"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="PO No" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ReceiptLong"></MudTextField>
                 </MudItem>
                 <MudItem xs="4">
-                    <MudDatePicker Label="PO Date"></MudDatePicker>
+                    <MudDatePicker Label="PO Date" Variant="Variant.Outlined" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Event"></MudDatePicker>
                 </MudItem>
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
-                    <MudSelect T="string" Label="Contractor Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary">
+                    <MudSelect T="string" Label="Contractor Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary" Adornment="Adornment.Start"  AdornmentIcon="@Icons.Material.Filled.Engineering">
                         <MudSelectItem Value="@("Contractor Name")">Contractor1</MudSelectItem>
                         <MudSelectItem Value="@("Contractor Name")">Contractor2</MudSelectItem>
                         <MudSelectItem Value="@("Contractor Name")">Contractor3</MudSelectItem>
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField T="string" Variant="Variant.Outlined" Mask="@(new PatternMask("0000-0000000"))" Label="Contact No"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Outlined" Mask="@(new PatternMask("0000-0000000"))" Label="Contact No" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.PhoneAndroid"></MudTextField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Address"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Address" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Place"></MudTextField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Details"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Details" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Assignment"></MudTextField>
                 </MudItem>
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Delivered"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Delivered" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LocalShipping"></MudTextField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Receiving"></MudTextField>
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Receiving" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.MoveToInbox"></MudTextField>
                 </MudItem>
                 <MudItem xs="2">
-                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Production Qty"
+                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Production Qty" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ProductionQuantityLimits"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
                 <MudItem xs="3">
@@ -92,17 +99,17 @@
 
             <MudGrid>
                 <MudItem xs="2">
-                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Rate"
+                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Rate" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="4">
-                    <MudDatePicker Variant="Variant.Outlined" Label="Start Date"></MudDatePicker>
+                    <MudDatePicker Variant="Variant.Outlined" Label="Start Date" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Event"></MudDatePicker>
                 </MudItem>
                 <MudItem xs="4">
-                    <MudDatePicker Variant="Variant.Outlined" Label="End Date"></MudDatePicker>
+                    <MudDatePicker Variant="Variant.Outlined" Label="End Date" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Event"></MudDatePicker>
                 </MudItem>
                 <MudItem xs="4">
                     <MudCheckBox T="string" Color="Color.Primary">Until Next Contract</MudCheckBox>
