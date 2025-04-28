@@ -58,12 +58,11 @@ public class OrderController : ControllerBase
     {
         try
         {
-            return _OrderRepo.GetByCondition(x => x.OType == orderType)?.OrderByDescending(x => x.Id)?.FirstOrDefaultAsync()?.Result.OrderNo ?? string.Empty;
-            //var lastOrder = await _OrderRepo.GetByCondition(x => x.OType == orderType)
-            //                       //.OrderByDescending(x => x.Id)
-            //                       .LastOrDefaultAsync();
+            var order = await _OrderRepo.GetByCondition(x => x.OType == orderType)
+     .OrderByDescending(x => x.Id)
+     .FirstOrDefaultAsync();
 
-            //return lastOrder?.OrderNo ?? string.Empty;
+            return order?.OrderNo ?? string.Empty;
         }
         catch (Exception ex)
         {
@@ -127,7 +126,7 @@ public class OrderController : ControllerBase
                 return Problem("Entity set 'TMSContext.Order'  is null.");
             }
             Order.Party = null;
-            foreach(var a in Order.OrderDetail)
+            foreach (var a in Order.OrderDetail)
             {
                 a.Item = null;
             }
