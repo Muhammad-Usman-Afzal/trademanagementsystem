@@ -9,7 +9,7 @@ public class Order : BaseEntity
     
     public DateTime? OrderDate { get; set; } = DateTime.Now;
     
-    public int PartyId { get; set; } //Vendor
+    public int? PartyId { get; set; } //Vendor
     public Party Party { get; set; } = new Party();
     
     [Column(TypeName = "varchar(25)")]
@@ -26,7 +26,7 @@ public class Order : BaseEntity
     public double NetAmount { get; set; }
 
     public bool IspaymentClear { get; set; }
-
+    public string WalkinCustomer { get; set; }
     public List<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
 }
 
