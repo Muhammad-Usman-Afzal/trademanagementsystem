@@ -20,27 +20,43 @@
 
             <MudGrid Justify="Justify.FlexStart">
                 <MudItem xs="4">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="PO No" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ReceiptLong"></MudTextField>
+                    <MudTextField @bind-Value="Model.OrderNo" ReadOnly="true" HelperText="PO-No Genrate Automatically" T="string" Variant="Variant.Outlined" Label="PO No" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ReceiptLong"></MudTextField>
                 </MudItem>
+
                 <MudItem xs="4">
-                    <MudDatePicker Label="PO Date" Variant="Variant.Outlined" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Event"></MudDatePicker>
+                    <MudDatePicker @bind-Date="Model.OrderDate" Variant="Variant.Outlined" Label="PO Date" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Event"></MudDatePicker>
                 </MudItem>
+              
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
-                    <MudSelect T="string" Label="Contractor Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary" Adornment="Adornment.Start"  AdornmentIcon="@Icons.Material.Filled.Engineering">
-                        <MudSelectItem Value="@("Contractor Name")">Contractor1</MudSelectItem>
-                        <MudSelectItem Value="@("Contractor Name")">Contractor2</MudSelectItem>
-                        <MudSelectItem Value="@("Contractor Name")">Contractor3</MudSelectItem>
-                    </MudSelect>
+
+                    <MudAutocomplete Required="true" T="Party" Label="Choose Vendor" SearchFunc="@SearchVendor" Value="party" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Store"
+                                     CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e.Id == 0 ? null : $"{e.FocalPersonName} ({e.CompanyName})")"
+                                     AdornmentColor="Color.Primary" ValueChanged="OnPartyChanged"
+                                     HelperText="Please enter the Vendor Name" HelperTextOnFocus="true" Strict="false">
+                    </MudAutocomplete>
+
+
+@* 
+                    <MudSelect T="string" Label="Contractor Name" Variant="Variant.Outlined" AdornmentColor="Color.Primary" Adornment="Adornment.Start"  AdornmentIcon="@Icons.Material.Filled.Engineering"> 
+                         <MudSelectItem Value="@("Contractor Name")">Contractor1</MudSelectItem> 
+                         <MudSelectItem Value="@("Contractor Name")">Contractor2</MudSelectItem> 
+                         <MudSelectItem Value="@("Contractor Name")">Contractor3</MudSelectItem> 
+                    </MudSelect> *@
                 </MudItem>
                 <MudItem xs="3">
+
                     <MudTextField T="string" Variant="Variant.Outlined" Mask="@(new PatternMask("0000-0000000"))" Label="Contact No" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.PhoneAndroid"></MudTextField>
                 </MudItem>
                 <MudItem xs="3">
-                    <MudTextField T="string" Variant="Variant.Outlined" Label="Address" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Place"></MudTextField>
-                </MudItem>
+                    <MudTextField Disabled="true" @bind-Value="Model.Party.CompanyAddress" T="string" Variant="Variant.Outlined"
+                                  Label="Vendor Address" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Place"></MudTextField>
+                </MudItem> 
+             @*    <MudItem xs="3"> 
+                    <MudTextField @bind-Value="Model.Party.CompanyAddress" T="string" Variant="Variant.Outlined" Label="Address" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Place"></MudTextField>
+                </MudItem> *@
                 <MudItem xs="3">
                     <MudTextField T="string" Variant="Variant.Outlined" Label="Details" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Assignment"></MudTextField>
                 </MudItem>
@@ -57,6 +73,7 @@
                     <MudNumericField T="int" Variant="Variant.Outlined" Label="Production Qty" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ProductionQuantityLimits"
                                      HideSpinButtons="true"></MudNumericField>
                 </MudItem>
+               
                 <MudItem xs="3">
                     <MudCheckBox T="string" Color="Color.Primary">Not Speciffied Yet</MudCheckBox>
                 </MudItem>
@@ -99,9 +116,9 @@
 
             <MudGrid>
                 <MudItem xs="2">
-                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Rate" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
+                    <MudNumericField @bind-Value="purchaseOrderDetail.Rate" T="double" Variant="Variant.Outlined" Min="0" Label="Rate" AdornmentColor="Color.Primary" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
                                      HideSpinButtons="true"></MudNumericField>
-                </MudItem>
+                 </MudItem>
             </MudGrid>
 
             <MudGrid Justify="Justify.Center">

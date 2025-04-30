@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="UILogs\" />
+    <Folder Include="UILogs\" />
   </ItemGroup>
 
 </Project>

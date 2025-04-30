@@ -52,7 +52,7 @@
 					<MudTd>@context.OrderDetail.Count()</MudTd>
 					<MudTd>@context.NetAmount</MudTd>
 					<MudTd>
-						<MudIconButton Icon="@Icons.Material.Filled.TransitEnterexit" Color="Color.Success" aria-label="Recive Purchase Order" OnClick="@(()=>Navigate.NavigateTo($"/PurchaseOrderReceive/{context.Id}"))" />
+						<MudIconButton Icon="@Icons.Material.Filled.TransitEnterexit" Color="Color.Success" aria-label="Recive Purchase Order" OnClick="@(()=>Navigate.NavigateTo("SaleOrderExecution"))"/>
 					</MudTd>
 					<MudTd>
 						<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" Color="Color.Primary" />
@@ -78,7 +78,7 @@
 								</MudItem>
 								<MudItem lg="4" Class="mt-12">
 									<MudGrid Justify="Justify.FlexStart">
-										<MudButton Variant="Variant.Outlined" Color="Color.Primary" Style="border-radius:25px;">Create New* <MudIcon Icon="@Icons.Material.TwoTone.PostAdd" Class="ml-2" /></MudButton>
+										<MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.TwoTone.PostAdd" Color="Color.Primary" Style="border-radius:25px;" OnClick="@(()=>Navigate.NavigateTo("CreateSaleOrder"))">Create New*</MudButton>
 									</MudGrid>
 								</MudItem>
 							</MudGrid>
