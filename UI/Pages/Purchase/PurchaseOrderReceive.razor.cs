@@ -33,7 +33,7 @@ namespace UI.Pages.Purchase
         [Parameter]
         public int PONo { get; set; }
         private int _PONo, TotalReciving, RemaningQty;
-        private bool _processing = false, DisableContolle=false;
+        private bool _processing = false, DisableContolle = false;
         #endregion
 
         #region Objects
@@ -42,7 +42,6 @@ namespace UI.Pages.Purchase
         Order PO = new Order();
         OrderDetail Model = new OrderDetail();
         OrderTransactions transactions = new OrderTransactions();
-        PurchaseOrder purchaseOrder = new PurchaseOrder();
         StockTransactions stockTransactions = new StockTransactions();
 
         #endregion
@@ -169,41 +168,39 @@ namespace UI.Pages.Purchase
 
         void AddItem()
         {
-            if (true) // validate all fields
+            if (transactions.Qty > 0)
             {
-                if (true)
+                transactions.TType = TransectionTypes.PurchaseReceive;
+
+                // Check if the item already exists in PODetail
+                var existingItem = PODetail.FirstOrDefault(x => x.ItemId == Model.ItemId);
+
+                if (existingItem != null)
                 {
-                    transactions.TType = TransectionTypes.PurchaseReceive;
+                    // If item exists, update its transaction details
+                    var existingTransaction = existingItem.OT.FirstOrDefault(t => t.TType == TransectionTypes.PurchaseReceive);
 
-                    // Check if the item already exists in PODetail
-                    var existingItem = PODetail.FirstOrDefault(x => x.ItemId == Model.ItemId);
-
-                    if (existingItem != null)
+                    if (existingTransaction != null)
                     {
-                        // If item exists, update its transaction details
-                        var existingTransaction = existingItem.OT.FirstOrDefault(t => t.TType == TransectionTypes.PurchaseReceive);
-
-                        if (existingTransaction != null)
-                        {
-                            existingTransaction.Qty += transactions.Qty;
-                        }
-                        else
-                        {
-                            // If no transaction exists, add new transaction for this item
-                            existingItem.OT.Add(new OrderTransactions
-                            {
-                                Qty = transactions.Qty,
-                                TType = transactions.TType,
-                                ReciverParty = transactions.ReciverParty,
-                                RecivingLocation = transactions.RecivingLocation
-                                // Add other required properties
-                            });
-                        }
+                        existingTransaction.Qty += transactions.Qty;
                     }
                     else
                     {
-                        // If item doesn't exist, create a new record in PODetail
-                        Model.OT = new List<OrderTransactions>
+                        // If no transaction exists, add new transaction for this item
+                        existingItem.OT.Add(new OrderTransactions
+                        {
+                            Qty = transactions.Qty,
+                            TType = transactions.TType,
+                            ReciverParty = transactions.ReciverParty,
+                            RecivingLocation = transactions.RecivingLocation
+                            // Add other required properties
+                        });
+                    }
+                }
+                else
+                {
+                    // If item doesn't exist, create a new record in PODetail
+                    Model.OT = new List<OrderTransactions>
                             {
                                 new OrderTransactions
                                     {
@@ -215,23 +212,18 @@ namespace UI.Pages.Purchase
                                     }
                             };
 
-                        PODetail.Add(Model);
-                    }
+                    PODetail.Add(Model);
+                }
 
-                    // Reset transaction object
-                    transactions = new OrderTransactions();
-                    Model = new OrderDetail();
-                    TotalReciving = new int();
-                    RemaningQty = new int();
-                }
-                else
-                {
-                    _Snackbar.Add("Kindly fill all Required Data", Severity.Warning);
-                }
+                // Reset transaction object
+                transactions = new OrderTransactions();
+                Model = new OrderDetail();
+                TotalReciving = new int();
+                RemaningQty = new int();
             }
             else
             {
-                _Snackbar.Add("Please Select Vendor first", Severity.Warning);
+                _Snackbar.Add("Kindly fill all Required Data", Severity.Warning);
             }
         }
 
@@ -280,7 +272,7 @@ namespace UI.Pages.Purchase
                 throw;
             }
         }
-        
+
         private async Task<bool> InsurtValidateAsync()
         {
             //if (Model.Id > 0 && (!String.IsNullOrEmpty(Model.NTN) || !String.IsNullOrEmpty(Model.STRNo)) && Model.IsRegisterd == false)
@@ -320,6 +312,11 @@ namespace UI.Pages.Purchase
             //    }
             //}
             return true;
+        }
+
+        void RemoveItem(OrderDetail pOdetail)
+        {
+            PODetail.Remove(pOdetail);
         }
     }
 }

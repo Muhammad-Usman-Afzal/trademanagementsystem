@@ -39,24 +39,26 @@
 					<MudTd>
 						@if (context.IspaymentClear == true)
 						{
-							<MudChip T="string" Variant="Variant.Outlined" Color="Color.Success">Closed</MudChip>
+							<MudChip Label Variant="Variant.Filled" Color="Color.Success">Closed</MudChip>
 						}
 						else
 						{
-							<MudChip T="string" Variant="Variant.Outlined" Color="Color.Primary">Open</MudChip>
+							<MudChip Label Variant="Variant.Filled" Color="Color.Primary">Open</MudChip>
 						}
 					</MudTd>
 					<MudTd>@context.OrderDate</MudTd>
 					<MudTd>@context.OrderNo</MudTd>
 					<MudTd>@context.Party.CompanyName</MudTd>
-					<MudTd>@context.OrderDetail.Count()</MudTd>
+					<MudTd>@context.OrderDetail?.Count()</MudTd>
 					<MudTd>@context.NetAmount</MudTd>
 					<MudTd>
-						<MudIconButton Icon="@Icons.Material.Filled.TransitEnterexit" Color="Color.Success" aria-label="Recive Purchase Order" OnClick="@(()=>Navigate.NavigateTo("SaleOrderExecution"))"/>
+						<MudTooltip Text="Click here to proceed to Sale Order Execution">
+							<MudIconButton Icon="@Icons.Material.Rounded.ArrowOutward" Color="Color.Success" OnClick="@(()=>Navigate.NavigateTo($"/SaleOrderExecution/{context.Id}"))" />
+						</MudTooltip>
 					</MudTd>
-					<MudTd>
+					@* <MudTd>
 						<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" Color="Color.Primary" />
-					</MudTd>
+					</MudTd> *@
 				</RowTemplate>
 			</MudTable>
 		}
