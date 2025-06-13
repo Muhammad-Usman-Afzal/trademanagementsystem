@@ -1,4 +1,6 @@
-﻿namespace API.Controllers;
+﻿using API.Repositories;
+
+namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -127,7 +129,6 @@ public class StockTransactionsController : ControllerBase
         catch (Exception ex) { APILogger.WriteLog(ex); return false; }
     }
 
-
     [HttpPost("BulkInsert")]
     public async Task<ActionResult<bool>> BulkInsert(List<StockTransactions> StockTransactionsList)
     {
@@ -148,28 +149,45 @@ public class StockTransactionsController : ControllerBase
         catch (Exception ex) { APILogger.WriteLog(ex); return false; }
     }
 
-    // DELETE: api/StockTransactions/5
-    //[HttpDelete("{id}")]
-    //public async Task<IActionResult> DeleteStockTransactions(int id)
-    //{
-    //    if (_context.StockTransactions == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    var StockTransactions = await _context.StockTransactions.FindAsync(id);
-    //    if (StockTransactions == null)
-    //    {
-    //        return NotFound();
-    //    }
+	[HttpPost("Merge")]
+	public async Task<ActionResult<StockTransactions>> Merge(StockTransactions StockTransactions)
+	{
+		try
+		{
+			if (StockTransactions == null)
+			{
+				return Problem("Entity set 'TMSContext.StockTransactions'  is null.");
+			}
 
-    //    _context.StockTransactions.Remove(StockTransactions);
-    //    await _context.SaveChangesAsync();
+			//await _StockTransactionsRepo.Merge<AppUsers, UserAuthorizedScreens>(AppUsers, AppUsers.AuthorizedScreens);
 
-    //    return NoContent();
-    //}
+			return CreatedAtAction("GetStockTransactionsById", new { id = StockTransactions.Id }, StockTransactions);
+		}
+		catch (Exception ex) { APILogger.WriteLog(ex); return new StockTransactions(); }
+	}
 
-    //private bool StockTransactionsExists(int id)
-    //{
-    //    return (_context.StockTransactions?.Any(e => e.Id == id)).GetValueOrDefault();
-    //}
+	// DELETE: api/StockTransactions/5
+	//[HttpDelete("{id}")]
+	//public async Task<IActionResult> DeleteStockTransactions(int id)
+	//{
+	//    if (_context.StockTransactions == null)
+	//    {
+	//        return NotFound();
+	//    }
+	//    var StockTransactions = await _context.StockTransactions.FindAsync(id);
+	//    if (StockTransactions == null)
+	//    {
+	//        return NotFound();
+	//    }
+
+	//    _context.StockTransactions.Remove(StockTransactions);
+	//    await _context.SaveChangesAsync();
+
+	//    return NoContent();
+	//}
+
+	//private bool StockTransactionsExists(int id)
+	//{
+	//    return (_context.StockTransactions?.Any(e => e.Id == id)).GetValueOrDefault();
+	//}
 }

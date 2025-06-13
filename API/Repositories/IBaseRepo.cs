@@ -18,4 +18,7 @@ public interface IBaseRepo<T> where T : BaseEntity
     bool GetBooleanByCondition(Expression<Func<T, bool>> expression);
     Task<T> GetLastSavedRecord();
     Task<bool> DeleteById(int Id);
+	Task Merge<TParent, TChild>(TParent parentEntity, List<TChild> childEntities)
+		where TParent : class
+		where TChild : class;
 }

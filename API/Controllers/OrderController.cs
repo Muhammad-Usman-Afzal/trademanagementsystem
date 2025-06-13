@@ -151,6 +151,8 @@ public class OrderController : ControllerBase
                 return Problem("Entity set 'TMSContext.Order'  is null.");
             }
 
+            Order.OrderDetail.ForEach(x => x.Item = null);
+
             await _OrderRepo.Update(Order);
 
             return CreatedAtAction("GetOrderById", new { id = Order.Id }, Order);

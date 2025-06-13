@@ -18,6 +18,7 @@ public class TMSContext : DbContext
         
         modelBuilder.Entity<Order>().Navigation(x => x.Party).AutoInclude();
         modelBuilder.Entity<Order>().Navigation(x => x.OrderDetail).AutoInclude();
+        modelBuilder.Entity<Order>().Navigation(x => x.OT).AutoInclude();
 
         modelBuilder.Entity<OrderDetail>().Navigation(x => x.Item).AutoInclude();
         modelBuilder.Entity<OrderDetail>().Navigation(x => x.OT).AutoInclude();

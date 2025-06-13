@@ -260,4 +260,58 @@ public class BaseService<T> : IBaseRepo<T> where T : BaseEntity
         }
     }
 
+	public async Task Merge<TParent, TChild>(TParent parentEntity, List<TChild> childEntities)
+	where TParent : class
+	where TChild : class
+	{
+		try
+		{
+			if (parentEntity == null || childEntities == null)
+				throw new ArgumentNullException("Entity and ChildEntities are required");
+
+			var parentSet = _context.Set<TParent>();
+			var childSet = _context.Set<TChild>();
+
+			#region 🔴 DELETE CASE
+
+			if (parentEntity.GetType().GetProperty("IsDeleted")?.GetValue(parentEntity) as bool? == true)
+			{
+				parentSet.Remove(parentEntity);
+				await _context.SaveChangesAsync();
+				return;
+			}
+
+			var childrenToDelete = childEntities.Where(x =>
+				x.GetType().GetProperty("IsDeleted")?.GetValue(x) as bool? == true).ToList();
+
+			if (childrenToDelete.Any())
+			{
+				childSet.RemoveRange(childrenToDelete);
+				await _context.SaveChangesAsync();
+			}
+
+			#endregion
+
+			#region 🔵 UPDATE CASE
+
+			parentEntity.GetType().GetProperty("UpdateOn")?.SetValue(parentEntity, DateTime.Now);
+			foreach (var child in childEntities)
+			{
+				child.GetType().GetProperty("UpdateOn")?.SetValue(child, DateTime.Now);
+			}
+
+			parentSet.Update(parentEntity);
+			childSet.UpdateRange(childEntities);
+
+			await _context.SaveChangesAsync();
+
+			#endregion
+		}
+		catch (Exception ex)
+		{
+			APILogger.WriteLog(ex);
+			throw;
+		}
+	}
+
 }

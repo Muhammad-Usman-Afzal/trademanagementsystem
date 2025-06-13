@@ -28,6 +28,7 @@ public class Order : BaseEntity
     public bool IspaymentClear { get; set; }
     public string WalkinCustomer { get; set; }
     public List<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
+    public List<OrderTransactions> OT { get; set; } = new List<OrderTransactions>();
 }
 
 public enum OrderTypes
