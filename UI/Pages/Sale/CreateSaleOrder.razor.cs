@@ -280,7 +280,12 @@ namespace UI.Pages.Sale
 
         async void Save()
         {
-            if (IsValidate())
+            try
+            {
+                _processing = true;
+                StateHasChanged();
+
+                if (IsValidate())
             {
                 Model.OType = OrderTypes.SaleOrder;
                 Model.Status = OrderStatus.Opened;
@@ -303,7 +308,16 @@ namespace UI.Pages.Sale
             }
         }
 
-
+            catch (Exception ex)
+            {
+                snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged();
+            }
+        }
 
     }
 }

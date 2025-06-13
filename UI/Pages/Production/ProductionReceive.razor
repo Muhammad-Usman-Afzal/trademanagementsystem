@@ -70,9 +70,10 @@
 					</MudSelect>
 				</MudItem>
 				<MudItem xs="2">
-					<MudCheckBox T="bool" @bind-Checked="DirectDeliver" Color="Color.Primary">Direct Delivery</MudCheckBox>
+					<MudCheckBox T="bool" @bind-Checked="DirectDeliver" Color="Color.Primary"> Direct Delivery</MudCheckBox>
 				</MudItem>
 			</MudGrid>
+
 			@if(DirectDeliver)
 			{
 				<MudGrid>

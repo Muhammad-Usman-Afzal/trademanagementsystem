@@ -2,6 +2,7 @@
 using Models;
 using Models.AppModels;
 using MudBlazor;
+using System.Diagnostics;
 using System.Reflection.PortableExecutable;
 
 namespace UI.Pages.Purchase
@@ -40,6 +41,8 @@ namespace UI.Pages.Purchase
         OrderDetail purchaseOrderDetail = new OrderDetail();
         List<PurchaseOrderDetail> purchaseOrderDetailList = new List<PurchaseOrderDetail>();
         AppUsers UserSession = new AppUsers();
+        private bool _saving = false;
+
 
         private bool _processing = false, _productdetails = true, _Party;
 
@@ -102,33 +105,52 @@ namespace UI.Pages.Purchase
 
         async void Save()
         {
-            if (IsValidate())
-            {
-                Model.OType = OrderTypes.PurchaseOrder;
-                Model.Status = OrderStatus.Opened;
-                var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();
 
-                if (res != null && res.Id > 0)
+            try
+            {
+                _processing = true;
+                StateHasChanged();
+
+                if (IsValidate())
                 {
-                    snackbar.Add("Purchase Order has been saved successfully", Severity.Success);
-                    Model = new Order();
-                    navigation.NavigateTo("/PurchaseOrder");
+                    Model.OType = OrderTypes.PurchaseOrder;
+                    Model.Status = OrderStatus.Opened;
+                    var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();
+
+                    if (res != null && res.Id > 0)
+                    {
+                        snackbar.Add("Purchase Order has been saved successfully", Severity.Success);
+                        Model = new Order();
+                        navigation.NavigateTo("/PurchaseOrder");
+                    }
+                    else
+                    {
+                        snackbar.Add("An error occurred while creating Purchase Order", Severity.Error);
+                    }
                 }
                 else
                 {
-                    snackbar.Add("An error occurred while creating Purchase Order", Severity.Error);
+                    snackbar.Add("Please fill all required field(s)", Severity.Error);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                snackbar.Add("Please fill all required field(s)", Severity.Error);
+                snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged();
             }
         }
 
+           
+
+        
+       
         bool IsValidate()
         {
-            return
-                string.IsNullOrEmpty(Model.OrderDate.ToString()) || string.IsNullOrEmpty(Model.OrderNo) ||
+            return string.IsNullOrEmpty(Model.OrderDate.ToString()) || string.IsNullOrEmpty(Model.OrderNo) ||
                 Model.PartyId < 0 || string.IsNullOrEmpty(Model.PaymentMode) || string.IsNullOrEmpty(Model.OrderMode) ||
                 Model.OrderDetail.Count < 0
                 ? false : true;
@@ -255,6 +277,8 @@ namespace UI.Pages.Purchase
             }
         OrderDetail purchaseOrderDetail = new OrderDetail();
         }
+
+
 
 
 

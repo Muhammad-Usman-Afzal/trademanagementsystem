@@ -25,9 +25,11 @@
 
 <MudGrid Justify="Justify.Center">
 	<MudItem xs="12">
-		
 
-		<MudTable Items="@POList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
+		@if (POList != null && POList.Count > 0)
+		{
+
+		<MudTable Items="@POList" Striped="true" Hover="true" FixedHeader="true" Height="70vh" Loading="_processing">
 			<HeaderContent>
 				<MudTh>Status</MudTh>
 				<MudTh>PO Date</MudTh>
@@ -61,9 +63,18 @@
 					<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" Color="Color.Primary" />
 				</MudTd>
 			</RowTemplate>
-		</MudTable>
-    
 
+			<PagerContent>
+				<MudTablePager/>
+			</PagerContent>
+
+		</MudTable>
+
+		
+    
+		}
+		else
+		{
 
 			<MudGrid Class="mt-15">
 				<MudItem lg="12">
@@ -86,9 +97,10 @@
 								</MudItem>
 							</MudGrid>
 						</MudCardContent>
+									
 					</MudCard>
 				</MudItem>
 			</MudGrid>
-	
+		 }
 	</MudItem>
 </MudGrid>

@@ -18,6 +18,8 @@ namespace UI.Pages.Sale
 
         private bool _processing = false;
 
+        
+
         List<Order> SOList = new List<Order>();
         List<OrderDetail> SODetailList = new List<OrderDetail>();
 

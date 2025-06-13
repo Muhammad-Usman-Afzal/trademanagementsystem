@@ -27,7 +27,7 @@
 	<MudItem xs="12">
 		@if (customerInfoList != null && customerInfoList.Count > 0)
 		{
-			<MudTable Items="@customerInfoList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
+			<MudTable Items="@customerInfoList" Striped="true" Hover="true" FixedHeader="true" Height="70vh" Loading="_processing">
 				<HeaderContent>
 					<MudTh>Party Type</MudTh>
 					<MudTh>Company Name</MudTh>
@@ -69,6 +69,9 @@
 						<MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="Delete" OnClick="@(()=>DeleteById(context.Id))" />
 					</MudTd>
 				</RowTemplate>
+				<PagerContent>
+					<MudTablePager/>
+				</PagerContent>
 			</MudTable>
 		}
 		else

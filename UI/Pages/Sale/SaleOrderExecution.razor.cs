@@ -19,7 +19,10 @@ public partial class SaleOrderExecution
     [Inject]
     public ProtectedLocalStorage _localStorage { get; set; }
     [Inject]
+   
+
     IStockTransactionsRepoUI _stockTransactionsRepoUI { get; set; }
+   
 
 
     #region Variables
@@ -27,6 +30,9 @@ public partial class SaleOrderExecution
     public int SONo { get; set; }
     private int _PONo, TotalReciving, RemaningQty;
     private bool _processing = false, DisableContolle = false;
+    
+
+
     #endregion
 
     #region Objects
@@ -36,6 +42,8 @@ public partial class SaleOrderExecution
     OrderDetail Model = new OrderDetail();
     OrderTransactions transactions = new OrderTransactions();
     StockTransactions stockTransactions = new StockTransactions();
+    
+
     #endregion
 
     #region Lists
@@ -106,7 +114,7 @@ public partial class SaleOrderExecution
             if (value != null)
             {
                 Model = value;
-                TotalReciving = Model.OT.Sum(odt => odt.Qty);
+                TotalReciving = Model.OT.Sum(odt => odt.POQty);
                 RemaningQty = Model.Qty - TotalReciving;
                 //FarwordManagerId = value.Id;
                 //complainTrack.DepartmentManagerId = departmang.Id;
@@ -150,9 +158,9 @@ public partial class SaleOrderExecution
 
     void AddItem()
     {
-        if (transactions.Qty > 0)
+        if (transactions.POQty > 0)
         {
-            if (TotalReciving < Model.Qty && (TotalReciving + transactions.Qty) <= Model.Qty)
+            if (TotalReciving < Model.Qty && (TotalReciving + transactions.POQty) <= Model.Qty)
             {
                 transactions.TType = TransectionTypes.Dispatch;
 
@@ -166,14 +174,14 @@ public partial class SaleOrderExecution
 
                     if (existingTransaction != null)
                     {
-                        existingTransaction.Qty += transactions.Qty;
+                        existingTransaction.POQty += transactions.POQty;
                     }
                     else
                     {
                         // If no transaction exists, add new transaction for this item
                         existingItem.OT.Add(new OrderTransactions
                         {
-                            Qty = transactions.Qty,
+                            POQty = transactions.POQty,
                             TType = transactions.TType,
                             ReciverParty = SaleOrder.Party.CompanyName,
                             CreateBy = UserSession.Id,
@@ -201,7 +209,7 @@ public partial class SaleOrderExecution
 
                     OrderTransactions obj = new OrderTransactions();
 
-                    obj.Qty = transactions.Qty;
+                    obj.POQty = transactions.POQty;
                     obj.TType = transactions.TType;
                     obj.ReciverParty = SaleOrder.Party.CompanyName;
                     obj.CreateBy = UserSession.Id;
@@ -338,7 +346,7 @@ public partial class SaleOrderExecution
     {
         SODetail.Remove(POdetail);
 
-        TotalReciving = Model.OT.Sum(odt => odt.Qty);
+        TotalReciving = Model.OT.Sum(odt => odt.POQty);
         RemaningQty = Model.Qty - TotalReciving;
     }
 

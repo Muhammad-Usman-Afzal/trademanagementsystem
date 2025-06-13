@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /API/APILogs/APILog.txt
 /UI/UILogs/UILog.txt
 /API/appsettings.json
+/UI/Pages/UsmanPractice/practice1.razor

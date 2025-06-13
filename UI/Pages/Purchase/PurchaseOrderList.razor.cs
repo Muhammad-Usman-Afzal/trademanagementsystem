@@ -17,7 +17,7 @@ namespace UI.Pages.Purchase
         #region Variables
         private bool _processing = false, CreatePODiloag = false;
         #endregion
-
+      
 
         #region List
         List<Order> POList = new List<Order>();

@@ -49,6 +49,7 @@ namespace UI.Pages.Purchase
         #region Lists
         List<Party> parties = new List<Party>();
         List<OrderDetail> PODetail = new List<OrderDetail>();
+        List<OrderTransactions> POItemsReceive = new List<OrderTransactions>();
         List<OrderDetail> ModelList = new List<OrderDetail>();
         List<OrderTransactions> POtransectionList = new List<OrderTransactions>();
         List<StockTransactions> stockTransactionsList = new List<StockTransactions>();
@@ -103,9 +104,25 @@ namespace UI.Pages.Purchase
                 if (UserSession != null)
                 {
                     PO = await _OrderRepoUI.GetSingleByCondition($"Order/GetOrderById?id={PONo}") ?? new Order();
-                    parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
+                    parties = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>(); // ye api theek krna hai
 
-                    parties = parties.Where(x => x.PartyType == "Customer").ToList();
+                    parties = parties.Where(x => x.PartyType == "Customer").ToList(); // ye bhi theek krna hai
+
+                    POItemsReceive = PO.OrderDetail.Select(ot => new OrderTransactions
+                    {
+                        ItemId = ot.ItemId,
+                        ItemName = ot.Item?.ItemName,
+                        TType = TransectionTypes.PurchaseReceive,
+                        TransectionDate = DateTime.Now,
+                        POQty = ot.Qty,
+                        TotalRecQty = PO.OT?.Where(x => x.ItemId == ot.ItemId)?.Sum(s => s.RecQty) ?? 0
+                    }).ToList();
+
+                    //foreach (var item in PO.OT)
+                    //{
+                    //    //POItemsReceive.Where(x => x.ItemId == item.ItemId).ToList().ForEach(x => x.Warehouse = item.Warehouse);
+                    //    POItemsReceive.Where(x => x.ItemId == item.ItemId).ToList().ForEach(x => x.TotalRecQty = item.TotalRecQty);
+                    //}
 
                 }
                 _processing = false;
@@ -124,7 +141,7 @@ namespace UI.Pages.Purchase
                 if (value != null)
                 {
                     Model = value;
-                    TotalReciving = Model.OT.Sum(odt => odt.Qty);
+                    TotalReciving = Model.OT.Sum(odt => odt.POQty);
                     RemaningQty = Model.Qty - TotalReciving;
                     //FarwordManagerId = value.Id;
                     //complainTrack.DepartmentManagerId = departmang.Id;
@@ -168,7 +185,7 @@ namespace UI.Pages.Purchase
 
         void AddItem()
         {
-            if (transactions.Qty > 0)
+            if (transactions.POQty > 0)
             {
                 transactions.TType = TransectionTypes.PurchaseReceive;
 
@@ -182,14 +199,14 @@ namespace UI.Pages.Purchase
 
                     if (existingTransaction != null)
                     {
-                        existingTransaction.Qty += transactions.Qty;
+                        existingTransaction.POQty += transactions.POQty;
                     }
                     else
                     {
                         // If no transaction exists, add new transaction for this item
                         existingItem.OT.Add(new OrderTransactions
                         {
-                            Qty = transactions.Qty,
+                            POQty = transactions.POQty,
                             TType = transactions.TType,
                             ReciverParty = transactions.ReciverParty,
                             RecivingLocation = transactions.RecivingLocation
@@ -204,7 +221,7 @@ namespace UI.Pages.Purchase
                             {
                                 new OrderTransactions
                                     {
-                                        Qty = transactions.Qty,
+                                        POQty = transactions.POQty,
                                         TType = transactions.TType,
                                         ReciverParty = transactions.ReciverParty,
                                         RecivingLocation = transactions.RecivingLocation
@@ -236,23 +253,32 @@ namespace UI.Pages.Purchase
                 await InvokeAsync(StateHasChanged);
                 await Task.Delay(1);
 
-                var stockTransactionsList = new List<StockTransactions>();
-
-                foreach (var po in PODetail.DistinctBy(x => x.ItemId))
-                {
-                    stockTransactionsList.Add(new StockTransactions
-                    {
-                        Qty = transactions.Qty,
-                        StockType = StockTransectionTypes.Purchase,
-                        ItemId = po.ItemId,
-                        Warehouse = transactions.RecivingLocation,
-                        ReferenceNumber = PO.OrderNo,
-                    });
-                }
-
                 if (await InsurtValidateAsync())
                 {
-                    await _OrderDetailRepoUI.UpdateDetail("OrderDetail/BulkUpdate", PODetail);
+                    foreach (var item in POItemsReceive)
+                    {
+                        item.TotalRecQty += item.RecQty;
+                    }
+
+                    PO.OT = POItemsReceive;
+
+                    await _OrderRepoUI.Update("Order/Update", PO);
+                    //await _OrderDetailRepoUI.UpdateDetail("OrderDetail/BulkUpdate", PODetail);
+
+                    var stockTransactionsList = new List<StockTransactions>();
+
+                    foreach (var po in POItemsReceive.DistinctBy(x => x.ItemId))
+                    {
+                        stockTransactionsList.Add(new StockTransactions
+                        {
+                            Qty = transactions.POQty,
+                            StockType = StockTransectionTypes.Purchase,
+                            ItemId = Convert.ToInt32(po.ItemId),
+                            Warehouse = transactions.RecivingLocation,
+                            ReferenceNumber = PO.OrderNo,
+                        });
+                    }
+
                     await _stockTransactionsRepoUI.BulkInsert("StockTransactions/BulkInsert", stockTransactionsList);
 
                     _Snackbar.Add("Saved successfully", Severity.Success);

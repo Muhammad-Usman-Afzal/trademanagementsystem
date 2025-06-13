@@ -25,7 +25,7 @@
 	<MudItem xs="12">
 		@if (SOList != null && SOList.Count > 0)
 		{
-			<MudTable Items="@SOList" Striped="true" Hover="true" FixedHeader="true" Loading="_processing">
+			<MudTable Items="@SOList" Striped="true" Hover="true" FixedHeader="true" Height="70vh" Loading="_processing">
 				<HeaderContent>
 					<MudTh>Status</MudTh>
 					<MudTh>Sale Order Date</MudTh>
@@ -60,7 +60,12 @@
 						<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" Color="Color.Primary" />
 					</MudTd> *@
 				</RowTemplate>
+
+				<PagerContent>
+					<MudTablePager/>
+				</PagerContent>
 			</MudTable>
+			
 		}
 		else
 		{

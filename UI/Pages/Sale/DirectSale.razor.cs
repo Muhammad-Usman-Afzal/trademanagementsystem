@@ -28,6 +28,7 @@ namespace UI.Pages.Sale
 
         #endregion
 
+
         AppUsers UserSession = new AppUsers();
         Order Model = new Order();
         OrderTransactions transactions = new OrderTransactions();
@@ -284,7 +285,12 @@ namespace UI.Pages.Sale
 
         async void Save()
         {
-            if (IsValidate())
+            try
+            {
+                _processing = true;
+                StateHasChanged();
+
+                if (IsValidate())
             {
                 Model.OType = OrderTypes.SaleOrder;
                 Model.Status = OrderStatus.Opened;
@@ -294,7 +300,7 @@ namespace UI.Pages.Sale
                 {
                     transactions.TType = TransectionTypes.Dispatch;
                     transactions.TransectionDate = DateTime.Now;
-                    transactions.Qty = Model.OrderDetail.Sum(x=>x.Qty);
+                    transactions.POQty = Model.OrderDetail.Sum(x=>x.Qty);
                     transactions.ReciverParty = Model.WalkinCustomer;
                     transactions.RecivingLocation = "Walk-In Customer";
                     transactions.IsDirectDelivery = true;
@@ -322,7 +328,16 @@ namespace UI.Pages.Sale
             }
         }
 
-
+            catch (Exception ex)
+            {
+                snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged();
+            }
+        }
 
     }
 }
