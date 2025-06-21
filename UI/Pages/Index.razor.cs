@@ -14,6 +14,8 @@ public partial class Index
     IProductDetailsRepoUI _ProductDetailsRepoUI { get; set; }
     [Inject]
     public IAppUsersRepoUI _appUsersRepoUI { get; set; }
+    [Inject]
+    public IStockTransactionsRepoUI _stockTransactionsRepoUI { get; set; }
 
     #endregion
 
@@ -26,6 +28,7 @@ public partial class Index
     List<Party> PartyCount = new List<Party>();
     List<ProductDetails> ProductCount = new List<ProductDetails>();
     List<AppUsers> userCount = new List<AppUsers>();
+    List<ItemStockSummaryDTO> StockSummary = new List<ItemStockSummaryDTO>();
 
     #endregion
 
@@ -65,21 +68,20 @@ public partial class Index
 
             if (UserSession.Id > 0)
             {
-                await Task.Delay(1000);
+                await Task.Delay(1);
+
                 PartyCount = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
                 ProductCount = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
                 userCount = await _appUsersRepoUI.GetAll("AppUsers/GetAppUsers") ?? new List<AppUsers>();
+                StockSummary = await _stockTransactionsRepoUI.GetItemWiseStock("StockTransactions/GetItemWiseStock") ?? new List<ItemStockSummaryDTO>();
 
                 partcount = PartyCount.Count();
-                vendorcount = PartyCount.Where(x=>x.PartyType == "Vendor").Count();
-                SupplyerCount = PartyCount.Where(x=>x.PartyType == "Supplier").Count();
-                ContractorCount = PartyCount.Where(x=>x.PartyType == "Contractor").Count();
+                vendorcount = PartyCount.Where(x => x.PartyType == "Vendor").Count();
+                SupplyerCount = PartyCount.Where(x => x.PartyType == "Supplier").Count();
+                ContractorCount = PartyCount.Where(x => x.PartyType == "Contractor").Count();
 
                 ProcessedCount = ProductCount.Where(x => x.Isprocessed == true).Count();
                 UnprocessedCount = ProductCount.Where(x => x.Isprocessed == false).Count();
-
-
-
             }
 
             _processing = false;

@@ -105,7 +105,7 @@
 				</MudItem>
 			</MudGrid>
 
-			<MudGrid Justify="Justify.SpaceAround">
+			@* <MudGrid Justify="Justify.SpaceAround">
 				<MudItem xs="2">
 					<MudAutocomplete T="OrderDetail" Label="PO Items" Placeholder="PO Items" ValueChanged="onItemSelect" 
 									 Value="Model" SearchFunc="@SearchItem" ToStringFunc="@(e => e == null ? null : $"{e.Item.ItemName}")" Variant="Variant.Outlined"
@@ -123,7 +123,7 @@
 				<MudItem xs="2">
 					<MudIconButton Icon="@Icons.Material.Filled.AddToPhotos" Size="Size.Large" OnClick="@AddItem" />
 				</MudItem>
-			</MudGrid>
+			</MudGrid> *@
 
 			<MudGrid Justify="Justify.FlexStart">
 				<MudItem xs="12">

@@ -271,10 +271,10 @@ namespace UI.Pages.Purchase
                     {
                         stockTransactionsList.Add(new StockTransactions
                         {
-                            Qty = transactions.POQty,
+                            StockIn = po.RecQty,
                             StockType = StockTransectionTypes.Purchase,
                             ItemId = Convert.ToInt32(po.ItemId),
-                            Warehouse = transactions.RecivingLocation,
+                            Warehouse = po.Warehouse,
                             ReferenceNumber = PO.OrderNo,
                         });
                     }

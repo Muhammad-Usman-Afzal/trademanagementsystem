@@ -84,25 +84,14 @@
                 </MudItem>
             </MudGrid>
 
-            <MudGrid Justify="Justify.Center">
+            @* <MudGrid Justify="Justify.Center">
                 <MudItem xs="4">
                     <MudAutocomplete T="OrderDetail" Label="SO Items" Placeholder="SO Items" ValueChanged="onItemSelect"
                                      Value="Model" SearchFunc="@SearchItem" ToStringFunc="@(e => e == null ? null : $"{e.Item.ItemName}")" Variant="Variant.Outlined"
                                      AdornmentIcon="@Icons.Material.Filled.Inventory" Adornment="Adornment.Start"  Clearable="true" Strict="false" />
                 </MudItem>
-                @* <MudItem xs="4">
-                    <MudSelect @bind-Value="transactions.RecivingLocation" T="string" Label="Delivery to"
-                               Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start"
-                               Placeholder="Delivery Location" AdornmentColor="Color.Primary">
-                        <MudSelectItem Value="@("Jilani")">Jilani</MudSelectItem>
-                        <MudSelectItem Value="@("MM")">MM</MudSelectItem>
-                        <MudSelectItem Value="@("Railway")">Railway</MudSelectItem>
-                        <MudSelectItem Value="@("Shop")">Shop</MudSelectItem>
-                        <MudSelectItem Value="@("Home")">Home</MudSelectItem>
-                        <MudSelectItem Value="@("Weahouse")">Weahouse</MudSelectItem>
-                    </MudSelect>
-                </MudItem> *@
             </MudGrid>
+
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="3">
                     <MudNumericField @bind-Value="Model.Qty" T="int" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ShoppingCart"  Placeholder="Sale Order Qty" Label="Sale Order Qty" Disabled="true" HideSpinButtons="true"></MudNumericField>
@@ -116,11 +105,11 @@
                 <MudItem xs="1">
                     <MudIconButton Icon="@Icons.Material.Filled.AddToPhotos" Size="Size.Large" OnClick="@AddItem" AdornmentColor="Color.Primary" />
                 </MudItem>
-            </MudGrid>
+            </MudGrid> *@
 
             <MudGrid Justify="Justify.Center">
                 <MudItem xs="12">
-                    <MudTable Items="@SODetail" Striped="true" Hover="true" FixedHeader="true" Height="30vh" Loading="_processing"> 
+                    @* <MudTable Items="@SaleItems" Striped="true" Hover="true" FixedHeader="true" Height="30vh" Loading="_processing"> 
                         <HeaderContent>
                             <MudTh>Item Name</MudTh>
                             <MudTh>Total Qty</MudTh>
@@ -135,6 +124,39 @@
                                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Dark" aria-label="Remove" OnClick="()=>RemoveItem(context)" />
                             </MudTd>
                         </RowTemplate>
+                        <PagerContent>
+                            <MudTablePager />
+                        </PagerContent>
+                    </MudTable> *@
+                    
+                    <MudTable Items="@SaleItems" Striped="true" Hover="true" FixedHeader="true" Height="30vh" Loading="_processing"> 
+                        <HeaderContent>
+                             <MudTh>Item Name</MudTh>
+                             <MudTh>SO Qty</MudTh>
+                             <MudTh>Total Sold Qty</MudTh>
+                             <MudTh>Sale Qty</MudTh>
+                             <MudTh>Remaining Qty</MudTh>
+                             <MudTh>Warehouse</MudTh>
+                        </HeaderContent>
+                         <RowTemplate>
+                             <MudTd>@context.ItemName</MudTd>
+                                <MudTd>@context.SOQty</MudTd>
+                                <MudTd>@context.TotalSoldQty</MudTd>
+                                <MudTd>
+                                    <MudNumericField Disabled="@(context.TotalSoldQty>=context.SOQty)" Min="0" Max="@(context.SOQty - context.TotalSoldQty)" @bind-Value="context.SaleQty" T="int" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Enter Sale Qty" Label="Sale Qty" HideSpinButtons="true"></MudNumericField>
+                                </MudTd>
+                                <MudTd>@(context.SOQty - (context.TotalSoldQty + context.SaleQty))</MudTd>
+                                <MudTd>
+                                    <MudSelect @bind-Value="context.Warehouse" T="string" Label="Warehouse"
+                                               Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start"
+                                               Placeholder="Select Warehouse" AdornmentColor="Color.Primary">
+                                               @foreach (var item in context.Warehouses)
+                                    {
+                                        <MudSelectItem Value="item">@item</MudSelectItem>
+                                    }
+                                    </MudSelect>
+                                </MudTd>
+                            </RowTemplate>
                         <PagerContent>
                             <MudTablePager />
                         </PagerContent>

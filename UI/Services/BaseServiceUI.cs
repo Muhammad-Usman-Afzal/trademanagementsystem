@@ -1,4 +1,6 @@
-﻿namespace UI.Services;
+﻿using Newtonsoft.Json;
+
+namespace UI.Services;
 
 public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
 {
@@ -202,6 +204,23 @@ public class BaseServiceUI<T> : IBaseRepoUI<T> where T : BaseEntity
             return string.Empty;
         }
     }
+
+    public async Task<List<string>> GetStringList(string APIName)
+    {
+        try
+        {
+            await SetAuthorizationHeader();
+            var responseString = await _httpClient.GetStringAsync(APIName);
+            var result = JsonConvert.DeserializeObject<List<string>>(responseString);
+            return result ?? new List<string>();
+        }
+        catch (Exception ex)
+        {
+            UILogger.WriteLog(ex);
+            return new List<string>();
+        }
+    }
+
 
     public async Task<bool> DeleteById(string APIName)
     {

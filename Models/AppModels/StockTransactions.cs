@@ -14,7 +14,8 @@ namespace Models.AppModels
         public int ItemId { get; set; }
         public ProductDetails Item { get; set; }
         public StockTransectionTypes StockType { get; set; } = new StockTransectionTypes();
-        public int Qty { get; set; }
+        public int StockIn { get; set; }
+        public int StockOut { get; set; }
         [Column(TypeName = "nvarchar(15)")]
         public string Warehouse { get; set; }
         [Column(TypeName = "nvarchar(10)")]

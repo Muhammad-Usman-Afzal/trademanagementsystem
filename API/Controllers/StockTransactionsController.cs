@@ -1,4 +1,5 @@
 ﻿using API.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -108,7 +109,7 @@ public class StockTransactionsController : ControllerBase
         }
         catch (Exception ex) { APILogger.WriteLog(ex); return new StockTransactions(); }
     }
-    
+
     [HttpPost("BulkUpdate")]
     public async Task<ActionResult<bool>> BulkUpdate(List<StockTransactions> StockTransactionsList)
     {
@@ -149,45 +150,60 @@ public class StockTransactionsController : ControllerBase
         catch (Exception ex) { APILogger.WriteLog(ex); return false; }
     }
 
-	[HttpPost("Merge")]
-	public async Task<ActionResult<StockTransactions>> Merge(StockTransactions StockTransactions)
-	{
-		try
-		{
-			if (StockTransactions == null)
-			{
-				return Problem("Entity set 'TMSContext.StockTransactions'  is null.");
-			}
+    [HttpPost("Merge")]
+    public async Task<ActionResult<StockTransactions>> Merge(StockTransactions StockTransactions)
+    {
+        try
+        {
+            if (StockTransactions == null)
+            {
+                return Problem("Entity set 'TMSContext.StockTransactions'  is null.");
+            }
 
-			//await _StockTransactionsRepo.Merge<AppUsers, UserAuthorizedScreens>(AppUsers, AppUsers.AuthorizedScreens);
+            //await _StockTransactionsRepo.Merge<AppUsers, UserAuthorizedScreens>(AppUsers, AppUsers.AuthorizedScreens);
 
-			return CreatedAtAction("GetStockTransactionsById", new { id = StockTransactions.Id }, StockTransactions);
-		}
-		catch (Exception ex) { APILogger.WriteLog(ex); return new StockTransactions(); }
-	}
+            return CreatedAtAction("GetStockTransactionsById", new { id = StockTransactions.Id }, StockTransactions);
+        }
+        catch (Exception ex) { APILogger.WriteLog(ex); return new StockTransactions(); }
+    }
 
-	// DELETE: api/StockTransactions/5
-	//[HttpDelete("{id}")]
-	//public async Task<IActionResult> DeleteStockTransactions(int id)
-	//{
-	//    if (_context.StockTransactions == null)
-	//    {
-	//        return NotFound();
-	//    }
-	//    var StockTransactions = await _context.StockTransactions.FindAsync(id);
-	//    if (StockTransactions == null)
-	//    {
-	//        return NotFound();
-	//    }
+    [HttpGet("GetItemWiseStock")]
+    public async Task<ActionResult<List<ItemStockSummaryDTO>>> GetItemWiseStock()
+    {
+        try
+        {
+            return await _StockTransactionsRepo.GetItemWiseStock();
 
-	//    _context.StockTransactions.Remove(StockTransactions);
-	//    await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            APILogger.WriteLog(ex);
+            return new List<ItemStockSummaryDTO>();
+        }
+    }
 
-	//    return NoContent();
-	//}
+    // DELETE: api/StockTransactions/5
+    //[HttpDelete("{id}")]
+    //public async Task<IActionResult> DeleteStockTransactions(int id)
+    //{
+    //    if (_context.StockTransactions == null)
+    //    {
+    //        return NotFound();
+    //    }
+    //    var StockTransactions = await _context.StockTransactions.FindAsync(id);
+    //    if (StockTransactions == null)
+    //    {
+    //        return NotFound();
+    //    }
 
-	//private bool StockTransactionsExists(int id)
-	//{
-	//    return (_context.StockTransactions?.Any(e => e.Id == id)).GetValueOrDefault();
-	//}
+    //    _context.StockTransactions.Remove(StockTransactions);
+    //    await _context.SaveChangesAsync();
+
+    //    return NoContent();
+    //}
+
+    //private bool StockTransactionsExists(int id)
+    //{
+    //    return (_context.StockTransactions?.Any(e => e.Id == id)).GetValueOrDefault();
+    //}
 }

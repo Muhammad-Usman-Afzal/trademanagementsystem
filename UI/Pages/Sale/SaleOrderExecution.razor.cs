@@ -52,9 +52,14 @@ public partial class SaleOrderExecution
 
     List<Party> parties = new List<Party>();
     List<OrderDetail> SODetail = new List<OrderDetail>();
+    List<OrderTransactions> SaleItems = new List<OrderTransactions>();
+
     List<OrderDetail> ModelList = new List<OrderDetail>();
     List<OrderTransactions> POtransectionList = new List<OrderTransactions>();
     List<StockTransactions> stockTransactionsList = new List<StockTransactions>();
+    
+    List<string> Warehouses = new List<string>();
+
     #endregion
 
 
@@ -97,6 +102,16 @@ public partial class SaleOrderExecution
 
                 parties = parties.Where(x => x.PartyType == "Customer").ToList();
 
+                SaleItems = (await Task.WhenAll(SaleOrder.OrderDetail.Select(async ot => new OrderTransactions
+                {
+                    ItemId = ot.ItemId,
+                    ItemName = ot.Item?.ItemName,
+                    TType = TransectionTypes.Dispatch,
+                    TransectionDate = DateTime.Now,
+                    SOQty = ot.Qty,
+                    TotalSoldQty = SaleOrder.OT?.Where(x => x.ItemId == ot.ItemId)?.Sum(s => s.SaleQty) ?? 0,
+                    Warehouses = await _partyRepoUI.GetStringList($"Order/GetWarehousesByItem?ItemId={ot.ItemId}") ?? new List<string>()
+                }))).ToList();
             }
             _processing = false;
         }
@@ -248,24 +263,33 @@ public partial class SaleOrderExecution
             await InvokeAsync(StateHasChanged);
             await Task.Delay(1);
 
-            var stockTransactionsList = new List<StockTransactions>();
-
-            foreach (var so in SODetail.DistinctBy(x => x.ItemId))
-            {
-                stockTransactionsList.Add(new StockTransactions
-                {
-                    Qty = so.Qty,
-                    StockType = StockTransectionTypes.Sale,
-                    ItemId = so.ItemId,
-                    Warehouse = transactions.RecivingLocation,
-                    ReferenceNumber = SaleOrder.OrderNo,
-                    CreateBy = UserSession.Id
-                });
-            }
-
             if (await InsurtValidateAsync())
             {
-                await _OrderDetailRepoUI.UpdateDetail("OrderDetail/BulkUpdate", SODetail);
+                foreach (var item in SaleItems)
+                {
+                    item.TotalSoldQty += item.SaleQty;
+                }
+
+                SaleOrder.OT = SaleItems;
+
+                await _OrderRepoUI.Update("Order/Update", SaleOrder);
+                //await _OrderDetailRepoUI.UpdateDetail("OrderDetail/BulkUpdate", SODetail);
+                //await _stockTransactionsRepoUI.BulkInsert("StockTransactions/BulkInsert", stockTransactionsList);
+
+                var stockTransactionsList = new List<StockTransactions>();
+
+                foreach (var so in SaleItems.DistinctBy(x => x.ItemId))
+                {
+                    stockTransactionsList.Add(new StockTransactions
+                    {
+                        StockOut = so.SaleQty,
+                        StockType = StockTransectionTypes.Sale,
+                        ItemId = Convert.ToInt32(so.ItemId),
+                        Warehouse = so.Warehouse,
+                        ReferenceNumber = SaleOrder.OrderNo,
+                    });
+                }
+
                 await _stockTransactionsRepoUI.BulkInsert("StockTransactions/BulkInsert", stockTransactionsList);
 
                 _Snackbar.Add("Saved successfully", Severity.Success);
