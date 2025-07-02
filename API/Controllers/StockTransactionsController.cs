@@ -181,6 +181,20 @@ public class StockTransactionsController : ControllerBase
             return new List<ItemStockSummaryDTO>();
         }
     }
+    
+    [HttpGet("GetLiveStockByItem")]
+    public async Task<ActionResult<int>> GetLiveStockByItem(int itemId)
+    {
+        try
+        {
+            return await _StockTransactionsRepo.GetLiveStockByItem(itemId);
+        }
+        catch (Exception ex)
+        {
+            APILogger.WriteLog(ex);
+            return new int();
+        }
+    }
 
     // DELETE: api/StockTransactions/5
     //[HttpDelete("{id}")]

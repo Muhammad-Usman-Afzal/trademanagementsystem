@@ -68,6 +68,7 @@ else
             {
                 <MudTable Items="@StockSummary" Striped="true" Hover="true" FixedHeader="true"  Loading="_processing">
                     <HeaderContent>
+                        <MudTh>Brand</MudTh>
                         <MudTh>Item Name</MudTh>
                         <MudTh>Warehouse</MudTh>
                         <MudTh>Current Stock</MudTh>
@@ -76,6 +77,7 @@ else
                         <MudTh>Stock Status</MudTh>
                     </HeaderContent>
                     <RowTemplate>
+                        <MudTd>@context.Brand</MudTd>
                         <MudTd>@context.ItemName</MudTd>
                             <MudTd>@context.Warehouse</MudTd>
                             <MudTd>@context.CurrentStock</MudTd>

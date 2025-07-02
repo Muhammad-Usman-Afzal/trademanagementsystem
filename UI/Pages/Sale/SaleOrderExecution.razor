@@ -135,7 +135,8 @@
                              <MudTh>SO Qty</MudTh>
                              <MudTh>Total Sold Qty</MudTh>
                              <MudTh>Sale Qty</MudTh>
-                             <MudTh>Remaining Qty</MudTh>
+                             <MudTh>Remaining SO Qty</MudTh>
+                             <MudTh>Live Stock</MudTh>
                              <MudTh>Warehouse</MudTh>
                         </HeaderContent>
                          <RowTemplate>
@@ -143,9 +144,10 @@
                                 <MudTd>@context.SOQty</MudTd>
                                 <MudTd>@context.TotalSoldQty</MudTd>
                                 <MudTd>
-                                    <MudNumericField Disabled="@(context.TotalSoldQty>=context.SOQty)" Min="0" Max="@(context.SOQty - context.TotalSoldQty)" @bind-Value="context.SaleQty" T="int" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Enter Sale Qty" Label="Sale Qty" HideSpinButtons="true"></MudNumericField>
+                                    <MudNumericField Immediate="true" Disabled="@(context.TotalSoldQty>=context.SOQty)" Min="0" Max="@context.LiveStock" @bind-Value="context.SaleQty" T="int" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Placeholder="Enter Sale Qty" Label="Sale Qty" HideSpinButtons="true"></MudNumericField>
                                 </MudTd>
                                 <MudTd>@(context.SOQty - (context.TotalSoldQty + context.SaleQty))</MudTd>
+                                <MudTd Class="@(context.LiveStock<(context.SOQty - (context.TotalSoldQty + context.SaleQty))? "alert alert-danger text-danger fw-bold":"")">@(context.LiveStock-context.SaleQty)</MudTd>
                                 <MudTd>
                                     <MudSelect @bind-Value="context.Warehouse" T="string" Label="Warehouse"
                                                Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start"

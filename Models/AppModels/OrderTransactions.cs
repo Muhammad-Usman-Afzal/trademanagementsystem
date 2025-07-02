@@ -29,6 +29,8 @@ namespace Models.AppModels
         public string Warehouse { get; set; }
         [NotMapped]
         public List<string> Warehouses { get; set; } = new List<string>();
+        [NotMapped]
+        public int LiveStock { get; set; }
     }
 }
 

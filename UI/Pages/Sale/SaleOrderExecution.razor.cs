@@ -102,16 +102,41 @@ public partial class SaleOrderExecution
 
                 parties = parties.Where(x => x.PartyType == "Customer").ToList();
 
-                SaleItems = (await Task.WhenAll(SaleOrder.OrderDetail.Select(async ot => new OrderTransactions
+                //SaleItems = (await Task.WhenAll(SaleOrder.OrderDetail.Select(async ot => new OrderTransactions
+                //{
+                //    ItemId = ot.ItemId,
+                //    ItemName = ot.Item?.ItemName,
+                //    TType = TransectionTypes.Dispatch,
+                //    TransectionDate = DateTime.Now,
+                //    SOQty = ot.Qty,
+                //    TotalSoldQty = SaleOrder.OT?.Where(x => x.ItemId == ot.ItemId)?.Sum(s => s.SaleQty) ?? 0,
+                //    LiveStock = Convert.ToInt32(await _partyRepoUI.GetSingleByColumnAsync($"Order/GetLiveStockByItem?ItemId={ot.ItemId}")),
+                //    Warehouses = await _partyRepoUI.GetStringList($"Order/GetWarehousesByItem?ItemId={ot.ItemId}") ?? new List<string>()
+                //}))).ToList();
+
+                var saleItemsTasks = SaleOrder.OrderDetail.Select(async ot =>
                 {
-                    ItemId = ot.ItemId,
-                    ItemName = ot.Item?.ItemName,
-                    TType = TransectionTypes.Dispatch,
-                    TransectionDate = DateTime.Now,
-                    SOQty = ot.Qty,
-                    TotalSoldQty = SaleOrder.OT?.Where(x => x.ItemId == ot.ItemId)?.Sum(s => s.SaleQty) ?? 0,
-                    Warehouses = await _partyRepoUI.GetStringList($"Order/GetWarehousesByItem?ItemId={ot.ItemId}") ?? new List<string>()
-                }))).ToList();
+                    var liveStockResponse = await _partyRepoUI.GetSingleByColumnAsync($"StockTransactions/GetLiveStockByItem?ItemId={ot.ItemId}");
+                    int liveStock = 0;
+                    int.TryParse(liveStockResponse, out liveStock); // Safer than Convert.ToInt32
+
+                    var warehouses = await _partyRepoUI.GetStringList($"Order/GetWarehousesByItem?ItemId={ot.ItemId}")
+                                      ?? new List<string>();
+
+                    return new OrderTransactions
+                    {
+                        ItemId = ot.ItemId,
+                        ItemName = ot.Item?.ItemName,
+                        TType = TransectionTypes.Dispatch,
+                        TransectionDate = DateTime.Now,
+                        SOQty = ot.Qty,
+                        TotalSoldQty = SaleOrder.OT?.Where(x => x.ItemId == ot.ItemId)?.Sum(s => s.SaleQty) ?? 0,
+                        LiveStock = liveStock,
+                        Warehouses = warehouses
+                    };
+                });
+
+                SaleItems = (await Task.WhenAll(saleItemsTasks)).ToList();
             }
             _processing = false;
         }

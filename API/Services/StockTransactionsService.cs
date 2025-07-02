@@ -16,9 +16,10 @@ public class StockTransactionsService : BaseService<StockTransactions>, IStockTr
     {
         return await _baseRepo.GetAll()
             .Include(st => st.Item)
-            .GroupBy(st => new { st.ItemId, st.Item.ItemName, st.Warehouse })
+            .GroupBy(st => new { st.ItemId, st.Item.ItemName, st.Warehouse, st.Item.Party.CompanyName })
             .Select(g => new ItemStockSummaryDTO
             {
+                Brand = g.Key.CompanyName,
                 ItemId = g.Key.ItemId,
                 ItemName = g.Key.ItemName,
                 Warehouse = g.Key.Warehouse,
@@ -34,6 +35,17 @@ public class StockTransactionsService : BaseService<StockTransactions>, IStockTr
             .OrderBy(s => s.ItemId)
             .ThenBy(s => s.Warehouse)
             .ToListAsync();
+    }
+
+    public async Task<int> GetLiveStockByItem(int itemId)
+    {
+        var result = await _baseRepo.GetAll()
+            .Where(x => x.ItemId == itemId)
+            .GroupBy(x => x.ItemId)
+            .Select(g => g.Sum(x => x.StockIn) - g.Sum(x => x.StockOut))
+            .FirstOrDefaultAsync();
+
+        return result;
     }
 
 }
