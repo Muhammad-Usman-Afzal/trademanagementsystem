@@ -24,7 +24,7 @@
 
 				 <MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:15px;margin-top:10px;" />
  
-				@* <MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:15px;" />  *@
+				
 				
 
 			<MudGrid Justify="Justify.Center">
@@ -46,7 +46,8 @@
 
 			<MudGrid Justify="Justify.Center">
 				<MudItem xs="6">
-					<MudAutocomplete Required="true" T="Party" Label="Choose Vendor" SearchFunc="@SearchVendor" Value="party" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Store"
+					<MudAutocomplete Required="true" T="Party" Label="Choose Vendor" SearchFunc="@SearchVendor" Value="party" Variant="Variant.Outlined" 
+									Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Store"
 									 CoerceText="false" ResetValueOnEmptyText="true" ToStringFunc="@(e => e.Id == 0 ? null : $"{e.FocalPersonName} ({e.CompanyName})")"
 									  ValueChanged="OnPartyChanged"
 									 HelperText="Please enter the Vendor Name" HelperTextOnFocus="true" Strict="false">
@@ -88,8 +89,7 @@
 									 HelperText="Please enter the Product Name" HelperTextOnFocus="true" Disabled="_productdetails">
 					</MudAutocomplete>
 
-					@* <MudTextField @bind-Value="purchaseOrderDetail.ItemName" T="string" Variant="Variant.Outlined" Label="Item Name"></MudTextField> *@
-				</MudItem>
+                </MudItem>
 				<MudItem xs="2">
 					<MudNumericField @bind-Value="purchaseOrderDetail.Qty" T="int" Variant="Variant.Outlined" Min="0" Label="Quantity"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Numbers"
 									 HideSpinButtons="true" Disabled="_productdetails" ></MudNumericField>
@@ -107,7 +107,7 @@
 									 HideSpinButtons="true"></MudNumericField> *@
 				</MudItem>
 				<MudItem xs="1">
-					<MudIconButton Icon="@Icons.Material.Filled.AddToQueue" aria-label="Add" Size="Size.Large" OnClick="@(()=> AddItem(purchaseOrderDetail))" />
+					<MudIconButton Icon="@Icons.Material.Filled.AddToQueue" Color="Color.Primary" aria-label="Add" Size="Size.Large" OnClick="@(()=> AddItem(purchaseOrderDetail))" />
 					
 				</MudItem>
 			</MudGrid>

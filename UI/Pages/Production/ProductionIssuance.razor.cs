@@ -2,12 +2,12 @@
 using MudBlazor;
 using System.Reflection;
 using System.Transactions;
-using static MudBlazor.Icons.Custom;
 
 namespace UI.Pages.Production
 {
-    partial class ProductionReceive
+    partial class ProductionIssuance
     {
+
         #region DI
 
         [Inject]
@@ -27,6 +27,8 @@ namespace UI.Pages.Production
         [Inject]
         public IProductDetailsRepoUI _ProductDetailsRepoUI { get; set; }
         public IOrderTransactionsRepoUI _transactionsRepoUI { get; set; }
+
+
         #endregion
 
         #region Variables
@@ -168,7 +170,7 @@ namespace UI.Pages.Production
                 Model.TaxAmount = Model.GrossAmount * Model.TaxRate / 100;
                 Model.NetAmount = Model.GrossAmount + Model.TaxAmount;
             }
-            
+
         }
         bool IsValidate()
         {

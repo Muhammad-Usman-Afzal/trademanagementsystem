@@ -35,7 +35,7 @@ namespace UI.Pages.Sale
         List<Party> Customers = new List<Party>();
 
         OrderDetail SaleOrderDetail = new OrderDetail();
-        List<PurchaseOrderDetail> SaleOrderDetailList = new List<PurchaseOrderDetail>();
+        List<SaleOrderDetail> SaleOrderDetailList = new List<SaleOrderDetail>();
 
         ProductDetails ProDetalil = new ProductDetails();
         List<ProductDetails> CompanyProducts = new List<ProductDetails>();

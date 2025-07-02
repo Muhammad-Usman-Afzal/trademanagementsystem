@@ -1,11 +1,11 @@
-﻿@page "/ProductionPlan"
+﻿@page "/ProductionOrder"
 
 
             <MudGrid>
                 <MudItem lg="1">
                     <MudGrid Justify="Justify.FlexEnd">
                         <MudTooltip Text="Back">
-                            <MudIconButton Icon="@Icons.Material.Rounded.ArrowCircleLeft" Color="Color.Primary" Size="Size.Large" ></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Rounded.ArrowCircleLeft" OnClick="@(()=>navigation.NavigateTo("index"))" Color="Color.Primary" Size="Size.Large"></MudIconButton>
                         </MudTooltip>
                     </MudGrid>
                 </MudItem>
@@ -16,47 +16,65 @@
                     </MudGrid>
                 </MudItem>
                 <MudItem lg="2">
-                    <MudFab StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Primary" Size="Size.Small"  />
+                   <MudFab StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Primary" Size="Size.Small" OnClick="@(()=>navigation.NavigateTo("CreateProductionOrder"))" />
                 </MudItem>
             </MudGrid>
 
             <MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
 
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12">
-                    <MudTable Items="@elements" Hover="true">
+
+
+        <MudGrid Justify="Justify.Center">
+        <MudItem xs="12">
+        @if (POList != null && POList.Count > 0)
+		           {
+            <MudTable Items="@POList" Striped="true" Hover="true" FixedHeader="true" Height="70vh" Loading="_processing">
                         <HeaderContent>
                             <MudTh>Plant Name</MudTh>
                             <MudTh>Production Qty</MudTh>
                             <MudTh>Rate</MudTh>
                             <MudTh>Total Amount</MudTh>
                             <MudTh>Payed Amount</MudTh>
+                           <MudTh></MudTh>
+                           <MudTh></MudTh>
                         </HeaderContent>
                         <RowTemplate>
-                            <MudTd>@context.Name</MudTd>
-                            <MudTd>@context.Name</MudTd>
-                            <MudTd>@context.Name</MudTd>
-                            <MudTd>@context.Name</MudTd>
-                            <MudTd>@context.Name</MudTd>
-                                <MudTd>
+                <MudTd>
+                    @if (context.IspaymentClear == true)
+                    {
+                        <MudChip Label Variant="Variant.Filled" Color="Color.Success">Closed</MudChip>
+                    }
+                    else
+                    {
+                        <MudChip Label Variant="Variant.Filled" Color="Color.Primary">Open</MudChip>
+                    }
+                </MudTd>
+                    <MudTd>@context.OrderDate</MudTd>
+                    <MudTd>@context.OrderNo</MudTd>
+                    <MudTd>@context.Party.CompanyName</MudTd>
+                    <MudTd>@context.OrderDetail.Count()</MudTd>
+                    <MudTd>@context.NetAmount</MudTd>
+                    <MudTd>
+                        <MudTooltip Text="Click here to proceed to Sale Order Execution">
+                            <MudIconButton Icon="@Icons.Material.Rounded.ArrowOutward" Color="Color.Success" OnClick="@(()=>navigation.NavigateTo($"/ProductionReceive/{context.Id}"))" />
+                        </MudTooltip>
+                    </MudTd>
+                               @*  <MudTd>
                                     <MudButton Variant="Variant.Filled" Size="Size.Large"
                                                Color="Color.Primary">Pay</MudButton>
-                                </MudTd>
+                                </MudTd> *@
 
-                            </RowTemplate>
-                        </MudTable>
-                        @code {
-        private class Element
-        {
-            public string Name { get; set; }
-        }
-        private List<Element> elements = new List<Element> { };
-                    }
-                </MudItem>
-            </MudGrid>
+                       </RowTemplate>
+             <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+                       
+    
  
- 
-
+  }
+  else
+   {
 <MudGrid Class="mt-15">
     <MudItem lg="12">
         <MudCard Elevation="0" Style="background:none;">
@@ -71,13 +89,18 @@
                         <MudText Typo="Typo.h6" Color="Color.Error">No Record Found</MudText>
                         <MudText Typo="Typo.caption" Style="color:darkgray;">You have no any Record. You can create a new Record by clicking the right side button.</MudText>
                     </MudItem>
+
                     <MudItem lg="4" Class="mt-12">
-                        <MudGrid Justify="Justify.FlexStart">
-                            <MudButton  Variant="Variant.Outlined" Color="Color.Primary" Style="border-radius:25px;">Create New* <MudIcon Icon="@Icons.Material.TwoTone.PostAdd" Class="ml-2" /></MudButton>
-                        </MudGrid>
+						<MudGrid Justify="Justify.FlexStart">
+							<MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.TwoTone.PostAdd" Color="Color.Primary" Style="border-radius:25px;" OnClick="@(()=>navigation.NavigateTo("CreateProductionOrder"))">Create New*</MudButton>
+						</MudGrid>
                     </MudItem>
                 </MudGrid>
             </MudCardContent>
-        </MudCard>
+         </MudCard>
+     </MudItem>
+   </MudGrid>
+
+      }
     </MudItem>
 </MudGrid>
