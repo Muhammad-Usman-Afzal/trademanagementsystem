@@ -1,4 +1,6 @@
-﻿namespace API.Controllers;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -160,6 +162,43 @@ public class OrderController : ControllerBase
         catch (Exception ex) { APILogger.WriteLog(ex); return new Order(); }
     }
 
+    [HttpGet("GetWarehousesByItem")]
+    public async Task<ActionResult<List<string>>> GetWarehousesByItem(int ItemId)
+    {
+        try
+        {
+            List<string> whs = new List<string>();
+
+            List<Order> orders = await _OrderRepo
+                .GetByCondition(x => x.OT.Any(w => w.ItemId == ItemId))
+                .ToListAsync();
+
+            foreach (var item in orders)
+            {
+                var otList = item.OT.Where(x => x.ItemId == ItemId).ToList();
+
+                int ttlRecQty = otList.Sum(x => x.TotalRecQty);
+                int ttlPOQty = otList.Sum(x => x.POQty);
+
+                if (ttlRecQty < ttlPOQty)
+                {
+                    var firstOT = otList.FirstOrDefault();
+                    if (firstOT != null && !string.IsNullOrWhiteSpace(firstOT.Warehouse))
+                    {
+                        whs.Add(firstOT.Warehouse);
+                    }
+                }
+            }
+
+            return whs.Distinct().ToList();
+        }
+        catch (Exception ex)
+        {
+            APILogger.WriteLog(ex);
+            return new List<string>();
+        }
+    }
+    
     // DELETE: api/Order/5
     //[HttpDelete("{id}")]
     //public async Task<IActionResult> DeleteOrder(int id)

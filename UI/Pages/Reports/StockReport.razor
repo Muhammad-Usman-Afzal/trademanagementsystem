@@ -16,14 +16,16 @@
 			<HeaderContent>
 				<MudTh>Warehouse</MudTh>
 				<MudTh>Item</MudTh>
-				<MudTh>Qty</MudTh>
+				<MudTh>Stock In</MudTh>
+				<MudTh>Stock Out</MudTh>
 				<MudTh>Last Update</MudTh>
 				<MudTh>View Details</MudTh>
 			</HeaderContent>
 			<RowTemplate>
 				<MudTd>@context.Warehouse</MudTd>
 				<MudTd>@context.Item?.ItemName</MudTd>
-				<MudTd>@context.Qty</MudTd>
+				<MudTd>@context.StockIn</MudTd>
+				<MudTd>@context.StockOut</MudTd>
 				<MudTd>@context.TransectionDate</MudTd>
 				<MudTd>
 					<MudIconButton Icon="@Icons.Material.Filled.ViewList" Color="Color.Info" aria-label="View Details" OnClick="@(()=>_Snackbar.Add("Under Development",Severity.Info))" />
