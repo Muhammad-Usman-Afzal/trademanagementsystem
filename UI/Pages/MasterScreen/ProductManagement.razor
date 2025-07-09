@@ -128,14 +128,14 @@
 				</MudGrid>
 
 				<MudGrid Justify="Justify.Center">
-					<MudItem xs="8">
+					<MudItem xs="6">
 						<MudTextField @bind-Value="Model.ItemName" T="string" Variant="Variant.Outlined" Required="true" AdornmentIcon="@Icons.Material.Filled.ViewCompactAlt" Placeholder="Item Name" Adornment="Adornment.Start" AdornmentColor="Color.Primary"
 									  MaxLength="30" RequiredError="Please fill this field" Label="Item Name"></MudTextField>
 					</MudItem>
 					@* <MudItem xs="4">
 						<MudNumericField @bind-Value="Model.Rate" HideSpinButtons="true" Label="Rate"></MudNumericField>
 					</MudItem> *@
-					<MudItem xs="4">
+					<MudItem xs="3">
 						@* <MudSwitch @bind-Value="Model.Isprocessed" Style="margin-top: 10px;">
 							@if (Model.Isprocessed == true)
 							{
@@ -153,6 +153,9 @@
 								<MudSelectItem Value="@item">@item</MudSelectItem>
 							}
 							</MudSelect>
+					</MudItem>
+					<MudItem xs="3">
+						<MudNumericField @bind-Value="Model.StandardWeight" HideSpinButtons="true" Label="Standard Weight"></MudNumericField>
 					</MudItem>
 				</MudGrid>
 
