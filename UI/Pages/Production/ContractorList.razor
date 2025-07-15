@@ -1,0 +1,346 @@
+﻿@page "/cl"
+
+<MudGrid>
+	<MudItem lg="1">
+		<MudGrid Justify="Justify.FlexEnd">
+			<MudTooltip Text="Back">
+				<MudIconButton Icon="@Icons.Material.Rounded.ArrowCircleLeft" Color="Color.Primary" Size="Size.Large" OnClick="@(()=>Navigate.NavigateTo("index"))"></MudIconButton>
+			</MudTooltip>
+		</MudGrid>
+	</MudItem>
+	<MudItem lg="9" Class="mt-3">
+		<MudGrid Justify="Justify.FlexStart">
+			<MudDivider Vertical="true" Class="mt-1 mr-2" Style="width:2px; height:30px;" />
+			<MudText Typo="Typo.h5" Class="mt-1">Party Managment</MudText>
+		</MudGrid>
+	</MudItem>
+	<MudItem lg="2">
+		<MudFab hidden StartIcon="@Icons.Material.Filled.Create" Label="Create New" Color="Color.Primary" Size="Size.Small" OnClick="@(()=>AddPartyVisible = true)" />
+	</MudItem>
+</MudGrid>
+
+<MudDivider DividerType="DividerType.Middle" Style=" background-color:none; border:1px solid black; width:96%; margin: 20px;" />
+
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12">
+		@if (customerInfoList != null && customerInfoList.Count > 0)
+		{
+			<MudTable Items="@customerInfoList" Striped="true" Hover="true" FixedHeader="true" Height="70vh" Loading="_processing">
+				<HeaderContent>
+					@* <MudTh>Party Type</MudTh> *@
+					<MudTh>Company Name</MudTh>
+					<MudTh>Is Registred</MudTh>
+					<MudTh>Contact Person</MudTh>
+					<MudTh>Contact No</MudTh>
+					<MudTh>Email</MudTh>
+					<MudTh>Action</MudTh>
+				</HeaderContent>
+				<RowTemplate>
+					@* <MudTd>
+						@if (context.PartyType == "Vendor")
+						{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Vendor</MudChip>
+						}
+						else if (context.PartyType == "Contractor")
+						{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Contractor</MudChip>
+						}
+						else if (context.PartyType == "Customer")
+						{
+						<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Customer</MudChip>
+						}
+					</MudTd> *@
+					<MudTd>@context.CompanyName</MudTd>
+					@if (@context.IsRegisterd == true)
+					{
+						<MudTd>Registerd</MudTd>
+					}
+					else
+					{
+						<MudTd>Not Registerd</MudTd>
+					}
+					<MudTd>@context.FocalPersonName</MudTd>
+					<MudTd>@context.FocalPersonContact</MudTd>
+					<MudTd>@context.FocalPersonEmail</MudTd>
+					<MudTd>
+						<MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Issuance" OnClick="@(()=> GridtoCall(context))" />
+					</MudTd>
+				</RowTemplate>
+				<PagerContent>
+					<MudTablePager/>
+				</PagerContent>
+			</MudTable>
+		}
+		else
+		{
+			<MudGrid Class="mt-15">
+				<MudItem lg="12">
+					<MudCard Elevation="0" Style="background:none;">
+						<MudCardContent>
+							<MudGrid Justify="Justify.SpaceBetween">
+								<MudItem lg="4">
+									<MudGrid Justify="Justify.FlexEnd">
+										<MudImage Src="images/Not-Found.png" Width="200" />
+									</MudGrid>
+								</MudItem>
+								<MudItem lg="4" Class="mt-5">
+									<MudText Typo="Typo.h6" Color="Color.Error">No Record Found</MudText>
+									<MudText Typo="Typo.caption" Style="color:darkgray;">You have no any Record. You can create a new Record by clicking the right side button.</MudText>
+								</MudItem>
+								<MudItem lg="4" Class="mt-12">
+									<MudGrid Justify="Justify.FlexStart">
+										<MudButton OnClick="@(()=>AddPartyVisible = true)" Variant="Variant.Outlined" Color="Color.Primary" Style="border-radius:25px;">Create New* <MudIcon Icon="@Icons.Material.TwoTone.PostAdd" Class="ml-2" /></MudButton>
+									</MudGrid>
+								</MudItem>
+							</MudGrid>
+						</MudCardContent>
+					</MudCard>
+				</MudItem>
+			</MudGrid>
+		}
+	</MudItem>
+</MudGrid>
+
+
+
+
+<MudDialog @bind-IsVisible="AddPartyVisible" Options="dialogOptions">
+	<DialogContent>
+		<MudGrid Justify="Justify.Center" Class="shadow-lg form-radius" Style="border-radius:25px;overflow:scroll; height: 95vh; margin: 10px; padding: 10px; width: 99%;">
+			<MudItem xs="10">
+				<MudGrid Justify="Justify.FlexStart">
+					<MudItem lg="1">
+						<MudGrid Justify="Justify.FlexEnd">
+							<MudTooltip Text="Back">
+								<MudIconButton Icon="@Icons.Material.Rounded.ArrowCircleLeft" Color="Color.Primary" Size="Size.Large" OnClick="CloseParty"></MudIconButton>
+							</MudTooltip>
+						</MudGrid>
+					</MudItem>
+					<MudItem lg="11" Class="mt-3">
+						<MudGrid Justify="Justify.FlexStart">
+							<MudDivider Vertical="true" Class="mt-1 mr-2" Style="width:2px; height:30px;" />
+							<MudText Typo="Typo.h5" Class="mt-1">Create New Party</MudText>
+						</MudGrid>
+					</MudItem>
+				</MudGrid>
+
+				<MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:1px;margin-top:10px;" />
+				<MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:15px;" />
+				
+				<MudGrid>
+					<MudItem xs="12">
+						<MudSelect T="string" @bind-Value="Model.PartyType" Label="Party type" Placeholder="Relation With Your Party" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Groups" Adornment="Adornment.Start">
+							<MudSelectItem Value="@("Vendor")">Vendor</MudSelectItem>
+							<MudSelectItem Value="@("Contractor")">Contractor</MudSelectItem>
+							<MudSelectItem Value="@("Customer")">Customer</MudSelectItem>
+						</MudSelect>
+					</MudItem>
+				</MudGrid>
+
+				<MudGrid Justify="Justify.FlexStart">
+					<MudItem xs="12">
+						<MudText Typo="Typo.h6">Company Details</MudText>
+					</MudItem>
+				</MudGrid>
+				
+				<MudGrid Justify="Justify.Center">
+					<MudItem xs="4">
+						<MudTextField @bind-Value="Model.CompanyName" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Domain" Adornment="Adornment.Start" Required="true"
+									  MaxLength="100" RequiredError="Please fill this field" Label="Name Of Customer" Placeholder="Party Business Name"></MudTextField>
+					</MudItem>
+					<MudItem xs="4">
+						@* <MudNumericField @bind-Value="compNumber" Variant="Variant.Outlined" Placeholder="Party Official Contact No" AdornmentIcon="@Icons.Material.Filled.PermContactCalendar" Adornment="Adornment.Start" Required="true" Label="Contact No"
+										 RequiredError="Please fill this field" Max="11" HideSpinButtons="true"></MudNumericField> *@
+						<MudTextField @bind-Value="Model.CompanyContact"
+									  Variant="Variant.Outlined"
+									  Placeholder="Company Official Contact No"
+									  AdornmentIcon="@Icons.Material.Filled.PermContactCalendar"
+									  Adornment="Adornment.Start"
+									  HelperText="Use '+' before Number donot use '-' between number"
+									  HelperTextOnFocus="true"
+									  Required="true"
+									  Label="Contact No"
+									  RequiredError="Please fill this field"
+									  Pattern="@contactPattern"
+									  Error="@isCompanyContactInvalid"
+									  ErrorText="Enter a valid contact number (e.g., +923001234567)"
+									  MaxLength="13"
+									  OnBlur="ValidateCompanyContact" />
+					</MudItem>
+					<MudItem xs="4">
+						@* <MudTextField @bind-Value="Model.CompanyEmail" T="string" InputType="InputType.Email" Variant="Variant.Outlined" Placeholder="Party Official E-Mail Adress" AdornmentIcon="@Icons.Material.Filled.Email" Adornment="Adornment.Start" Required="true"
+									  MaxLength="50" RequiredError="Please fill this field" Label="Email"></MudTextField> *@
+						<MudTextField @bind-Value="Model.CompanyEmail"
+									  T="string"
+									  InputType="InputType.Email"
+									  Variant="Variant.Outlined"
+									  HelperText="Format: user@example.com"
+									  HelperTextOnFocus="true"
+									  Placeholder="Company Official E-Mail Address"
+									  AdornmentIcon="@Icons.Material.Filled.Email"
+									  Adornment="Adornment.Start"
+									  Required="true"
+									  RequiredError="Please fill this field"
+									  MaxLength="50"
+									  Label="Email"
+									  Pattern="@emailPattern"
+									  Error="@isCompanyEmailInvalid"
+									  ErrorText="Enter a valid email (e.g., name@example.com)"
+									  OnBlur="ValidateCompanyEmail" />
+					</MudItem>
+				</MudGrid>
+
+				<MudGrid Justify="Justify.Center">
+					<MudItem xs="12">
+						<MudTextField @bind-Value="Model.CompanyAddress" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.LocationOn" Adornment="Adornment.Start" Required="true"
+									  MaxLength="200" Lines="2" RequiredError="Please fill this field" Placeholder="Party Business Address" Label="Address"></MudTextField>
+					</MudItem>
+
+				</MudGrid>
+
+				<MudGrid Justify="Justify.FlexStart">
+					<MudItem>
+						<MudCheckBox @bind-Value="Model.IsRegisterd" Label="Is Company is Registered" LabelPosition="LabelPosition.Start"></MudCheckBox>
+					</MudItem>
+				</MudGrid>
+
+				@if (Model.IsRegisterd)
+				{
+					<MudGrid>
+						<MudItem xs="6">
+							@* <MudTextField @bind-Value="Model.NTN" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Margin" Adornment="Adornment.Start"
+										  MaxLength="8" RequiredError="Please fill this field" Label="NTN No" InputType="InputType.Number"
+										  Placeholder="#######-#" HelperText="Enter NTN No without '-'" HelperTextOnFocus="true"></MudTextField> *@
+							<MudTextField @bind-Value="Model.NTN"
+										  T="string"
+										  Variant="Variant.Outlined"
+										  AdornmentIcon="@Icons.Material.Filled.Margin"
+										  Adornment="Adornment.Start"
+										  Required="true"
+										  RequiredError="Please fill this field"
+										  Label="NTN No"
+										  InputType="InputType.Text"
+										  Pattern="@ntnPattern"
+										  Error="@isNTNInvalid"
+										  ErrorText="Enter NTN in format: #######-#"
+										  Placeholder="#######-#"
+										  HelperText="Enter NTN No in the format #######-#"
+										  HelperTextOnFocus="true"
+										  MaxLength="9"
+										  OnBlur="ValidateNTN" />
+						</MudItem>
+						<MudItem xs="6">
+							@* <MudTextField @bind-Value="Model.STRNo" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Margin" Adornment="Adornment.Start"
+										  MaxLength="13" RequiredError="Please fill this field" Label="STR No" InputType="InputType.Number"
+										  Placeholder="##-##-####-###-##" HelperText="Enter STR No without '-'" HelperTextOnFocus="true"></MudTextField> *@
+
+							<MudTextField @bind-Value="Model.STRNo"
+										  T="string"
+										  Variant="Variant.Outlined"
+										  AdornmentIcon="@Icons.Material.Filled.Margin"
+										  Adornment="Adornment.Start"
+										  RequiredError="Please fill this field"
+										  Label="STR No"
+										  InputType="InputType.Text"
+										  Pattern="@strPattern"
+										  Error="@isSTRInvalid"
+										  ErrorText="Enter STR No in format: ##-##-####-###-##"
+										  Placeholder="##-##-####-###-##"
+										  HelperText="Enter STR No in the format ##-##-####-###-##"
+										  HelperTextOnFocus="true"
+										  MaxLength="17"
+										  OnBlur="ValidateSTR" />
+						</MudItem>
+					</MudGrid>
+				}
+
+
+				<MudGrid Justify="Justify.FlexStart">
+					<MudItem xs="12">
+						<MudText Typo="Typo.h6">Contact Person Details</MudText>
+					</MudItem>
+				</MudGrid>
+
+				<MudGrid Justify="Justify.Center">
+					<MudItem xs="4">
+						<MudTextField @bind-Value="Model.FocalPersonName" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.People" Adornment="Adornment.Start" Required="true"
+									  MaxLength="50" RequiredError="Please fill this field" Placeholder="Focal Person Name" Label="Name"></MudTextField>
+					</MudItem>
+					<MudItem xs="4">
+						@* <MudTextField @bind-Value="Model.FocalPersonContact" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.PhoneAndroid" Adornment="Adornment.Start" Required="true" Label="Contact No"
+									  RequiredError="Please fill this field" Placeholder="####-#######" InputType="InputType.Telephone" Pattern="^\+\d{1,3}\d{7,14}$" MaxLength="15"></MudTextField> *@
+						<MudTextField @bind-Value="Model.FocalPersonContact"
+									  Variant="Variant.Outlined"
+									  AdornmentIcon="@Icons.Material.Filled.PhoneAndroid"
+									  Adornment="Adornment.Start"
+									  Required="true"
+									  HelperText="Use '+' before Number donot use '-' between number"
+									  HelperTextOnFocus="true"
+									  Label="Contact No"
+									  RequiredError="Please fill this field"
+									  Placeholder="+XX-XXXXXXXXX"
+									  InputType="InputType.Telephone"
+									  Pattern="@contactPattern"
+									  Error="@isContactInvalid"
+									  ErrorText="Enter a valid contact number (e.g., +923001234567)"
+									  MaxLength="13"
+									  OnBlur="ValidateContact" />
+					</MudItem>
+					<MudItem xs="4">
+						@* <MudTextField @bind-Value="Model.FocalPersonEmail" T="string" Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Email" Adornment="Adornment.Start" Required="true"
+									  MaxLength="50" Label="Email" Placeholder="youremail@Domain.com" InputType="InputType.Email"></MudTextField> *@
+						<MudTextField @bind-Value="Model.FocalPersonEmail"
+									  T="string"
+									  Variant="Variant.Outlined"
+									  AdornmentIcon="@Icons.Material.Filled.Email"
+									  Adornment="Adornment.Start"
+									  HelperText="Format: user@example.com"
+									  HelperTextOnFocus="true"
+									  Required="true"
+									  Label="Email"
+									  RequiredError="Please fill this field"
+									  Placeholder="Focal Person Email"
+									  InputType="InputType.Email"
+									  MaxLength="50"
+									  Pattern="@emailPattern"
+									  Error="@isEmailInvalid"
+									  ErrorText="Enter a valid email (e.g., name@example.com)"
+									  OnBlur="ValidateEmail" />
+					</MudItem>
+				</MudGrid>
+
+
+				<MudGrid Justify="Justify.FlexEnd" Class="mt-5">
+
+					<MudItem xs="2">
+						<MudButton Variant="Variant.Filled" Size="Size.Small" Disabled="DisableContolle" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
+								   OnClick="SaveAsync" Color="Color.Primary">
+							@if (DisableContolle)
+							{
+								<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+								<MudText Class="ms-2">Processing</MudText>
+							}
+							else
+							{
+								<MudText>Save</MudText>
+							}
+						</MudButton>
+					</MudItem>
+					<MudItem xs="2">
+						<MudButton Variant="Variant.Outlined" Size="Size.Small" Disabled="DisableContolle" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh"
+								   Color="Color.Primary" OnClick="@(()=>Model=new Party())">
+							Clear
+						</MudButton>
+					</MudItem>
+					<MudItem xs="2">
+						<MudButton Variant="Variant.Outlined" Size="Size.Small" Disabled="DisableContolle" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Clear"
+								   Color="Color.Primary" OnClick="CloseParty">
+							Close
+						</MudButton>
+					</MudItem>
+
+				</MudGrid>
+			</MudItem>
+		</MudGrid>
+	</DialogContent>
+</MudDialog>
