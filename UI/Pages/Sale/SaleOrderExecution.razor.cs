@@ -118,7 +118,7 @@ public partial class SaleOrderExecution
                 {
                     var liveStockResponse = await _partyRepoUI.GetSingleByColumnAsync($"StockTransactions/GetLiveStockByItem?ItemId={ot.ItemId}");
                     int liveStock = 0;
-                    int.TryParse(liveStockResponse, out liveStock); // Safer than Convert.ToInt32
+                    int.TryParse(liveStockResponse, out liveStock);
 
                     var warehouses = await _partyRepoUI.GetStringList($"Order/GetWarehousesByItem?ItemId={ot.ItemId}")
                                       ?? new List<string>();

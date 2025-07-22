@@ -11,7 +11,7 @@
 	<MudItem lg="9" Class="mt-3">
 		<MudGrid Justify="Justify.FlexStart">
 			<MudDivider Vertical="true" Class="mt-1 mr-2" Style="width:2px; height:30px;" />
-			<MudText Typo="Typo.h5" Class="mt-1">Party Managment</MudText>
+			<MudText Typo="Typo.h5" Class="mt-1">Contractor List</MudText>
 		</MudGrid>
 	</MudItem>
 	<MudItem lg="2">
@@ -63,7 +63,7 @@
 					<MudTd>@context.FocalPersonContact</MudTd>
 					<MudTd>@context.FocalPersonEmail</MudTd>
 					<MudTd>
-						<MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Issuance" OnClick="@(()=> GridtoCall(context))" />
+						<MudIconButton Icon="@Icons.Material.Filled.ArrowOutward" aria-label="Issuance" OnClick="GoToPage" />
 					</MudTd>
 				</RowTemplate>
 				<PagerContent>

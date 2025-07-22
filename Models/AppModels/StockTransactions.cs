@@ -25,13 +25,12 @@ namespace Models.AppModels
     }
 }
 
-
 public enum StockTransectionTypes
 {
     Purchase = 1,
     Sale,
-    GoodIssuence,
-    GoodsReceipt,
+    ProdIssuance,
+    ProdReceipt,
     Return,
     Transfer
 }

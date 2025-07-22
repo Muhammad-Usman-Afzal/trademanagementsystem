@@ -2,6 +2,7 @@
 using MudBlazor;
 using System.Reflection;
 using System.Transactions;
+using UI.Repositories;
 
 namespace UI.Pages.Production
 {
@@ -26,8 +27,8 @@ namespace UI.Pages.Production
         public IOrderRepoUI _orderRepoUI { get; set; }
         [Inject]
         public IProductDetailsRepoUI _ProductDetailsRepoUI { get; set; }
-        public IOrderTransactionsRepoUI _transactionsRepoUI { get; set; }
-
+        [Inject]
+        public IStockTransactionsRepoUI _stockTransactionsRepoUI { get; set; }
 
         #endregion
 
@@ -54,11 +55,57 @@ namespace UI.Pages.Production
         ProductDetails ProDetalil = new ProductDetails();
         List<ProductDetails> CompanyProducts = new List<ProductDetails>();
 
-
         private bool _processing = false, _productdetails = true, _Party;
 
-        #endregion
+		int liveStock = 0;
 
+		#endregion
+
+		protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            try
+            {
+                await base.OnAfterRenderAsync(firstRender);
+
+                if (firstRender)
+                {
+                    var userSession = await _localStorage.GetAsync<AppUsers>("User");
+                    UserSession = userSession.Value ?? new AppUsers();
+
+                    if (UserSession.Id == 0)
+                    {
+                        navigation.NavigateTo("/signin");
+                    }
+                    else
+                    {
+                        await OnInitializedAsync();
+                        StateHasChanged();
+                    }
+                }
+            }
+            catch (Exception ex) { UILogger.WriteLog(ex); }
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            try
+            {
+                _processing = true;
+                _ = InvokeAsync(StateHasChanged);
+
+                if (UserSession.Id > 0)
+                {
+                    Brands = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
+                }
+                _processing = false;
+            }
+            catch (Exception ex)
+            {
+                UILogger.WriteLog(ex);
+            }
+
+            return;
+        }
 
         private async Task<IEnumerable<ProductDetails>> SearchProDetails(string value)
         {
@@ -91,7 +138,7 @@ namespace UI.Pages.Production
             catch (Exception ex) { UILogger.WriteLog(ex); }
         }
 
-        void OnProductChanged(ProductDetails Value)
+        async void OnProductChanged(ProductDetails Value)
         {
             try
             {
@@ -100,7 +147,15 @@ namespace UI.Pages.Production
                     ProDetalil = Value;
                     ProductionOrderDetail.ItemId = Value.Id;
                     ProductionOrderDetail.Item = Value;
-                }
+
+					var liveStockResponse = await _partyRepoUI.GetSingleByColumnAsync($"StockTransactions/GetLiveStockByItem?ItemId={ProductionOrderDetail.ItemId}");
+					int.TryParse(liveStockResponse, out liveStock);
+
+                    ProductionOrderDetail.Warehouses = await _partyRepoUI.GetStringList($"Order/GetWarehousesByItem?ItemId={ProductionOrderDetail.ItemId}")
+                                      ?? new List<string>();
+
+                    StateHasChanged();
+				}
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }
         }
@@ -116,11 +171,11 @@ namespace UI.Pages.Production
         {
             if (_productdetails == false)
             {
-                if (POdetail.Qty > 0 && POdetail.Rate > 0 && !String.IsNullOrEmpty(POdetail.Unit))
+                if (POdetail.Qty > 0 /*&& POdetail.Rate > 0*/)
                 {
                     var existingItem = Model.OrderDetail.FirstOrDefault(x => x.ItemId == POdetail.ItemId);
 
-                    if (existingItem != null && existingItem.Unit == POdetail.Unit)
+                    if (existingItem != null)
                     {
                         // Update the quantity
                         existingItem.Qty += POdetail.Qty;
@@ -188,37 +243,52 @@ namespace UI.Pages.Production
                 _processing = true;
                 StateHasChanged();
 
-                if (IsValidate())
+                if (/*IsValidate()*/ true)
                 {
-                    Model.OType = OrderTypes.SaleOrder;
+                    Model.OType = OrderTypes.ProductionOrder;
                     Model.Status = OrderStatus.Opened;
                     var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();
 
-                    if (res.Id > 0)
-                    {
-                        transactions.TType = TransectionTypes.Dispatch;
-                        transactions.TransectionDate = DateTime.Now;
-                        transactions.POQty = Model.OrderDetail.Sum(x => x.Qty);
-                        transactions.ReciverParty = Model.WalkinCustomer;
-                        transactions.RecivingLocation = "Walk-In Customer";
-                        transactions.IsDirectDelivery = true;
+                    var stockTransactionsList = new List<StockTransactions>();
 
-                        if (res.Id > 0)
+                    foreach (var prd in Model.OrderDetail.DistinctBy(x => x.ItemId))
+                    {
+                        stockTransactionsList.Add(new StockTransactions
                         {
-                            var resTrns = await _transactionsRepoUI.Create("OrderTransactions/Create", transactions) ?? new OrderTransactions();
+                            StockOut = prd.Qty,
+                            StockType = StockTransectionTypes.ProdIssuance,
+                            ItemId = Convert.ToInt32(prd.ItemId),
+                            Warehouse = prd.Warehouse,
+                            ReferenceNumber = Model.OrderNo,
+                        });
+                    }
 
-                            if (resTrns.Id > 0)
-                            {
-                                snackbar.Add("Sale Order has been saved successfully", Severity.Success);
-                                Model = new Order();
-                                navigation.NavigateTo("/SaleOrder");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        snackbar.Add("An error occurred while creating Sale Order", Severity.Error);
-                    }
+                    await _stockTransactionsRepoUI.BulkInsert("StockTransactions/BulkInsert", stockTransactionsList);
+
+                    snackbar.Add("Saved successfully", Severity.Success);
+                    navigation.NavigateTo("/prdiss", forceLoad: true);
+
+                    //if (res.Id > 0)
+                    //{
+                    //    transactions.TType = TransectionTypes.GoodsIssuance;
+                    //    transactions.TransectionDate = DateTime.Now;
+                    //    transactions.POQty = Model.OrderDetail.Sum(x => x.Qty);
+                    //    transactions.ReciverParty = Model.WalkinCustomer;
+                    //    transactions.RecivingLocation = "Walk-In Customer";
+                    //    transactions.IsDirectDelivery = true;
+
+                        //    if (res.Id > 0)
+                        //    {
+                        //        var resTrns = await _transactionsRepoUI.Create("OrderTransactions/Create", transactions) ?? new OrderTransactions();
+
+                        //        if (resTrns.Id > 0)
+                        //        {
+                        //            snackbar.Add("Sale Order has been saved successfully", Severity.Success);
+                        //            Model = new Order();
+                        //            navigation.NavigateTo("/SaleOrder");
+                        //        }
+                        //    }
+                        //}
                 }
                 else
                 {

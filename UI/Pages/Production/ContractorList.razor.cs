@@ -16,6 +16,10 @@ public partial class ContractorList
     [Inject]
     IDialogService dialogService { get; set; }
 
+    void GoToPage()
+    {
+        Navigate.NavigateTo("/prdiss");
+    }
 
     #region Variables
     private bool _processing = false, AddPartyVisible = false, DisableContolle = false, isContactInvalid = false, isEmailInvalid = false,

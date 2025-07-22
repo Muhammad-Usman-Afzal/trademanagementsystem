@@ -10,5 +10,8 @@ public class OrderDetail : BaseEntity
     public double Rate { get; set; }
     [Column(TypeName = "nvarchar(15)")]
     public string Unit { get; set; }
+    public string Warehouse { get; set; }
     public List<OrderTransactions> OT { get; set; } =  new List<OrderTransactions>();
+    [NotMapped]
+    public List<string> Warehouses { get; set; } = new List<string>();
 }
