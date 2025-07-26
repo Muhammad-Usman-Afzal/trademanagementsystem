@@ -95,7 +95,18 @@ namespace UI.Pages.Production
 
                 if (UserSession.Id > 0)
                 {
-                    Brands = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
+					var uri = new Uri(navigation.Uri);
+					var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+
+					if (query.TryGetValue("data", out var jsonData))
+					{
+						var decoded = Uri.UnescapeDataString(jsonData);
+						party = JsonSerializer.Deserialize<Party>(decoded);
+					}
+
+
+
+					Brands = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
                 }
                 _processing = false;
             }
@@ -245,6 +256,7 @@ namespace UI.Pages.Production
 
                 if (/*IsValidate()*/ true)
                 {
+                    Model.PartyId = party.Id;
                     Model.OType = OrderTypes.ProductionOrder;
                     Model.Status = OrderStatus.Opened;
                     var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();

@@ -21,11 +21,11 @@
                 </MudItem>
             </MudGrid>
 
-            <MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:15px;margin-top:10px;" />
+            <MudDivider DividerType="DividerType.FullWidth" Style="background-color:none; border:1px solid black; width:100%; margin-bottom:15px;margin-top:10px;" />
 
             <MudGrid Justify="Justify.FlexStart">
                 <MudItem xs="12">
-                    <MudSelect T="string" Label="Contracter Name" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" Disabled="true"></MudSelect>
+                    <MudSelect @bind-Value="party.CompanyName" T="string" Label="Contracter Name" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" Disabled="true"></MudSelect>
                 </MudItem>
                 @* <MudItem xs="4">
                 <MudSelect T="string" Label="PO NO" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ReceiptLong" Disabled="true">
@@ -78,6 +78,10 @@
                 <MudItem xs="3">
                     <MudNumericField Max="liveStock" Min="0" T="int" @bind-Value="ProductionOrderDetail.Qty" Variant="Variant.Outlined" Label="Quantity" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Numbers"></MudNumericField>
                 </MudItem>
+                
+                <MudItem xs="3">
+                    <MudNumericField Min="0" T="double" @bind-Value="ProductionOrderDetail.Rate" Variant="Variant.Outlined" Label="Rate" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Numbers"></MudNumericField>
+                </MudItem>
 
                 <MudItem xs="1">
                     <MudIconButton Icon="@Icons.Material.Filled.AddToQueue" Color="Color.Primary" aria-label="Add" Size="Size.Large" OnClick="@(()=> AddItem(ProductionOrderDetail))" />
@@ -96,10 +100,12 @@
                         <HeaderContent>
                             <MudTh>Item</MudTh>
                             <MudTh>Qty</MudTh>
+                            <MudTh>Rate</MudTh>
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd>@context.Item?.ItemName</MudTd>
                             <MudTd>@context.Qty</MudTd>
+                            <MudTd>@context.Rate</MudTd>
                             </RowTemplate>
                         </MudTable>
                 </MudItem>

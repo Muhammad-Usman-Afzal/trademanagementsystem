@@ -16,9 +16,20 @@ public partial class ContractorList
     [Inject]
     IDialogService dialogService { get; set; }
 
-    void GoToPage()
+    void GoToPage(int ContractorId, Party objectParty)
     {
-        Navigate.NavigateTo("/prdiss");
+        if (ContractorId>0)
+        {
+            Navigate.NavigateTo($"/prdrec/{ContractorId}");
+        }
+        else
+        {
+			// Party ko JSON banake URL me bhejna
+			var json = JsonSerializer.Serialize(objectParty);
+			var encoded = Uri.EscapeDataString(json);
+
+			Navigate.NavigateTo($"/prdiss?data={encoded}");
+		}
     }
 
     #region Variables

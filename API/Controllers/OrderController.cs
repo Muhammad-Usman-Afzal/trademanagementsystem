@@ -198,29 +198,43 @@ public class OrderController : ControllerBase
             return new List<string>();
         }
     }
-    
-    // DELETE: api/Order/5
-    //[HttpDelete("{id}")]
-    //public async Task<IActionResult> DeleteOrder(int id)
-    //{
-    //    if (_context.Order == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    var Order = await _context.Order.FindAsync(id);
-    //    if (Order == null)
-    //    {
-    //        return NotFound();
-    //    }
 
-    //    _context.Order.Remove(Order);
-    //    await _context.SaveChangesAsync();
+	[HttpGet("GetOrdersByContractor")]
+	public async Task<ActionResult<Order>> GetOrdersByContractor(int ContractorId)
+	{
+		try
+		{
+            return await _OrderRepo.GetSingleByCondition(x => x.PartyId == ContractorId && x.Status == OrderStatus.Opened);
+		}
+		catch (Exception ex)
+		{
+			APILogger.WriteLog(ex);
+			return new Order();
+		}
+	}
 
-    //    return NoContent();
-    //}
+	// DELETE: api/Order/5
+	//[HttpDelete("{id}")]
+	//public async Task<IActionResult> DeleteOrder(int id)
+	//{
+	//    if (_context.Order == null)
+	//    {
+	//        return NotFound();
+	//    }
+	//    var Order = await _context.Order.FindAsync(id);
+	//    if (Order == null)
+	//    {
+	//        return NotFound();
+	//    }
 
-    //private bool OrderExists(int id)
-    //{
-    //    return (_context.Order?.Any(e => e.Id == id)).GetValueOrDefault();
-    //}
+	//    _context.Order.Remove(Order);
+	//    await _context.SaveChangesAsync();
+
+	//    return NoContent();
+	//}
+
+	//private bool OrderExists(int id)
+	//{
+	//    return (_context.Order?.Any(e => e.Id == id)).GetValueOrDefault();
+	//}
 }
