@@ -31,6 +31,13 @@ public class TMSContext : DbContext
         modelBuilder.Entity<SaleOrderDetail>().Navigation(x => x.Item).AutoInclude();
 
         modelBuilder.Entity<StockTransactions>().Navigation(x => x.Item).AutoInclude();
+        
+        modelBuilder.Entity<Invoice>().Navigation(x => x.Customer).AutoInclude();
+        modelBuilder.Entity<Invoice>().Navigation(x => x.InvoiceDetails).AutoInclude();
+
+        modelBuilder.Entity<InvoiceDetails>().Navigation(x => x.Product).AutoInclude();
+
+      
         #region Seed Users
 
         modelBuilder.Entity<AppUsers>().HasData(
@@ -54,4 +61,6 @@ public class TMSContext : DbContext
     public DbSet<OrderDetail> OrderDetails { get; set; } = default!;
     public DbSet<OrderTransactions> OrderTransactions { get; set; } = default!;
     public DbSet<StockTransactions> StockTransactions { get; set; } = default!;
+    public DbSet<Invoice> Invoice { get; set; } = default!;
+    public DbSet<InvoiceDetails> InvoiceDetails { get; set; } = default!;
 }

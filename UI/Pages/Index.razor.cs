@@ -73,7 +73,7 @@ public partial class Index
                 PartyCount = await _partyRepoUI.GetAll("Party/GetParties") ?? new List<Party>();
                 ProductCount = await _ProductDetailsRepoUI.GetAll("ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
                 userCount = await _appUsersRepoUI.GetAll("AppUsers/GetAppUsers") ?? new List<AppUsers>();
-                StockSummary = await _stockTransactionsRepoUI.GetItemWiseStock("StockTransactions/GetItemWiseStock") ?? new List<ItemStockSummaryDTO>();
+				StockSummary = await _stockTransactionsRepoUI.GetItemWiseStock("StockTransactions/GetItemWiseStock") ?? new List<ItemStockSummaryDTO>();
 
                 partcount = PartyCount.Count();
                 vendorcount = PartyCount.Where(x => x.PartyType == "Vendor").Count();

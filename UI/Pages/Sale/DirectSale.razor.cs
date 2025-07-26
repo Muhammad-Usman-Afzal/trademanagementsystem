@@ -3,341 +3,384 @@ using UI.Repositories;
 
 namespace UI.Pages.Sale
 {
-    public partial class DirectSale
-    {
-        #region DI
+	public partial class DirectSale
+	{
+		#region DI
 
-        [Inject]
-        public ISnackbar snackbar { get; set; }
-        [Inject]
-        public IJSRuntime _jS { get; set; }
-        [Inject]
-        public ProtectedLocalStorage _localStorage { get; set; }
-        [Inject]
-        public NavigationManager navigation { get; set; }
-        [Inject]
-        public IPartyRepoUI _partyRepoUI { get; set; }
-        [Inject]
-        public IOrderRepoUI _orderRepoUI { get; set; }
-        [Inject]
-        public IOrderDetailRepoUI _OrderDetailRepoUI { get; set; }
-        [Inject]
-        public IProductDetailsRepoUI _ProductDetailsRepoUI { get; set; }
-        [Inject]
-        public IOrderTransactionsRepoUI _transactionsRepoUI { get; set; }
+		[Inject]
+		public ISnackbar snackbar { get; set; }
+		[Inject]
+		public IJSRuntime _jS { get; set; }
+		[Inject]
+		public ProtectedLocalStorage _localStorage { get; set; }
+		[Inject]
+		public NavigationManager navigation { get; set; }
+		[Inject]
+		public IPartyRepoUI _partyRepoUI { get; set; }
+		[Inject]
+		public IInvoiceRepoUI _invoiceRepoUI { get; set; }
+		[Inject]
+		public IInvoiceDetailsRepoUI _invoiceDetailsRepoUI { get; set; }
+		[Inject]
+		public IProductDetailsRepoUI _ProductDetailsRepoUI { get; set; }
+		[Inject]
+		public IOrderTransactionsRepoUI _transactionsRepoUI { get; set; }
+		[Inject]
+		IStockTransactionsRepoUI _stockTransactionsRepoUI { get; set; }
 
-        #endregion
-
-
-        AppUsers UserSession = new AppUsers();
-        Order Model = new Order();
-        OrderTransactions transactions = new OrderTransactions();
-
-        Party Customer = new Party();
-        Party Brand = new Party();
-
-        List<Party> Brands = new List<Party>();
-        List<Party> Customers = new List<Party>();
-
-        OrderDetail SaleOrderDetail = new OrderDetail();
-        List<PurchaseOrderDetail> SaleOrderDetailList = new List<PurchaseOrderDetail>();
-
-        ProductDetails ProDetalil = new ProductDetails();
-        List<ProductDetails> CompanyProducts = new List<ProductDetails>();
-
-        private bool _processing = false, _productdetails = true, _Party;
+		#endregion
 
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            try
-            {
-                await base.OnAfterRenderAsync(firstRender);
+		AppUsers UserSession = new AppUsers();
+		Invoice Model = new Invoice();
+		InvoiceDetails ModelDetails = new InvoiceDetails();
+		StockTransactions STransaction = new StockTransactions();
+		Party Customer = new Party();
+		Party Brand = new Party();
 
-                if (firstRender)
-                {
-                    var userSession = await _localStorage.GetAsync<AppUsers>("User");
-                    UserSession = userSession.Value ?? new AppUsers();
+		List<Party> Brands = new List<Party>();
+		List<Party> Customers = new List<Party>();
 
-                    if (UserSession.Id == 0)
-                    {
-                        navigation.NavigateTo("/signin");
-                    }
-                    else
-                    {
-                        await OnInitializedAsync();
-                        StateHasChanged();
-                    }
-                }
-            }
-            catch (Exception ex) { UILogger.WriteLog(ex); }
-        }
+		ProductDetails ProDetalil = new ProductDetails();
+		List<ProductDetails> CompanyProducts = new List<ProductDetails>();
+		List<StockTransactions> STransactionList = new List<StockTransactions>();
+		List<ItemStockSummaryDTO> StockSummary = new List<ItemStockSummaryDTO>();
+		List<ItemStockSummaryDTO> FilteredStockSummary = new List<ItemStockSummaryDTO>();
 
-        protected override async Task OnInitializedAsync()
-        {
-            try
-            {
-                _processing = true;
-                _ = InvokeAsync(StateHasChanged);
+		private bool _processing = false, _productdetails = true, _IsItemSelected = false, Iswharehouseenable = true;
 
-                if (UserSession.Id > 0)
-                {
-                    Customers = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Customer") ?? new List<Party>();
-                    Brands = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
-                    Model.TaxRate = 18;
-                    Model.OrderDate = DateTime.Now;
-                    Model.OrderNo = await CreateSONumberAsync();
-                }
-                _processing = false;
-            }
-            catch (Exception ex)
-            {
-                UILogger.WriteLog(ex);
-            }
+		protected override async Task OnAfterRenderAsync(bool firstRender)
+		{
+			try
+			{
+				await base.OnAfterRenderAsync(firstRender);
 
-            return;
-        }
+				if (firstRender)
+				{
+					var userSession = await _localStorage.GetAsync<AppUsers>("User");
+					UserSession = userSession.Value ?? new AppUsers();
 
-        public async Task<string> CreateSONumberAsync()
-        {
-            var lastOrderNo = await _orderRepoUI.GetSingleByColumnAsync($"Order/GetOrderNumberByType?orderType={OrderTypes.SaleOrder}");
+					if (UserSession.Id == 0)
+					{
+						navigation.NavigateTo("/signin");
+					}
+					else
+					{
+						await OnInitializedAsync();
+						StateHasChanged();
+					}
+				}
+			}
+			catch (Exception ex) { UILogger.WriteLog(ex); }
+		}
 
-            if (!string.IsNullOrEmpty(lastOrderNo) && lastOrderNo.Contains("SO-"))
-            {
-                string[] parts = lastOrderNo.Split('-');
+		protected override async Task OnInitializedAsync()
+		{
+			try
+			{
+				_processing = true;
+				_ = InvokeAsync(StateHasChanged);
 
-                if (parts.Length == 2 && int.TryParse(parts[1], out int number))
-                {
-                    number++;
-                    string newNumber = number.ToString($"D{parts[1].Length}");
+				if (UserSession.Id > 0)
+				{
+					Customers = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Customer") ?? new List<Party>();
+					Brands = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
+					StockSummary = await _stockTransactionsRepoUI.GetItemWiseStock("StockTransactions/GetItemWiseStock") ?? new List<ItemStockSummaryDTO>();
+					Model.TaxRate = 0;
+					Model.InvoiceDate = DateTime.Now;
+					Model.InvoiceNumber = await CreateSONumberAsync();
+				}
+				_processing = false;
+			}
+			catch (Exception ex)
+			{
+				UILogger.WriteLog(ex);
+			}
 
-                    return $"{parts[0]}-{newNumber}";
-                }
-            }
+			return;
+		}
 
-            return "SO-0001"; // First order case
-        }
+		public async Task<string> CreateSONumberAsync()
+		{
+			var lastOrderNo = await _invoiceRepoUI.GetSingleByColumnAsync($"Invoice/GetInvoicesByType?InvoiceType={InvoiceType.Sale}");
 
-        private async Task<IEnumerable<Party>> SearchCustomers(string value)
-        {
-            await Task.Delay(0);
-            if (string.IsNullOrEmpty(value))
-                return Customers;
-            return Customers.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
-        }
+			if (!string.IsNullOrEmpty(lastOrderNo) && lastOrderNo.Contains("INV-"))
+			{
+				string[] parts = lastOrderNo.Split('-');
 
-        Task OnCustomerChanged(Party Value)
-        {
-            try
-            {
-                if (Value != null)
-                {
-                    Customer = Value;
-                    Model.PartyId = Value.Id;
-                    Model.Party = Value;
+				if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+				{
+					number++;
+					string newNumber = number.ToString($"D{parts[1].Length}");
 
-                    //CompanyProducts = await _ProductDetailsRepoUI.GetAll($"Party/GetPartiesByType?partyId={party.Id}") ?? new List<ProductDetails>();
-                    //if (CompanyProducts.Count > 0)
-                    //{
-                    //    _productdetails = false;
-                    //}
-                    //else
-                    //{
-                    //    _productdetails = true;
-                    //    ProDetalil = new ProductDetails();
-                    //}
+					return $"{parts[0]}-{newNumber}";
+				}
+			}
 
-                }
-            }
-            catch (Exception ex) { UILogger.WriteLog(ex); }
+			return "INV-0001"; // First order case
+		}
 
-            return Task.CompletedTask;
-        }
+		private async Task<IEnumerable<Party>> SearchCustomers(string value)
+		{
+			await Task.Delay(0);
+			if (string.IsNullOrEmpty(value))
+				return Customers;
+			return Customers.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+		}
 
-        private async Task<IEnumerable<Party>> SearchBrands(string value)
-        {
-            await Task.Delay(0);
-            if (string.IsNullOrEmpty(value))
-                return Brands;
-            return Brands.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
-        }
+		Task OnCustomerChanged(Party Value)
+		{
+			try
+			{
+				if (Value != null)
+				{
+					Customer = Value;
+					Model.CustomerId = Value.Id;
+					Model.Customer = Value;
 
-        async Task OnBrandsChangedAsync(Party Value)
-        {
-            try
-            {
-                if (Value != null)
-                {
-                    Brand = Value;
-                    
-                    CompanyProducts = await _ProductDetailsRepoUI.GetAll($"ProductDetails/GetProductDetailsByParty?partyId={Brand.Id}") ?? new List<ProductDetails>();
-                    if (CompanyProducts.Count > 0)
-                    {
-                        _productdetails = false;
-                    }
-                    else
-                    {
-                        _productdetails = true;
-                        ProDetalil = new ProductDetails();
-                    }
+					//CompanyProducts = await _ProductDetailsRepoUI.GetAll($"Party/GetPartiesByType?partyId={party.Id}") ?? new List<ProductDetails>();
+					//if (CompanyProducts.Count > 0)
+					//{
+					//    _productdetails = false;
+					//}
+					//else
+					//{
+					//    _productdetails = true;
+					//    ProDetalil = new ProductDetails();
+					//}
 
-                }
-            }
-            catch (Exception ex) { UILogger.WriteLog(ex); }
-        }
+				}
+			}
+			catch (Exception ex) { UILogger.WriteLog(ex); }
 
-        private async Task<IEnumerable<ProductDetails>> SearchProDetails(string value)
-        {
-            await Task.Delay(0);
-            if (string.IsNullOrEmpty(value))
-                return CompanyProducts;
-            return CompanyProducts.Where(x => !string.IsNullOrEmpty(x.ItemName) ? x.ItemName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
-        }
+			return Task.CompletedTask;
+		}
 
-        void OnProductChanged(ProductDetails Value)
-        {
-            try
-            {
-                if (Value != null)
-                {
-                    ProDetalil = Value;
-                    SaleOrderDetail.ItemId = Value.Id;
-                    SaleOrderDetail.Item = Value;
-                }
-            }
-            catch (Exception ex) { UILogger.WriteLog(ex); }
-        }
+		private async Task<IEnumerable<Party>> SearchBrands(string value)
+		{
+			await Task.Delay(0);
+			if (string.IsNullOrEmpty(value))
+				return Brands;
+			return Brands.Where(x => !string.IsNullOrEmpty(x.FocalPersonName) ? x.FocalPersonName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+		}
 
-        void AddItem(OrderDetail POdetail)
-        {
-            if (_productdetails == false)
-            {
-                if (POdetail.Qty > 0 && POdetail.Rate > 0 && !String.IsNullOrEmpty(POdetail.Unit))
-                {
-                    var existingItem = Model.OrderDetail.FirstOrDefault(x => x.ItemId == POdetail.ItemId);
+		async Task OnBrandsChangedAsync(Party Value)
+		{
+			try
+			{
+				if (Value != null)
+				{
+					Brand = Value;
 
-                    if (existingItem != null && existingItem.Unit == POdetail.Unit)
-                    {
-                        // Update the quantity
-                        existingItem.Qty += POdetail.Qty;
+					CompanyProducts = await _ProductDetailsRepoUI.GetAll($"ProductDetails/GetProductDetailsByParty?partyId={Brand.Id}") ?? new List<ProductDetails>();
+					if (CompanyProducts.Count > 0)
+					{
+						_productdetails = false;
+					}
+					else
+					{
+						_productdetails = true;
+						ProDetalil = new ProductDetails();
+					}
 
-                        // Update the rate if it is different
-                        if (existingItem.Rate != POdetail.Rate)
-                        {
-                            existingItem.Rate = POdetail.Rate;
-                        }
-                    }
-                    else
-                    {
-                        // Add new item if it does not exist
-                        Model.OrderDetail.Add(POdetail);
-                    }
+				}
+			}
+			catch (Exception ex) { UILogger.WriteLog(ex); }
+		}
 
-                    SaleOrderDetail = new OrderDetail();
-                    ProDetalil = new ProductDetails();
-                    Brand = new Party();
-                    CalculateTotal();
+		private async Task<IEnumerable<ProductDetails>> SearchProDetails(string value)
+		{
+			await Task.Delay(0);
+			if (string.IsNullOrEmpty(value))
+				return CompanyProducts;
+			return CompanyProducts.Where(x => !string.IsNullOrEmpty(x.ItemName) ? x.ItemName.Contains(value, StringComparison.InvariantCultureIgnoreCase) : false);
+		}
 
-                    StateHasChanged();
+		void OnProductChanged(ProductDetails Value)
+		{
+			try
+			{
+				if (Value != null)
+				{
+					ProDetalil = Value;
+					ModelDetails.ProductId = Value.Id;
+					ModelDetails.Product = Value;
+					FilteredStockSummary = StockSummary.Where(x => x.ItemId == Value.Id).ToList();
+					if (FilteredStockSummary.Count > 0)
+					{
+						_IsItemSelected = true;
+						Iswharehouseenable = false;
+					}
+					else
+					{
+						_IsItemSelected = false;
+						Iswharehouseenable = true;
+						FilteredStockSummary = new List<ItemStockSummaryDTO>();
+						ModelDetails.DispatchLocation = "";
+					}
+					_ = InvokeAsync(StateHasChanged);
+				}
+				else
+				{
+					_IsItemSelected = false;
+				}
+			}
+			catch (Exception ex) { UILogger.WriteLog(ex); }
+		}
 
-                    if (Model.OrderDetail.Count > 0)
-                    {
-                        _Party = true;
-                    }
-                }
-                else
-                {
-                    snackbar.Add("Kindly fill all Required Data", Severity.Warning);
-                }
-            }
-            else
-            {
-                snackbar.Add("Please Select Vendor first", Severity.Warning);
-            }
-        }
-        void RemoveItem(OrderDetail POdetail)
-        {
-            Model.OrderDetail.Remove(POdetail);
-        }
-        void CalculateTotal()
-        {
-            if (Model.OrderDetail.Count > 0)
-            {
-                Model.GrossAmount = Model.OrderDetail.Sum(x => x.Rate * x.Qty);
-                Model.NetAmount = Model.GrossAmount - Model.TaxAmount;
-            }
-            if (Model.TaxRate > 0 && Model.GrossAmount > 0)
-            {
-                Model.TaxAmount = Model.GrossAmount * Model.TaxRate / 100;
-                Model.NetAmount = Model.GrossAmount + Model.TaxAmount;
-            }
-            OrderDetail purchaseOrderDetail = new OrderDetail();
-        }
+		void AddItem(InvoiceDetails InvDetails)
+		{
+			if (_productdetails == false)
+			{
+				if (ModelDetails.Quantity > 0 && ModelDetails.UnitPrice > 0)
+				{
+					if (ModelDetails.Quantity > FilteredStockSummary.Where(x => x.ItemId == ModelDetails.ProductId && x.Warehouse == ModelDetails.DispatchLocation).Select(a => a.CurrentStock).FirstOrDefault())
+					{
+						snackbar.Add("You are not allowed to exceed the limit.", Severity.Warning);
+					}
+					else
+					{
+						var existingItem = Model.InvoiceDetails.FirstOrDefault(x => x.ProductId == ModelDetails.ProductId);
 
-        bool IsValidate()
-        {
-            return
-                string.IsNullOrEmpty(Model.OrderDate.ToString()) || string.IsNullOrEmpty(Model.OrderNo) ||
-                Model.PartyId < 0 || string.IsNullOrEmpty(Model.PaymentMode) ||
-                Model.OrderDetail.Count < 0
-                ? false : true;
-        }
+						if (existingItem != null && existingItem.UnitPrice == ModelDetails.UnitPrice)
+						{
+							// Update the quantity
+							existingItem.Quantity += ModelDetails.Quantity;
 
-        async void Save()
-        {
-            try
-            {
-                _processing = true;
-                StateHasChanged();
+							// Update the rate if it is different
+							if (existingItem.UnitPrice != ModelDetails.UnitPrice)
+							{
+								existingItem.UnitPrice = ModelDetails.UnitPrice;
+							}
+						}
+						else
+						{
+							// Add new item if it does not exist
+							Model.InvoiceDetails.Add(ModelDetails);
+						}
 
-                if (IsValidate())
-            {
-                Model.OType = OrderTypes.SaleOrder;
-                Model.Status = OrderStatus.Opened;
-                var res = Model.Id > 0 ? await _orderRepoUI.Create("Order/Update", Model) : await _orderRepoUI.Create("Order/Create", Model) ?? new Order();
+						ModelDetails = new InvoiceDetails();
+						ProDetalil = new ProductDetails();
+						Brand = new Party();
+						_IsItemSelected = false;
+						CalculateTotal();
+						StateHasChanged();
 
-                if (res.Id > 0)
-                {
-                    transactions.TType = TransectionTypes.Dispatch;
-                    transactions.TransectionDate = DateTime.Now;
-                    transactions.POQty = Model.OrderDetail.Sum(x=>x.Qty);
-                    transactions.ReciverParty = Model.WalkinCustomer;
-                    transactions.RecivingLocation = "Walk-In Customer";
-                    transactions.IsDirectDelivery = true;
+					}
+				}
+				else
+				{
+					snackbar.Add("Kindly fill all Required Data", Severity.Warning);
+				}
+			}
+			else
+			{
+				snackbar.Add("Please Select Vendor first", Severity.Warning);
+			}
+		}
+		void RemoveItem(InvoiceDetails invDetails)
+		{
+			Model.InvoiceDetails.Remove(invDetails);
+		}
+		void CalculateTotal()
+		{
+			if (Model.InvoiceDetails.Count > 0)
+			{
 
-                    if (res.Id > 0)
-                    {
-                        var resTrns = await _transactionsRepoUI.Create("OrderTransactions/Create", transactions) ?? new OrderTransactions();
+				Model.TotalAmount = Model.InvoiceDetails.Sum(x => x.UnitPrice * x.Quantity);
 
-                        if (resTrns.Id>0)
-                        {
-                            snackbar.Add("Sale Order has been saved successfully", Severity.Success);
-                            Model = new Order();
-                            navigation.NavigateTo("/SaleOrder"); 
-                        }
-                    }
-                }
-                else
-                {
-                    snackbar.Add("An error occurred while creating Sale Order", Severity.Error);
-                }
-            }
-            else
-            {
-                snackbar.Add("Please fill all required field(s)", Severity.Error);
-            }
-        }
 
-            catch (Exception ex)
-            {
-                snackbar.Add($"Error: {ex.Message}", Severity.Error);
-            }
-            finally
-            {
-                _processing = false;
-                StateHasChanged();
-            }
-        }
+				if (Model.TaxRate > 0)
+				{
+					Model.TaxAmount = Model.TotalAmount * Model.TaxRate / 100;
+				}
+				else
+				{
+					Model.TaxAmount = 0;
+				}
 
-    }
+				Model.NetAmount = Model.TotalAmount + Model.TaxAmount;
+				
+				if (Model.PaidAmount > 0)
+				{
+					Model.Discount = Model.NetAmount - Model.PaidAmount;
+				}
+			}
+		}
+
+		bool IsValidate()
+		{
+			return
+				string.IsNullOrEmpty(Model.InvoiceDate.ToString()) || string.IsNullOrEmpty(Model.InvoiceNumber) ||
+				string.IsNullOrEmpty(Model.CustomerName) || string.IsNullOrEmpty(Model.PaymentMode) ||
+				Model.InvoiceDetails.Count < 0
+				? false : true;
+		}
+
+		async void Save()
+		{
+			try
+			{
+				_processing = true;
+				StateHasChanged();
+
+				if (IsValidate())
+				{
+					Model.InvoiceType = InvoiceType.Sale;
+					Model.PaymentStatus = PaymentStatus.Paid;
+					var res = Model.Id > 0 ? await _invoiceRepoUI.Create("Invoice/Update", Model) : await _invoiceRepoUI.Create("Invoice/Create", Model) ?? new Invoice();
+
+					if (res.Id > 0)
+					{
+						var stockTransactionsList = new List<StockTransactions>();
+
+						foreach (var trans in Model.InvoiceDetails.DistinctBy(x => x.ProductId))
+						{
+							stockTransactionsList.Add(new StockTransactions
+							{
+								TransectionDate = (DateTime)Model.InvoiceDate,
+								StockOut = trans.Quantity,
+								StockType = StockTransectionTypes.Sale,
+								ItemId = trans.ProductId,
+								Warehouse = trans.DispatchLocation,
+								ReferenceNumber = Model.InvoiceNumber,
+							});
+						}
+
+						await _stockTransactionsRepoUI.BulkInsert("StockTransactions/BulkInsert", stockTransactionsList);
+
+						snackbar.Add("Invoice has been saved successfully", Severity.Success);
+						Model = new Invoice();
+						navigation.NavigateTo("/DirectSale", forceLoad: true);
+
+					}
+					else
+					{
+						snackbar.Add("An error occurred while creating Sale Order", Severity.Error);
+					}
+				}
+				else
+				{
+					snackbar.Add("Please fill all required field(s)", Severity.Error);
+				}
+			}
+
+			catch (Exception ex)
+			{
+				snackbar.Add($"Error: {ex.Message}", Severity.Error);
+			}
+			finally
+			{
+				_processing = false;
+				StateHasChanged();
+			}
+		}
+
+		private void AmountRecive()
+		{
+
+			//Model.Discount = Model.NetAmount - Model.PaidAmount;
+			CalculateTotal();
+		}
+	}
 }

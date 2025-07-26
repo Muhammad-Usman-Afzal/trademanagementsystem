@@ -68,11 +68,12 @@
 				</MudItem>
 			</MudGrid>
 
+				@*
 			<MudGrid Justify="Justify.FlexStart" Class="mt-4">
-				<MudItem xs="3">
-					<MudCheckBox @bind-Value="transactions.IsDirectDelivery" Label="Is Direct Deliver" LabelPosition="LabelPosition.Start"></MudCheckBox>
+					<MudItem xs="3">
+					<MudCheckBox @bind-Value="transactions.IsDirectDelivery" Label="Is Direct Deliver" Disabled="true" LabelPosition="LabelPosition.Start"></MudCheckBox>
 				</MudItem>
-				<MudItem xs="9">
+				 <MudItem xs="9">
 					@if (transactions.IsDirectDelivery)
 					{
 						<MudAutocomplete Required="true" T="Party" Label="Delivery to" SearchFunc="@SearchVendor" Value="party" Variant="Variant.Outlined"
@@ -96,7 +97,7 @@
 						</MudSelect>
 					}
 
-				</MudItem>
+				</MudItem> 
 			</MudGrid>
 
 			<MudGrid Justify="Justify.FlexStart">
@@ -104,6 +105,7 @@
 					<MudDivider Style="margin-top:10px; margin-bottom:10px; border:solid 1px black;" />
 				</MudItem>
 			</MudGrid>
+				*@
 
 			@* <MudGrid Justify="Justify.SpaceAround">
 				<MudItem xs="2">

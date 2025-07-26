@@ -47,6 +47,14 @@ builder.Services.AddHttpClient<IStockTransactionsRepoUI, StockTransactionsServic
 {
     client.BaseAddress = new Uri(APIBaseUrl);
 });
+builder.Services.AddHttpClient<IInvoiceRepoUI, InvoiceServiceUI>(client =>
+{
+	client.BaseAddress = new Uri(APIBaseUrl);
+});
+builder.Services.AddHttpClient<IInvoiceDetailsRepoUI, InvoiceDetailsServiceUI>(client =>
+{
+	client.BaseAddress = new Uri(APIBaseUrl);
+});
 
 #endregion
 

@@ -70,7 +70,7 @@
 
 			<MudGrid Justify="Justify.Center">
 				<MudItem xs="12">
-					<MudTextField @bind-Value="Model.Party.CompanyAddress" T="string" Variant="Variant.Outlined"
+					<MudTextField @bind-Value="Model.Party.CompanyAddress" T="string" Variant="Variant.Outlined" ReadOnly="true"
 								  Label="Vendor Address"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Place"></MudTextField>
 				</MudItem>
 			</MudGrid>
@@ -91,20 +91,18 @@
 
                 </MudItem>
 				<MudItem xs="2">
+					<MudSelect @bind-Value="purchaseOrderDetail.Unit" Disabled="true" T="string" Label="Unit Type" Variant="Variant.Outlined"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Straighten">
+						<MudSelectItem Value="@("Cone")">Cone</MudSelectItem>
+						<MudSelectItem Value="@("Hangs")">Hangs</MudSelectItem>
+					</MudSelect>
+				</MudItem>
+				<MudItem xs="2">
 					<MudNumericField @bind-Value="purchaseOrderDetail.Qty" T="int" Variant="Variant.Outlined" Min="0" Label="Quantity"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Numbers"
 									 HideSpinButtons="true" Disabled="_productdetails" ></MudNumericField>
 				</MudItem>
 				<MudItem xs="2">
 					<MudNumericField @bind-Value="purchaseOrderDetail.Rate" T="double" Variant="Variant.Outlined" Min="0" Label="Rate"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"
 									 HideSpinButtons="true" Disabled="_productdetails"></MudNumericField>
-				</MudItem>
-				<MudItem xs="2">
-					<MudSelect @bind-Value="purchaseOrderDetail.Unit" Disabled="_productdetails" T="string" Label="Unit Type" Variant="Variant.Outlined"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Straighten">
-						<MudSelectItem Value="@("Cone")">Cone</MudSelectItem>
-						<MudSelectItem Value="@("Hangs")">Hangs</MudSelectItem>
-					</MudSelect>
-					@* <MudNumericField @bind-Value="purchaseOrderDetail.Unit" T="int" Variant="Variant.Text" Label="Unit Type"
-									 HideSpinButtons="true"></MudNumericField> *@
 				</MudItem>
 				<MudItem xs="1">
 					<MudIconButton Icon="@Icons.Material.Filled.AddToQueue" Color="Color.Primary" aria-label="Add" Size="Size.Large" OnClick="@(()=> AddItem(purchaseOrderDetail))" />

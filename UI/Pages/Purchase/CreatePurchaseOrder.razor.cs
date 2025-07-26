@@ -208,6 +208,7 @@ namespace UI.Pages.Purchase
                     ProDetalil = Value;
                     purchaseOrderDetail.ItemId = Value.Id;
                     purchaseOrderDetail.Item = Value;
+                    purchaseOrderDetail.Unit = Value.ItemType.ToString();
                 }
             }
             catch (Exception ex) { UILogger.WriteLog(ex); }

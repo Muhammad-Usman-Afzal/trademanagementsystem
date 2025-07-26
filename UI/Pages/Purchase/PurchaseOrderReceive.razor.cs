@@ -248,12 +248,20 @@ namespace UI.Pages.Purchase
         {
             try
             {
-                bool res;
+                bool validate = false;
                 DisableContolle = true;
                 await InvokeAsync(StateHasChanged);
                 await Task.Delay(1);
 
-                if (await InsurtValidateAsync())
+                foreach (var a in POItemsReceive)
+                {
+                    if (!string.IsNullOrEmpty(a.Warehouse)) 
+                    {
+                        validate = true;
+                    }
+                }
+
+                if (validate)
                 {
                     foreach (var item in POItemsReceive)
                     {
@@ -299,46 +307,46 @@ namespace UI.Pages.Purchase
             }
         }
 
-        private async Task<bool> InsurtValidateAsync()
-        {
-            //if (Model.Id > 0 && (!String.IsNullOrEmpty(Model.NTN) || !String.IsNullOrEmpty(Model.STRNo)) && Model.IsRegisterd == false)
-            //{
-            //    showRegConfirmDialog = true;
-            //    bool confirm = await ShowConfirmationDialog();
-            //    if (!confirm)
-            //    {
-            //        return false;
-            //    }
-            //}
-            //if (Model.IsRegisterd)
-            //{
-            //    if (isContactInvalid || isEmailInvalid || (isNTNInvalid && isSTRInvalid) || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
-            //        || String.IsNullOrEmpty(Model.CompanyName) || String.IsNullOrEmpty(Model.CompanyAddress) || String.IsNullOrEmpty(Model.FocalPersonName))
-            //    {
-            //        return false;
-            //    }
-            //    else
-            //    {
-            //        return true;
-            //    }
+        //private async Task<bool> InsurtValidateAsync()
+        //{
+        //    if (Model.Id > 0 && (!String.IsNullOrEmpty(Model.NTN) || !String.IsNullOrEmpty(Model.STRNo)) && Model.IsRegisterd == false)
+        //    {
+        //        showRegConfirmDialog = true;
+        //        bool confirm = await ShowConfirmationDialog();
+        //        if (!confirm)
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    if (Model.IsRegisterd)
+        //    {
+        //        if (isContactInvalid || isEmailInvalid || (isNTNInvalid && isSTRInvalid) || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
+        //            || String.IsNullOrEmpty(Model.CompanyName) || String.IsNullOrEmpty(Model.CompanyAddress) || String.IsNullOrEmpty(Model.FocalPersonName))
+        //        {
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            return true;
+        //        }
 
-            //}
-            //else
-            //{
-            //    Model.NTN = null;
-            //    Model.STRNo = null;
-            //    if (isContactInvalid || isEmailInvalid || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
-            //        || String.IsNullOrEmpty(Model.CompanyName) || String.IsNullOrEmpty(Model.CompanyAddress) || String.IsNullOrEmpty(Model.FocalPersonName))
-            //    {
-            //        return false;
-            //    }
-            //    else
-            //    {
-            //        return true;
-            //    }
-            //}
-            return true;
-        }
+        //    }
+        //    else
+        //    {
+        //        Model.NTN = null;
+        //        Model.STRNo = null;
+        //        if (isContactInvalid || isEmailInvalid || isCompanyContactInvalid || isCompanyEmailInvalid || String.IsNullOrEmpty(Model.PartyType)
+        //            || String.IsNullOrEmpty(Model.CompanyName) || String.IsNullOrEmpty(Model.CompanyAddress) || String.IsNullOrEmpty(Model.FocalPersonName))
+        //        {
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return true;
+        //}
 
         void RemoveItem(OrderDetail pOdetail)
         {

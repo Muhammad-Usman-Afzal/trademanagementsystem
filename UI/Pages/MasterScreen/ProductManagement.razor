@@ -30,13 +30,16 @@
 				<HeaderContent>
 					<MudTh>Brand</MudTh>
 					<MudTh>Item Name</MudTh>
-					<MudTh>Type</MudTh>
+					<MudTh>Item Type</MudTh>
+					<MudTh>Weight</MudTh>
 					<MudTh>Edit</MudTh>
 				</HeaderContent>
 				<RowTemplate>
 					<MudTd>@context.Party.CompanyName</MudTd>
 					<MudTd>@context.ItemName</MudTd>
-					<MudTd>
+					<MudTd>@context.ItemType</MudTd>
+					<MudTd>@context.StandardWeight</MudTd>
+					@* <MudTd>
 						@if (context.Isprocessed == true)
 						{
 							<MudChip T="string" Variant="Variant.Outlined" Color="Color.Info">Processed</MudChip>
@@ -45,7 +48,7 @@
 						{
 							<MudChip T="string" Variant="Variant.Outlined" Color="Color.Secondary">Un-Processed</MudChip>
 						}
-					</MudTd>
+					</MudTd> *@
 					<MudTd>
 						<MudIconButton Icon="@Icons.Material.Filled.Create" aria-label="Edit" OnClick="@(()=> GridtoCall(context))" />
 					</MudTd>
