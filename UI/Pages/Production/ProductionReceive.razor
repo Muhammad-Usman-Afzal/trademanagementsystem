@@ -35,6 +35,80 @@
                 </MudItem>
             </MudGrid>
 
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="3">
+                    <MudTextField  T="string" Variant="Variant.Outlined" Label="Type" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Description" Disabled="true"></MudTextField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField T="string" Variant="Variant.Outlined" Label="Type" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Description" Disabled="true"></MudTextField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudNumericField Min="0" T="int" Variant="Variant.Outlined" Label="Receiving Qty" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.MoveToInbox"></MudNumericField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudAutocomplete T="ProductDetails" Label="Reciving Item" SearchFunc="@SearchProDetails" Value="ProDetalil"
+                                     Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Inventory"
+                                     CoerceText="false" ToStringFunc="@(e => e.Id == 0 ? null : e.ItemName)" Clearable="true" Strict="false"
+                                     Adornment="Adornment.Start" ValueChanged="OnProductChanged">
+                    </MudAutocomplete>
+                </MudItem>
+            </MudGrid>
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="3">
+                    <MudNumericField Min="0" T="decimal?" Variant="Variant.Outlined" Label="Reciving weight" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Scale"></MudNumericField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudNumericField T="int" Variant="Variant.Outlined" Label="Per Bag Qty" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ShoppingBag" Disabled="true"></MudNumericField>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudSelect Style="margin-top:-10px;" T="string" Label="Warehouse"
+                               Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LocalShipping"
+                               Placeholder="Select Warehouse">
+                        <MudSelectItem Value="@("Jilani")">Jilani</MudSelectItem>
+                        <MudSelectItem Value="@("MM")">MM</MudSelectItem>
+                        <MudSelectItem Value="@("Railway")">Railway</MudSelectItem>
+                        <MudSelectItem Value="@("Shop")">Shop</MudSelectItem>
+                        <MudSelectItem Value="@("Home")">Home</MudSelectItem>
+                        <MudSelectItem Value="@("Weahouse")">Weahouse</MudSelectItem>
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="3">
+                    <MudTextField @bind-Value="Model.Party.CompanyName" T="string" Variant="Variant.Outlined" Label="Type" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Description" Disabled="true"></MudTextField>
+                </MudItem>
+            </MudGrid>
+            <MudGrid Justify="Justify.FlexEnd" Class="mt-5 py-5">
+
+                <MudItem xs="2">
+                    <MudButton Variant="Variant.Filled" Size="Size.Small" Disabled="@_processing" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
+                               OnClick="Save" Color="Color.Primary">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Save</MudText>
+                        }
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Disabled="@_processing" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh"
+                               Color="Color.Primary" OnClick="@(()=>Model.OrderDetail.Clear())">
+                        Clear
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="2">
+                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Disabled="@_processing" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Clear"
+                               Color="Color.Primary" OnClick="@(()=>navigation.NavigateTo("ProductionOrder"))">
+                        Close
+                    </MudButton>
+                </MudItem>
+
+            </MudGrid>
+
+            <MudDivider DividerType="DividerType.FullWidth" Style=" background-color:none; border:1px solid black; width:100%; margin-bottom:15px;margin-top:10px;" />
+
             @* <MudGrid>
                 <MudItem xs="3">
                     <MudAutocomplete T="Party" Label="Brand Name" ValueChanged="OnBrandsChangedAsync" Variant="Variant.Outlined"
@@ -82,15 +156,25 @@
                 <MudItem xs="12">
                     <MudTable Items="@RecItems" Hover="true" FixedHeader="true" Height="36.5vh">
                         <HeaderContent>
-                            <MudTh>Item</MudTh>
+                            <MudTh>Brand</MudTh>
+                            <MudTh>Sending Item</MudTh>
                             <MudTh>Total Receiving Qty</MudTh>
+                            <MudTh>Receiving Item</MudTh>
                             <MudTh>Total Weight</MudTh>
                             <MudTh>Per Bag Qty</MudTh>
                         </HeaderContent>
                         <RowTemplate>
+                            <MudTd>@context.Item?.Party?.CompanyName</MudTd>
                             <MudTd>@context.Item?.ItemName</MudTd>
                                 <MudTd>
                                     <MudNumericField Min="0" @bind-Value="context.RecQty" T="int" Variant="Variant.Outlined" Label="Receiving Qty" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.MoveToInbox"></MudNumericField>
+                                </MudTd>
+                                <MudTd>
+                                <MudAutocomplete T="ProductDetails" Label="Reciving Item" SearchFunc="@SearchProDetails" Value="ProDetalil"
+                                                 Variant="Variant.Outlined" AdornmentIcon="@Icons.Material.Filled.Inventory"
+                                                 CoerceText="false" ToStringFunc="@(e => e.Id == 0 ? null : e.ItemName)" Clearable="true" Strict="false"
+                                                 Adornment="Adornment.Start" ValueChanged="OnProductChanged">
+                                </MudAutocomplete>
                                 </MudTd>
                                 <MudTd>
                                     <MudNumericField Min="0" OnBlur="@(()=> CalcWeight(context))" @bind-Value="context.Weight" T="decimal?" Variant="Variant.Outlined" Label="Reciving weight" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Scale"></MudNumericField>
@@ -123,36 +207,7 @@
 
                 <br />
 
-                <MudGrid Justify="Justify.FlexEnd" Class="mt-5 py-5">
-
-                    <MudItem xs="2">
-                        <MudButton Variant="Variant.Filled" Size="Size.Small" Disabled="@_processing" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Save"
-                                   OnClick="Save" Color="Color.Primary">
-                            @if (_processing)
-                        {
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-                            <MudText Class="ms-2">Processing</MudText>
-                        }
-                        else
-                        {
-                            <MudText>Save</MudText>
-                        }
-                    </MudButton>
-                </MudItem>
-                <MudItem xs="2">
-                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Disabled="@_processing" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Refresh"
-                               Color="Color.Primary" OnClick="@(()=>Model.OrderDetail.Clear())">
-                        Clear
-                    </MudButton>
-                </MudItem>
-                <MudItem xs="2">
-                    <MudButton Variant="Variant.Outlined" Size="Size.Small" Disabled="@_processing" Style="border-radius:25px;" FullWidth="true" StartIcon="@Icons.Material.Filled.Clear"
-                               Color="Color.Primary" OnClick="@(()=>navigation.NavigateTo("ProductionOrder"))">
-                        Close
-                    </MudButton>
-                </MudItem>
-
-            </MudGrid>
+             
 
         </MudItem>
     </MudGrid>

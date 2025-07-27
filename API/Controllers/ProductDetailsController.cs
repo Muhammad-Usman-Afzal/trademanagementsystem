@@ -16,7 +16,7 @@ public class ProductDetailsController : ControllerBase
 
     [Route("GetProductDetails")]
     [HttpGet]
-    public async Task<ActionResult<List<ProductDetails>>> GetParties()
+    public async Task<ActionResult<List<ProductDetails>>> GetProductDetails()
     {
         try
         {

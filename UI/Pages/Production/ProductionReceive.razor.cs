@@ -110,6 +110,8 @@ namespace UI.Pages.Production
 					}).ToList();
 
 					Brands = await _partyRepoUI.GetAll("Party/GetPartiesByType?partyType=Vendor") ?? new List<Party>();
+
+					CompanyProducts = await _ProductDetailsRepoUI.GetAll($"ProductDetails/GetProductDetails") ?? new List<ProductDetails>();
 				}
 				_processing = false;
 			}
